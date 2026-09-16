@@ -14,11 +14,12 @@ import {
   LogIn,
   Sun,
   Moon,
-  ChevronDown,
   ShieldCheck,
   Building2,
-  Bot,
   GraduationCap,
+  Bot,
+  ChevronDown,
+  Sparkles,
 } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
 
@@ -33,7 +34,7 @@ export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
-  const [showDemoProfiles, setShowDemoProfiles] = useState(true);
+  const [showDemoProfiles, setShowDemoProfiles] = useState(false);
 
   // Forgot Password modal
   const [isForgotOpen, setIsForgotOpen] = useState(false);
@@ -47,24 +48,20 @@ export default function LoginPage() {
     try {
       await login(email, password);
     } catch {
-      // Toast shown in login
+      // Toast displayed in login()
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleQuickLogin = async (roleEmail: string, roleName?: string) => {
+  const handleQuickLogin = (roleEmail: string) => {
     setEmail(roleEmail);
     setPassword('Password@123');
-    setIsLoading(true);
-    try {
-      await login(roleEmail, 'Password@123');
-      toast(`Signed in as ${roleName || 'demo user'}`, 'success');
-    } catch {
-      // Toast shown in login
-    } finally {
-      setIsLoading(false);
-    }
+    login(roleEmail, 'Password@123');
+  };
+
+  const handleSocialClick = (provider: string) => {
+    toast(`${provider} authentication is enabled for institutional single sign-on (SSO).`, 'info');
   };
 
   const handleForgotPassword = async (e: React.FormEvent) => {
@@ -73,7 +70,7 @@ export default function LoginPage() {
     setForgotLoading(true);
     try {
       await api.post('/api/auth/forgot-password', { email: forgotEmail });
-      toast('If an account exists, a password reset link has been dispatched.', 'success');
+      toast('If an account exists, password reset instructions have been dispatched.', 'success');
       setIsForgotOpen(false);
       setForgotEmail('');
     } catch (err: any) {
@@ -85,97 +82,110 @@ export default function LoginPage() {
 
   const slides = [
     {
-      headline: 'Write Better Everywhere',
+      title: 'Write Better',
       highlight: 'Everywhere',
-      caption: (
+      desc: (
         <>
-          Compatible with <em>Gmail, Outlook Web, LinkedIn</em> and most web editors for a smooth writing experience anywhere online.
+          Compatible with <span className="italic font-medium">Gmail</span>,{' '}
+          <span className="italic font-medium">Outlook Web</span>,{' '}
+          <span className="italic font-medium">LinkedIn</span> and{' '}
+          <span className="italic font-medium">most web editors</span> for a smooth writing experience anywhere online.
         </>
       ),
     },
     {
-      headline: 'Code & Master AI Everywhere',
+      title: 'Learn & Code',
       highlight: 'Everywhere',
-      caption: (
+      desc: (
         <>
-          Integrated with <em>Python 3.12, PyTorch, NVIDIA JetBot</em> and cloud sandboxes for seamless hands-on learning.
+          Integrated with <span className="italic font-medium">Python 3.12</span>,{' '}
+          <span className="italic font-medium">ROS JetBot Physics</span>,{' '}
+          <span className="italic font-medium">PyTorch AI</span> and{' '}
+          <span className="italic font-medium">Cloud Sandboxes</span> for high-impact STEM training.
         </>
       ),
     },
     {
-      headline: 'Assess & Certify Everywhere',
+      title: 'Certify & Grow',
       highlight: 'Everywhere',
-      caption: (
+      desc: (
         <>
-          Equipped with <em>Timed Exams, Anti-Cheating Monitors</em> and verifiable QR digital certificates.
+          Verified with <span className="italic font-medium">Cryptographic QR Codes</span>,{' '}
+          <span className="italic font-medium">Institution Dashboards</span>, and{' '}
+          <span className="italic font-medium">Global Accreditation</span> standards.
         </>
       ),
     },
   ];
 
   return (
-    <div className="min-h-screen bg-[#eef3f9] dark:bg-[#070b13] flex items-center justify-center p-4 sm:p-6 lg:p-10 selection:bg-blue-600 selection:text-white transition-colors duration-300">
-      {/* Outer Floating Window Card */}
-      <div className="w-full max-w-[1080px] bg-white dark:bg-[#0e1626] border border-slate-200/80 dark:border-slate-800/80 rounded-[32px] sm:rounded-[38px] shadow-[0_20px_60px_-15px_rgba(37,99,235,0.08)] dark:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)] p-3 sm:p-5 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8 min-h-[660px] relative overflow-hidden">
+    <div className="min-h-screen bg-[#f0f4f9] dark:bg-[#0b0f19] flex items-center justify-center p-3 sm:p-6 lg:p-10 font-sans selection:bg-[#1a56db] selection:text-white transition-colors duration-300">
+      {/* Outer Card Window matching the provided mockup */}
+      <div className="w-full max-w-[1040px] bg-white dark:bg-[#111827] rounded-[2rem] shadow-[0_25px_70px_-15px_rgba(0,0,0,0.07)] dark:shadow-[0_25px_70px_-15px_rgba(0,0,0,0.4)] border border-slate-100 dark:border-slate-800 overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[660px]">
         
-        {/* Top-Left Subtle Brand Accent */}
-        <div className="absolute top-6 left-8 z-20 flex items-center justify-between w-[calc(100%-4rem)] lg:w-auto">
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-7 h-7 rounded-xl bg-gradient-to-tr from-blue-600 to-blue-500 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
-              <span className="font-extrabold text-sm tracking-tighter">N</span>
+        {/* ======================================================== */}
+        {/* LEFT COLUMN: Clean White Login Form                      */}
+        {/* ======================================================== */}
+        <div className="lg:col-span-6 p-7 sm:p-11 lg:p-14 flex flex-col justify-between relative bg-white dark:bg-[#111827]">
+          {/* Subtle Top Bar: Logo & Theme Switcher */}
+          <div className="flex items-center justify-between">
+            <Link href="/" className="flex items-center gap-2.5 group">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#1a56db] to-[#3b82f6] flex items-center justify-center text-white p-1 shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
+                <img src="/logo.png" alt="NEXUS" className="w-full h-full object-contain" />
+              </div>
+              <span className="font-extrabold text-base tracking-tight text-slate-800 dark:text-white">
+                NEXUS<span className="text-[#1a56db]">.</span>
+              </span>
+            </Link>
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                title="Toggle Light / Dark Mode"
+              >
+                {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-500" />}
+              </button>
             </div>
-            <span className="font-bold text-sm tracking-tight text-slate-800 dark:text-slate-200 group-hover:text-blue-600 transition-colors">
-              NEXUS
-            </span>
-          </Link>
-
-          {/* Theme Toggle Button */}
-          <div className="lg:hidden">
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-xl text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 bg-slate-100 dark:bg-slate-800/60 transition-colors"
-            >
-              {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
-            </button>
           </div>
-        </div>
 
-        {/* ------------------------------------------------------------- */}
-        {/* LEFT COLUMN: Login Form Area                                  */}
-        {/* ------------------------------------------------------------- */}
-        <div className="lg:col-span-6 flex flex-col justify-between px-4 sm:px-8 lg:px-10 py-6 sm:py-8 pt-16 lg:pt-10">
-          <div className="w-full max-w-sm mx-auto my-auto space-y-6">
-            
-            {/* Header Icon with Blueprint Grid Effect */}
-            <div className="flex flex-col items-center text-center">
-              <div className="relative mb-2 flex items-center justify-center">
-                {/* Background Blueprint Grid Box */}
-                <div className="absolute -inset-6 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:8px_8px] dark:bg-[radial-gradient(#1e293b_1px,transparent_1px)] opacity-60 rounded-2xl pointer-events-none" />
-                
-                {/* Blue Squircle Icon */}
-                <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-b from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 flex items-center justify-center text-white shadow-lg shadow-blue-500/25">
-                  <LogIn className="w-5 h-5 translate-x-0.5" strokeWidth={2.4} />
+          {/* Form Content Container */}
+          <div className="my-auto py-6 max-w-sm w-full mx-auto">
+            {/* Login Badge with subtle grid background */}
+            <div className="flex flex-col items-center text-center mb-6">
+              <div className="relative p-3 mb-3">
+                {/* Subtle Grid Pattern Backdrop */}
+                <div 
+                  className="absolute inset-0 w-24 h-24 -top-3 -left-3 rounded-2xl opacity-40 dark:opacity-20 pointer-events-none"
+                  style={{
+                    backgroundImage: 'radial-gradient(#94a3b8 1px, transparent 1px)',
+                    backgroundSize: '10px 10px',
+                  }}
+                />
+                {/* Blue Icon Square with Door / LogIn */}
+                <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#1a56db] to-[#2563eb] text-white flex items-center justify-center shadow-lg shadow-blue-600/30">
+                  <LogIn className="w-5 h-5 ml-0.5" />
                 </div>
               </div>
 
-              <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
+              <h1 className="text-2xl sm:text-[26px] font-bold tracking-tight text-slate-900 dark:text-white">
                 Login to your account!
               </h1>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xs">
+              <p className="text-xs sm:text-[13px] text-slate-400 dark:text-slate-400 mt-1.5 font-normal">
                 Enter your registered email address and password to login!
               </p>
             </div>
 
-            {/* Login Form */}
+            {/* Main Login Form */}
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Email Field */}
-              <div className="space-y-1.5 text-left">
+              {/* Email Input */}
+              <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                   Email
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
-                    <Mail className="w-4 h-4" strokeWidth={1.8} />
+                  <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+                    <Mail className="w-4 h-4" />
                   </div>
                   <input
                     type="email"
@@ -183,19 +193,19 @@ export default function LoginPage() {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     placeholder="eg. pixelcot@gmail.com"
-                    className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/80 rounded-xl text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 dark:focus:border-blue-500 transition-all"
+                    className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/80 rounded-xl text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-[#1a56db] focus:ring-4 focus:ring-blue-500/10 transition-all"
                   />
                 </div>
               </div>
 
-              {/* Password Field */}
-              <div className="space-y-1.5 text-left">
+              {/* Password Input */}
+              <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                   Password
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
-                    <Lock className="w-4 h-4" strokeWidth={1.8} />
+                  <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+                    <Lock className="w-4 h-4" />
                   </div>
                   <input
                     type={showPassword ? 'text' : 'password'}
@@ -203,12 +213,13 @@ export default function LoginPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     placeholder="••••••••••••"
-                    className="w-full pl-10 pr-10 py-2.5 bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/80 rounded-xl text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 dark:focus:border-blue-500 transition-all"
+                    className="w-full pl-10 pr-10 py-2.5 bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/80 rounded-xl text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-[#1a56db] focus:ring-4 focus:ring-blue-500/10 transition-all font-mono"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors"
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors p-0.5"
+                    tabIndex={-1}
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -216,20 +227,21 @@ export default function LoginPage() {
               </div>
 
               {/* Remember Me & Forgot Password Row */}
-              <div className="flex items-center justify-between pt-0.5">
+              <div className="flex items-center justify-between pt-1">
                 <label className="flex items-center gap-2 cursor-pointer select-none">
                   <input
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500/20 transition-all cursor-pointer accent-blue-600"
+                    className="w-4 h-4 rounded border-slate-300 text-[#1a56db] focus:ring-[#1a56db] cursor-pointer"
                   />
-                  <span className="text-xs text-slate-600 dark:text-slate-400">Remember me</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-normal">Remember me</span>
                 </label>
+
                 <button
                   type="button"
                   onClick={() => setIsForgotOpen(true)}
-                  className="text-xs font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+                  className="text-xs font-semibold text-[#1a56db] dark:text-blue-400 hover:underline transition-all"
                 >
                   Forgot Password ?
                 </button>
@@ -239,73 +251,56 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-3 px-4 bg-[#1a56db] hover:bg-[#1648ba] active:bg-[#123ca0] text-white font-semibold text-sm rounded-xl shadow-md shadow-blue-600/20 hover:shadow-lg hover:shadow-blue-600/30 transition-all disabled:opacity-60 flex items-center justify-center gap-2"
+                className="w-full py-3 rounded-xl bg-[#1a56db] hover:bg-[#1545b5] text-white font-semibold text-sm transition-all shadow-md shadow-blue-600/25 active:scale-[0.99] disabled:opacity-60 flex items-center justify-center gap-2 mt-2"
               >
-                {isLoading ? (
-                  <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  'Login'
-                )}
+                <span>{isLoading ? 'Signing In...' : 'Login'}</span>
               </button>
             </form>
 
-            {/* Divider */}
-            <div className="relative flex items-center justify-center my-4">
-              <div className="border-t border-slate-200 dark:border-slate-700 w-full" />
-              <span className="bg-white dark:bg-[#0e1626] px-3 text-[11px] text-slate-400 uppercase tracking-wider font-medium shrink-0">
-                Or login with
-              </span>
+            {/* "Or login with" Divider */}
+            <div className="flex items-center my-6 gap-3">
+              <div className="flex-1 h-px bg-slate-100 dark:bg-slate-800" />
+              <span className="text-xs text-slate-400 font-normal">Or login with</span>
+              <div className="flex-1 h-px bg-slate-100 dark:bg-slate-800" />
             </div>
 
-            {/* Social SSO Buttons Row (Google, Apple, Microsoft) */}
+            {/* Social / SSO 3-Button Row */}
             <div className="grid grid-cols-3 gap-3">
               {/* Google Button */}
               <button
                 type="button"
-                onClick={() => handleQuickLogin('student1@ait.edu')}
-                className="h-11 flex items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-900/40 hover:bg-slate-50 dark:hover:bg-slate-800/60 shadow-sm transition-all group"
-                title="Login with Google SSO"
+                onClick={() => handleSocialClick('Google')}
+                className="py-2.5 px-4 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800/60 hover:bg-slate-50 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center shadow-sm group"
+                title="Login with Google"
               >
-                <svg className="w-4 h-4" viewBox="0 0 24 24">
-                  <path
-                    fill="#4285F4"
-                    d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"
-                  />
-                  <path
-                    fill="#34A853"
-                    d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"
-                  />
-                  <path
-                    fill="#FBBC05"
-                    d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 10.04 0 12s.45 3.82 1.25 5.42l4.03-3.15z"
-                  />
-                  <path
-                    fill="#EA4335"
-                    d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"
-                  />
+                <svg className="w-4 h-4 group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
                 </svg>
               </button>
 
               {/* Apple Button */}
               <button
                 type="button"
-                onClick={() => handleQuickLogin('superadmin@platform.edu')}
-                className="h-11 flex items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-900/40 hover:bg-slate-50 dark:hover:bg-slate-800/60 shadow-sm transition-all group"
-                title="Login with Apple ID"
+                onClick={() => handleSocialClick('Apple')}
+                className="py-2.5 px-4 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800/60 hover:bg-slate-50 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center shadow-sm group"
+                title="Login with Apple"
               >
-                <svg className="w-4 h-4 fill-slate-900 dark:fill-white" viewBox="0 0 170 170">
-                  <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.35.13-9.16-1.9-14.42-6.08-3.69-3.04-7.66-7.83-11.92-14.36-5.65-8.67-10.15-18.45-13.5-29.34-3.34-10.9-5.02-21.36-5.02-31.39 0-14.77 3.81-26.65 11.43-35.63 7.62-8.99 17.1-13.56 28.43-13.72 4.79 0 10.12 1.25 15.98 3.75 5.86 2.5 9.74 3.79 11.64 3.86 1.54 0 5.66-1.42 12.38-4.26 6.72-2.83 12.43-4.04 17.12-3.62 12.63.63 22.86 5.39 30.69 14.28-11.03 6.67-16.4 15.82-16.12 27.46.28 9.38 3.91 17.17 10.9 23.36 6.99 6.19 15.24 9.69 24.77 10.51-2.12 6.53-4.79 13.06-8.01 19.59zM119.22 33.61c0-7.39 2.65-14.37 7.95-20.93 5.3-6.56 11.96-10.74 19.98-12.54 1.09 7.82-1.27 15.11-7.07 21.87-5.8 6.76-12.76 10.74-20.86 11.6z" />
+                <svg className="w-4 h-4 fill-current text-black dark:text-white group-hover:scale-110 transition-transform" viewBox="0 0 170 170">
+                  <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.35.13-9.16-1.9-14.42-6.08-3.7-3.04-7.6-7.79-11.7-14.25-5.87-9.24-10.4-19.46-13.58-30.65-3.19-11.19-4.78-22.18-4.78-32.96 0-14.79 3.82-27.17 11.45-37.14 7.63-9.97 17.2-15.06 28.7-15.28 4.8 0 10.19 1.22 16.16 3.66 5.98 2.44 9.94 3.72 11.89 3.84 1.53-.12 5.67-1.46 12.44-4.02 6.76-2.56 12.39-3.72 16.89-3.48 12.52.87 22.42 5.6 29.7 14.19-10.9 6.64-16.23 15.69-16 27.13.22 9.04 3.63 16.59 10.22 22.65 6.6 6.05 14.43 9.49 23.51 10.3-2.29 6.86-5.06 13.55-8.33 20.07zM119.22 31.02c0-7.39 2.68-14.33 8.04-20.81 5.37-6.49 12-10.21 19.89-11.16.22 1.09.33 2.12.33 3.09 0 7.39-2.73 14.39-8.19 21.01-5.46 6.62-12.21 10.37-20.25 11.25-.11-1.09-.18-2.22-.18-3.38z" />
                 </svg>
               </button>
 
               {/* Microsoft Button */}
               <button
                 type="button"
-                onClick={() => handleQuickLogin('admin@ait.edu')}
-                className="h-11 flex items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-900/40 hover:bg-slate-50 dark:hover:bg-slate-800/60 shadow-sm transition-all group"
-                title="Login with Microsoft SSO"
+                onClick={() => handleSocialClick('Microsoft')}
+                className="py-2.5 px-4 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800/60 hover:bg-slate-50 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center shadow-sm group"
+                title="Login with Microsoft"
               >
-                <svg className="w-4 h-4" viewBox="0 0 23 23">
+                <svg className="w-4 h-4 group-hover:scale-110 transition-transform" viewBox="0 0 23 23">
                   <path fill="#f35325" d="M1 1h10v10H1z" />
                   <path fill="#81bc06" d="M12 1h10v10H12z" />
                   <path fill="#05a6f0" d="M1 12h10v10H1z" />
@@ -314,260 +309,260 @@ export default function LoginPage() {
               </button>
             </div>
 
-            {/* Quick Demo Profiles Accordion */}
-            <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
-              <div className="flex items-center justify-between text-[11px] font-semibold text-slate-500 dark:text-slate-400 pb-1.5">
+            {/* Collapsible 1-Click Demo Profiles (For Instant Pair Testing) */}
+            <div className="mt-5 pt-3 border-t border-slate-100 dark:border-slate-800/60">
+              <button
+                type="button"
+                onClick={() => setShowDemoProfiles(!showDemoProfiles)}
+                className="w-full flex items-center justify-between text-[11px] font-semibold text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors py-1"
+              >
                 <span className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  Pre-Seeded Demo Logins
+                  <Sparkles className="w-3.5 h-3.5 text-[#1a56db]" /> 1-Click Demo Credentials
                 </span>
-                <span className="text-[10px] font-mono text-slate-400">PWD: Password@123</span>
-              </div>
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showDemoProfiles ? 'rotate-180' : ''}`} />
+              </button>
 
-              <div className="grid grid-cols-2 gap-1.5 pt-1">
-                <button
-                  type="button"
-                  onClick={() => handleQuickLogin('superadmin@platform.edu', 'Super Admin')}
-                  className="p-2 rounded-xl border border-slate-200/90 dark:border-slate-700/60 bg-slate-50/80 dark:bg-slate-800/40 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-left transition-all group shadow-2xs"
-                >
-                  <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-blue-600">
-                    <ShieldCheck className="w-3.5 h-3.5 text-blue-500 shrink-0" />
-                    Super Admin
-                  </div>
-                  <div className="text-[9px] text-slate-500 dark:text-slate-400 truncate">superadmin@platform.edu</div>
-                </button>
+              {showDemoProfiles && (
+                <div className="grid grid-cols-2 gap-2 mt-2.5 animate-in fade-in slide-in-from-top-1 duration-200">
+                  <button
+                    type="button"
+                    onClick={() => handleQuickLogin('superadmin@platform.edu')}
+                    className="p-2 rounded-xl border border-blue-100 dark:border-blue-900/40 bg-blue-50/50 dark:bg-blue-950/30 hover:bg-blue-100/60 text-left transition-all"
+                  >
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-blue-700 dark:text-blue-300">
+                      <ShieldCheck className="w-3.5 h-3.5 text-blue-600" /> Super Admin
+                    </div>
+                    <div className="text-[9px] text-slate-500 dark:text-slate-400 truncate">superadmin@platform.edu</div>
+                  </button>
 
-                <button
-                  type="button"
-                  onClick={() => handleQuickLogin('admin@ait.edu', 'College Admin (AIT)')}
-                  className="p-2 rounded-xl border border-slate-200/90 dark:border-slate-700/60 bg-slate-50/80 dark:bg-slate-800/40 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 text-left transition-all group shadow-2xs"
-                >
-                  <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600">
-                    <Building2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                    College Admin
-                  </div>
-                  <div className="text-[9px] text-slate-500 dark:text-slate-400 truncate">admin@ait.edu</div>
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => handleQuickLogin('admin@ait.edu')}
+                    className="p-2 rounded-xl border border-emerald-100 dark:border-emerald-900/40 bg-emerald-50/50 dark:bg-emerald-950/30 hover:bg-emerald-100/60 text-left transition-all"
+                  >
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-700 dark:text-emerald-300">
+                      <Building2 className="w-3.5 h-3.5 text-emerald-600" /> College Admin
+                    </div>
+                    <div className="text-[9px] text-slate-500 dark:text-slate-400 truncate">admin@ait.edu</div>
+                  </button>
 
-                <button
-                  type="button"
-                  onClick={() => handleQuickLogin('dr.arun@platform.edu', 'Faculty Trainer')}
-                  className="p-2 rounded-xl border border-slate-200/90 dark:border-slate-700/60 bg-slate-50/80 dark:bg-slate-800/40 hover:bg-amber-50 dark:hover:bg-amber-900/20 text-left transition-all group shadow-2xs"
-                >
-                  <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-amber-600">
-                    <Bot className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-                    Trainer
-                  </div>
-                  <div className="text-[9px] text-slate-500 dark:text-slate-400 truncate">dr.arun@platform.edu</div>
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => handleQuickLogin('dr.arun@platform.edu')}
+                    className="p-2 rounded-xl border border-amber-100 dark:border-amber-900/40 bg-amber-50/50 dark:bg-amber-950/30 hover:bg-amber-100/60 text-left transition-all"
+                  >
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-amber-700 dark:text-amber-300">
+                      <Bot className="w-3.5 h-3.5 text-amber-600" /> Faculty Trainer
+                    </div>
+                    <div className="text-[9px] text-slate-500 dark:text-slate-400 truncate">dr.arun@platform.edu</div>
+                  </button>
 
-                <button
-                  type="button"
-                  onClick={() => handleQuickLogin('student1@ait.edu', 'Student (AIT)')}
-                  className="p-2 rounded-xl border border-slate-200/90 dark:border-slate-700/60 bg-slate-50/80 dark:bg-slate-800/40 hover:bg-purple-50 dark:hover:bg-purple-900/20 text-left transition-all group shadow-2xs"
-                >
-                  <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-purple-600">
-                    <GraduationCap className="w-3.5 h-3.5 text-purple-500 shrink-0" />
-                    Student
-                  </div>
-                  <div className="text-[9px] text-slate-500 dark:text-slate-400 truncate">student1@ait.edu</div>
-                </button>
-              </div>
+                  <button
+                    type="button"
+                    onClick={() => handleQuickLogin('student1@ait.edu')}
+                    className="p-2 rounded-xl border border-purple-100 dark:border-purple-900/40 bg-purple-50/50 dark:bg-purple-950/30 hover:bg-purple-100/60 text-left transition-all"
+                  >
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-purple-700 dark:text-purple-300">
+                      <GraduationCap className="w-3.5 h-3.5 text-purple-600" /> Student Learner
+                    </div>
+                    <div className="text-[9px] text-slate-500 dark:text-slate-400 truncate">student1@ait.edu</div>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Bottom Desktop Theme Toggle */}
-          <div className="hidden lg:flex items-center justify-between text-xs text-slate-400 pt-4">
-            <span>&copy; {new Date().getFullYear()} NEXUS Platform</span>
-            <button
-              onClick={toggleTheme}
-              className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-              title="Toggle Theme"
-            >
-              {theme === 'dark' ? <Sun className="w-3.5 h-3.5 text-amber-400" /> : <Moon className="w-3.5 h-3.5" />}
-            </button>
+          {/* Footer Note */}
+          <div className="text-center text-[11px] text-slate-400">
+            &copy; {new Date().getFullYear()} NEXUS Platform. All rights reserved.
           </div>
         </div>
 
-        {/* ------------------------------------------------------------- */}
-        {/* RIGHT COLUMN: Hero Visual with Orbiting Satellite Ecosystem   */}
-        {/* ------------------------------------------------------------- */}
-        <div className="hidden lg:flex lg:col-span-6 rounded-[28px] sm:rounded-[32px] bg-gradient-to-b from-[#edf5fe] via-[#dbeafe] to-[#eaf2fd] dark:from-[#111a2e] dark:via-[#0e1628] dark:to-[#121c32] p-8 sm:p-10 flex-col justify-between relative overflow-hidden text-slate-900 dark:text-white border border-blue-100/60 dark:border-slate-800/60 shadow-inner select-none">
-          
-          {/* Top Headline */}
-          <div className="text-center pt-2 relative z-10">
-            <h2 className="text-2xl sm:text-[26px] font-bold tracking-tight text-slate-900 dark:text-white">
-              {slides[activeSlide].headline.split(slides[activeSlide].highlight)[0]}
-              <span className="text-blue-600 dark:text-blue-400">{slides[activeSlide].highlight}</span>
-            </h2>
-          </div>
-
-          {/* Central Orbit Ecosystem Canvas */}
-          <div className="relative w-full h-[320px] flex items-center justify-center my-auto">
-            {/* Concentric Orbit Rings */}
-            {/* Ring 1 (Outer) */}
-            <div className="absolute w-[290px] h-[290px] rounded-full border border-blue-300/40 dark:border-blue-500/20 pointer-events-none" />
+        {/* ======================================================== */}
+        {/* RIGHT COLUMN: Soft Sky-Blue Hero Card with Orbital Visual*/}
+        {/* ======================================================== */}
+        <div className="hidden lg:flex lg:col-span-6 p-4">
+          <div className="w-full h-full rounded-[1.75rem] bg-gradient-to-b from-[#e3efff] via-[#ebf4ff] to-[#f4f8ff] dark:from-[#0d1e38] dark:via-[#0f1d33] dark:to-[#091322] p-8 sm:p-10 flex flex-col justify-between items-center text-center relative overflow-hidden border border-blue-100/60 dark:border-blue-900/30 shadow-inner">
             
-            {/* Ring 2 (Middle) */}
-            <div className="absolute w-[210px] h-[210px] rounded-full border border-blue-300/50 dark:border-blue-500/25 pointer-events-none" />
-            
-            {/* Ring 3 (Inner) */}
-            <div className="absolute w-[130px] h-[130px] rounded-full border border-blue-300/60 dark:border-blue-500/30 pointer-events-none" />
-
-            {/* Central Main Orb ("P" / Platform Icon Badge) */}
-            <div className="relative z-10 w-16 h-16 rounded-full bg-gradient-to-tr from-[#1d4ed8] via-[#2563eb] to-[#3b82f6] shadow-[0_10px_25px_-4px_rgba(37,99,235,0.5)] flex items-center justify-center text-white border-2 border-white/80 dark:border-white/20">
-              <span className="font-extrabold text-2xl tracking-tighter drop-shadow-sm font-sans">
-                P
-              </span>
+            {/* Top Heading */}
+            <div className="pt-2 z-10">
+              <h2 className="text-2xl sm:text-[28px] font-bold tracking-tight text-slate-900 dark:text-white">
+                {slides[activeSlide].title}{' '}
+                <span className="text-[#1a56db] dark:text-[#3880ff]">
+                  {slides[activeSlide].highlight}
+                </span>
+              </h2>
             </div>
 
-            {/* ----------------------------------------------------------- */}
-            {/* Orbiting Satellite Badges (Positioned exactly per image)    */}
-            {/* ----------------------------------------------------------- */}
+            {/* Center Orbital Visualization */}
+            <div className="relative w-[340px] h-[340px] flex items-center justify-center my-auto select-none">
+              
+              {/* Outer Orbit Track (Ring 1) */}
+              <div className="absolute w-[310px] h-[310px] rounded-full border border-blue-200/70 dark:border-blue-400/20" />
+              
+              {/* Middle Orbit Track (Ring 2) */}
+              <div className="absolute w-[215px] h-[215px] rounded-full border border-blue-200/80 dark:border-blue-400/25" />
+              
+              {/* Inner Orbit Track (Ring 3) */}
+              <div className="absolute w-[125px] h-[125px] rounded-full border border-blue-200/90 dark:border-blue-400/30" />
 
-            {/* 1. Microsoft Edge (Top Outer Ring, right of center) */}
-            <div
-              className="absolute top-[12px] left-[68%] -translate-x-1/2 w-8 h-8 rounded-full bg-white dark:bg-slate-800 shadow-md shadow-blue-500/10 flex items-center justify-center border border-slate-100 dark:border-slate-700 animate-bounce"
-              style={{ animationDuration: '4s' }}
-            >
-              <svg className="w-5 h-5" viewBox="0 0 100 100">
-                <defs>
-                  <linearGradient id="edgeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#0c80df" />
-                    <stop offset="100%" stopColor="#00c853" />
-                  </linearGradient>
-                </defs>
-                <circle cx="50" cy="50" r="42" fill="url(#edgeGrad)" />
-                <path d="M50 24c14 0 26 11 26 26s-11 26-26 26c-9 0-17-5-22-12 5 2 11 3 16 3 10 0 18-8 18-18s-6-17-15-18c1-4 3-7 3-7z" fill="#ffffff" />
-              </svg>
+              {/* Glowing Pulse Aura behind center badge */}
+              <div className="absolute w-28 h-28 rounded-full bg-blue-500/15 blur-xl animate-pulse" />
+
+              {/* CENTER BADGE: Stylized Blue 3D Orb with Pencil/Platform 'P' Logo */}
+              <div className="relative z-20 w-16 h-16 rounded-full bg-gradient-to-tr from-[#1a56db] via-[#2563eb] to-[#3b82f6] shadow-[0_10px_25px_-5px_rgba(26,86,219,0.5)] border-2 border-white dark:border-slate-800 flex items-center justify-center text-white">
+                {/* Stylized 'p' with pen nib shape matching the reference image */}
+                <svg className="w-8 h-8 fill-current" viewBox="0 0 40 40">
+                  <path d="M16 11C13.24 11 11 13.24 11 16V29C11 29.55 11.45 30 12 30C12.55 30 13 29.55 13 29V25H21C24.87 25 28 21.87 28 18C28 14.13 24.87 11 21 11H16ZM16 15H21C22.66 15 24 16.34 24 18C24 19.66 22.66 21 21 21H16V15Z" />
+                  <circle cx="19.5" cy="18" r="1.5" fill="white" />
+                  <path d="M19.5 19.5L19.5 22.5" stroke="white" strokeWidth="1.2" strokeLinecap="round" />
+                </svg>
+              </div>
+
+              {/* ---------------------------------------------------- */}
+              {/* SATELLITE ORBITAL ICONS (Positioned on the concentric tracks) */}
+              {/* ---------------------------------------------------- */}
+
+              {/* 1. Edge Browser (Outer Track - Top Right) */}
+              <div className="absolute top-2 right-24 transform translate-x-1/2 -translate-y-1/2 z-10 hover:scale-110 transition-transform cursor-pointer">
+                <div className="w-9 h-9 rounded-full bg-white dark:bg-slate-800 shadow-md p-1 flex items-center justify-center border border-slate-100 dark:border-slate-700">
+                  <svg className="w-6 h-6" viewBox="0 0 64 64" fill="none">
+                    <circle cx="32" cy="32" r="28" fill="url(#edge_grad)" />
+                    <path d="M32 12C20.95 12 12 20.95 12 32C12 43.05 20.95 52 32 52C41.2 52 49 45.8 51.5 37.2C50 39.2 46.2 41 41.5 41C33 41 27.5 34.8 27.5 27.5C27.5 19.8 34.8 16.5 41.2 16.5C46.2 16.5 49.8 18.8 51.8 20.6C49 15.4 41 12 32 12Z" fill="white" fillOpacity="0.9" />
+                    <defs>
+                      <linearGradient id="edge_grad" x1="12" y1="12" x2="52" y2="52" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#0078D7" />
+                        <stop offset="1" stopColor="#00C7FF" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </div>
+              </div>
+
+              {/* 2. Android Robot (Outer Track - Top Left) */}
+              <div className="absolute top-16 left-3 transform -translate-x-1/2 z-10 hover:scale-110 transition-transform cursor-pointer">
+                <div className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 shadow-md p-1.5 flex items-center justify-center border border-slate-100 dark:border-slate-700">
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="#3DDC84">
+                    <path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-1.0003 0-.5518.4482-.9994.9993-.9994.5528 0 1.0005.4476 1.0005.9994 0 .5517-.4477 1.0003-1.0005 1.0003m-11.046 0c-.5511 0-.9993-.4486-.9993-1.0003 0-.5518.4482-.9994.9993-.9994.5528 0 1.0005.4476 1.0005.9994 0 .5517-.4477 1.0003-1.0005 1.0003m11.4045-6.02l1.996-3.4565c.1356-.2364.0544-.5392-.181-.6754-.2363-.1352-.5381-.054-.6747.1813l-2.023 3.5042C15.3475 8.169 13.7225 7.784 12 7.784c-1.7225 0-3.3475.385-4.9978 1.091L4.9792 5.371c-.1366-.2353-.4384-.3165-.6747-.1813-.2354.1362-.3166.439-.181.6754l1.996 3.4565C2.5117 11.233.0844 14.86.0844 19.062h23.8312c0-4.202-2.4273-7.829-6.0319-9.7406"/>
+                  </svg>
+                </div>
+              </div>
+
+              {/* 3. Google Chrome (Outer Track - Left Middle) */}
+              <div className="absolute bottom-28 left-0 transform -translate-x-1/2 z-10 hover:scale-110 transition-transform cursor-pointer">
+                <div className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 shadow-md p-1.5 flex items-center justify-center border border-slate-100 dark:border-slate-700">
+                  <svg className="w-5 h-5" viewBox="0 0 24 24">
+                    <path fill="#EA4335" d="M12 2C6.48 2 2 6.48 2 12c0 .34.02.68.05 1.01L7.5 12c0-2.48 2.02-4.5 4.5-4.5h8.92A9.975 9.975 0 0 0 12 2z"/>
+                    <path fill="#4285F4" d="M12 7.5c2.48 0 4.5 2.02 4.5 4.5 0 .38-.05.74-.14 1.09l4.58 7.93A10 10 0 0 0 22 12c0-5.52-4.48-10-10-10v5.5z"/>
+                    <path fill="#FBBC05" d="M12 16.5c-2.48 0-4.5-2.02-4.5-4.5 0-.34.04-.67.11-.99L3.03 8.08A9.96 9.96 0 0 0 2 12c0 5.52 4.48 10 10 10l4.47-7.74c-.7.46-1.55.74-2.47.74z"/>
+                    <path fill="#34A853" d="M12 22c4.41 0 8.16-2.86 9.48-6.84L16.9 7.42A4.49 4.49 0 0 0 12 7.5v9h0c-.01 0 0 0 0 0l-4.47 5.5h4.47z"/>
+                    <circle cx="12" cy="12" r="3.2" fill="white"/>
+                    <circle cx="12" cy="12" r="2.4" fill="#1A73E8"/>
+                  </svg>
+                </div>
+              </div>
+
+              {/* 4. Apple Logo (Outer Track - Right Middle) */}
+              <div className="absolute right-0 top-36 transform translate-x-1/2 z-10 hover:scale-110 transition-transform cursor-pointer">
+                <div className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 shadow-md p-1.5 flex items-center justify-center border border-slate-100 dark:border-slate-700">
+                  <svg className="w-4 h-4 fill-current text-black dark:text-white" viewBox="0 0 170 170">
+                    <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.35.13-9.16-1.9-14.42-6.08-3.7-3.04-7.6-7.79-11.7-14.25-5.87-9.24-10.4-19.46-13.58-30.65-3.19-11.19-4.78-22.18-4.78-32.96 0-14.79 3.82-27.17 11.45-37.14 7.63-9.97 17.2-15.06 28.7-15.28 4.8 0 10.19 1.22 16.16 3.66 5.98 2.44 9.94 3.72 11.89 3.84 1.53-.12 5.67-1.46 12.44-4.02 6.76-2.56 12.39-3.72 16.89-3.48 12.52.87 22.42 5.6 29.7 14.19-10.9 6.64-16.23 15.69-16 27.13.22 9.04 3.63 16.59 10.22 22.65 6.6 6.05 14.43 9.49 23.51 10.3-2.29 6.86-5.06 13.55-8.33 20.07zM119.22 31.02c0-7.39 2.68-14.33 8.04-20.81 5.37-6.49 12-10.21 19.89-11.16.22 1.09.33 2.12.33 3.09 0 7.39-2.73 14.39-8.19 21.01-5.46 6.62-12.21 10.37-20.25 11.25-.11-1.09-.18-2.22-.18-3.38z" />
+                  </svg>
+                </div>
+              </div>
+
+              {/* 5. LinkedIn (Outer Track - Bottom Right) */}
+              <div className="absolute bottom-2 right-14 transform translate-y-1/2 z-10 hover:scale-110 transition-transform cursor-pointer">
+                <div className="w-8 h-8 rounded-full bg-[#0077B5] shadow-md flex items-center justify-center text-white border-2 border-white dark:border-slate-800">
+                  <span className="font-bold text-xs tracking-tighter">in</span>
+                </div>
+              </div>
+
+              {/* 6. Outlook Mail (Middle Track - Top Left) */}
+              <div className="absolute top-16 left-16 transform -translate-x-1/2 z-10 hover:scale-110 transition-transform cursor-pointer">
+                <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-[#0078D4] to-[#28A8EA] shadow-md flex items-center justify-center text-white p-1">
+                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
+                  </svg>
+                </div>
+              </div>
+
+              {/* 7. Messenger Chat (Middle Track - Right) */}
+              <div className="absolute top-24 right-10 transform translate-x-1/2 z-10 hover:scale-110 transition-transform cursor-pointer">
+                <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-[#00B2FF] via-[#006AFF] to-[#9900FF] shadow-md flex items-center justify-center text-white p-1">
+                  <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.477 2 2 6.145 2 11.258c0 2.91 1.455 5.517 3.737 7.195V22l3.418-1.875c.91.252 1.87.39 2.845.39 5.523 0 10-4.145 10-9.257C22 6.145 17.523 2 12 2zm1.066 12.443l-2.56-2.73-5 2.73 5.5-5.843 2.625 2.73 4.935-2.73-5.5 5.843z" />
+                  </svg>
+                </div>
+              </div>
+
+              {/* 8. Yahoo (Inner/Middle Track - Bottom) */}
+              <div className="absolute bottom-12 left-28 transform translate-x-1/2 z-10 hover:scale-110 transition-transform cursor-pointer">
+                <div className="w-6 h-6 rounded-full bg-[#6001d2] shadow-md flex items-center justify-center text-white border border-white dark:border-slate-800">
+                  <span className="font-bold text-[10px] tracking-tight">y!</span>
+                </div>
+              </div>
+
             </div>
 
-            {/* 2. Android Robot (Upper Left Middle Orbit) */}
-            <div
-              className="absolute top-[80px] left-[18%] -translate-x-1/2 w-8 h-8 rounded-full bg-white dark:bg-slate-800 shadow-md shadow-emerald-500/10 flex items-center justify-center border border-slate-100 dark:border-slate-700 animate-pulse"
-              style={{ animationDuration: '3.5s' }}
-            >
-              <svg className="w-5 h-5" viewBox="0 0 24 24">
-                <path
-                  fill="#3DDC84"
-                  d="M17.523 15.341c-.551 0-1-.449-1-1 0-.55.449-1 1-1 .55 0 1 .45 1 1 0 .551-.45 1-1 1m-11.046 0c-.55 0-1-.449-1-1 0-.55.45-1 1-1s1 .45 1 1c0 .551-.45 1-1 1m11.405-6.02l1.997-3.46a.416.416 0 0 0-.152-.569.416.416 0 0 0-.569.153l-2.023 3.504c-1.542-.703-3.27-.1.096-5.135-.1.096-1.865 0-3.593.393-5.135 1.096L4.976 5.445a.418.418 0 0 0-.569-.153.416.416 0 0 0-.152.569l1.997 3.46C2.688 11.286.377 15.42.001 20.25h23.998c-.376-4.83-2.687-8.964-6.117-10.929"
-                />
-              </svg>
-            </div>
+            {/* Bottom Tagline & Carousel Indicators */}
+            <div className="space-y-4 max-w-sm z-10 pb-2">
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+                {slides[activeSlide].desc}
+              </p>
 
-            {/* 3. Microsoft Outlook (Upper Inner Orbit) */}
-            <div
-              className="absolute top-[85px] left-[42%] -translate-x-1/2 w-7 h-7 rounded-full bg-white dark:bg-slate-800 shadow-md shadow-blue-500/10 flex items-center justify-center border border-slate-100 dark:border-slate-700"
-            >
-              <div className="w-5 h-5 rounded-md bg-[#0078d4] flex items-center justify-center text-white text-[9px] font-bold">
-                O
+              {/* Slider Dots */}
+              <div className="flex items-center justify-center gap-1.5 pt-1">
+                {slides.map((_, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setActiveSlide(idx)}
+                    className={`h-1 rounded-full transition-all duration-300 ${
+                      activeSlide === idx
+                        ? 'w-6 bg-[#1a56db] dark:bg-[#3880ff]'
+                        : 'w-2 bg-blue-200 dark:bg-slate-700 hover:bg-blue-300'
+                    }`}
+                    aria-label={`Go to slide ${idx + 1}`}
+                  />
+                ))}
               </div>
             </div>
 
-            {/* 4. Facebook Messenger (Upper Right Middle Orbit) */}
-            <div
-              className="absolute top-[96px] right-[18%] translate-x-1/2 w-7 h-7 rounded-full bg-white dark:bg-slate-800 shadow-md shadow-blue-500/10 flex items-center justify-center border border-slate-100 dark:border-slate-700"
-            >
-              <svg className="w-4 h-4" viewBox="0 0 24 24">
-                <path
-                  fill="#0084FF"
-                  d="M12 0C5.373 0 0 4.974 0 11.111c0 3.498 1.744 6.614 4.469 8.654V24l4.088-2.242c1.093.303 2.246.464 3.443.464 6.627 0 12-4.975 12-11.111C24 4.974 18.627 0 12 0zm1.191 14.963l-3.055-3.26-5.963 3.26L10.8 8.243l3.127 3.26 5.891-3.26-6.627 6.72z"
-                />
-              </svg>
-            </div>
-
-            {/* 5. Google Chrome (Lower Left Outer Orbit) */}
-            <div
-              className="absolute bottom-[96px] left-[24%] -translate-x-1/2 w-8 h-8 rounded-full bg-white dark:bg-slate-800 shadow-md shadow-amber-500/10 flex items-center justify-center border border-slate-100 dark:border-slate-700 animate-bounce"
-              style={{ animationDuration: '5s' }}
-            >
-              <svg className="w-5 h-5" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" fill="#EA4335" />
-                <path d="M12 12l8.66-5A10 10 0 0 0 3.34 7L12 12z" fill="#FBBC05" />
-                <path d="M12 12L3.34 7a10 10 0 0 0 8.66 15V12z" fill="#34A853" />
-                <circle cx="12" cy="12" r="4.5" fill="#ffffff" />
-                <circle cx="12" cy="12" r="3.2" fill="#4285F4" />
-              </svg>
-            </div>
-
-            {/* 6. Yahoo (Lower Inner Orbit) */}
-            <div
-              className="absolute bottom-[80px] left-[44%] -translate-x-1/2 w-7 h-7 rounded-full bg-[#6001d2] shadow-md shadow-purple-500/10 flex items-center justify-center text-white text-[10px] font-extrabold"
-            >
-              y!
-            </div>
-
-            {/* 7. Apple (Middle Right Outer Orbit) */}
-            <div
-              className="absolute top-[138px] right-[10%] translate-x-1/2 w-8 h-8 rounded-full bg-white dark:bg-slate-800 shadow-md shadow-slate-500/10 flex items-center justify-center border border-slate-100 dark:border-slate-700"
-            >
-              <svg className="w-4 h-4 fill-slate-900 dark:fill-white" viewBox="0 0 170 170">
-                <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.35.13-9.16-1.9-14.42-6.08-3.69-3.04-7.66-7.83-11.92-14.36-5.65-8.67-10.15-18.45-13.5-29.34-3.34-10.9-5.02-21.36-5.02-31.39 0-14.77 3.81-26.65 11.43-35.63 7.62-8.99 17.1-13.56 28.43-13.72 4.79 0 10.12 1.25 15.98 3.75 5.86 2.5 9.74 3.79 11.64 3.86 1.54 0 5.66-1.42 12.38-4.26 6.72-2.83 12.43-4.04 17.12-3.62 12.63.63 22.86 5.39 30.69 14.28-11.03 6.67-16.4 15.82-16.12 27.46.28 9.38 3.91 17.17 10.9 23.36 6.99 6.19 15.24 9.69 24.77 10.51-2.12 6.53-4.79 13.06-8.01 19.59zM119.22 33.61c0-7.39 2.65-14.37 7.95-20.93 5.3-6.56 11.96-10.74 19.98-12.54 1.09 7.82-1.27 15.11-7.07 21.87-5.8 6.76-12.76 10.74-20.86 11.6z" />
-              </svg>
-            </div>
-
-            {/* 8. LinkedIn (Bottom Outer Orbit) */}
-            <div
-              className="absolute bottom-[20px] left-[68%] -translate-x-1/2 w-8 h-8 rounded-full bg-[#0077b5] shadow-md shadow-blue-500/20 flex items-center justify-center text-white"
-            >
-              <span className="font-bold text-xs">in</span>
-            </div>
-          </div>
-
-          {/* Bottom Caption & Carousel Dots */}
-          <div className="space-y-4 text-center relative z-10">
-            <p className="text-xs text-slate-600 dark:text-slate-300 max-w-sm mx-auto leading-relaxed">
-              {slides[activeSlide].caption}
-            </p>
-
-            {/* 3-Dot Carousel Pagination */}
-            <div className="flex items-center justify-center gap-1.5 pt-1">
-              {slides.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setActiveSlide(i)}
-                  className={`h-1 rounded-full transition-all duration-300 ${
-                    activeSlide === i
-                      ? 'w-5 bg-blue-600 dark:bg-blue-400'
-                      : 'w-2 bg-blue-200 dark:bg-slate-700 hover:bg-blue-300'
-                  }`}
-                  aria-label={`Slide ${i + 1}`}
-                />
-              ))}
-            </div>
           </div>
         </div>
+
       </div>
 
       {/* Forgot Password Modal */}
       <Modal isOpen={isForgotOpen} onClose={() => setIsForgotOpen(false)} title="Reset Account Password" maxWidth="sm">
         <form onSubmit={handleForgotPassword} className="space-y-4">
-          <p className="text-xs text-[var(--text-secondary)]">
-            Enter your registered email and we will dispatch a password reset link to your inbox.
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            Enter your registered email address and we will dispatch password recovery instructions.
           </p>
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-[var(--text-primary)]">Email</label>
+            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Email Address</label>
             <input
               type="email"
               value={forgotEmail}
               onChange={(e) => setForgotEmail(e.target.value)}
               required
-              placeholder="eg. user@platform.edu"
-              className="w-full px-3.5 py-2.5 bg-[var(--bg-tertiary)] border border-[var(--border-color)] rounded-xl text-sm focus:outline-none focus:border-blue-500"
+              placeholder="e.g. user@platform.edu"
+              className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:border-[#1a56db]"
             />
           </div>
           <div className="flex items-center justify-end gap-3 pt-2">
             <button
               type="button"
               onClick={() => setIsForgotOpen(false)}
-              className="px-4 py-2 text-xs font-semibold rounded-lg hover:bg-[var(--bg-tertiary)] text-[var(--text-secondary)]"
+              className="px-4 py-2 text-xs font-semibold rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={forgotLoading}
-              className="px-4 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 rounded-lg shadow-md disabled:opacity-60"
+              className="px-4 py-2 text-xs font-bold text-white bg-[#1a56db] hover:bg-blue-700 rounded-lg shadow-md disabled:opacity-60"
             >
               {forgotLoading ? 'Sending...' : 'Send Reset Link'}
             </button>
