@@ -22,6 +22,8 @@ except ImportError:
     print("Error: 'psycopg2' is required. Run 'pip install psycopg2-binary'")
     sys.exit(1)
 
+BASE_DIR = Path(__file__).resolve().parent
+
 # Ordered tables respecting foreign key constraints
 TABLE_SEQUENCE = [
     "colleges",
@@ -30,23 +32,45 @@ TABLE_SEQUENCE = [
     "college_admins",
     "students",
     "courses",
+    "trainer_assignments",
     "course_modules",
     "course_contents",
     "enrollments",
     "progress",
     "assignments",
-    "assignment_submissions",
+    "quizzes",
     "assessments",
-    "assessment_questions",
-    "assessment_attempts",
+    "questions",
+    "submissions",
+    "results",
     "certificates",
     "notifications",
     "audit_logs",
+    "system_settings",
     "python_sandbox_runs",
     "jetbot_simulations",
     "course_announcements",
     "discussions"
 ]
+
+def ensure_postgres_schema(pg_conn):
+    """Ensures that all PostgreSQL / Supabase tables and extensions exist before data migration."""
+    schema_path = BASE_DIR / "supabase_schema.sql"
+    if not schema_path.exists():
+        print(f"⚠️ Warning: '{schema_path}' not found, skipping auto-schema creation.")
+        return
+
+    print("🛠️ Verifying / Initializing Supabase PostgreSQL schema...")
+    try:
+        with open(schema_path, "r", encoding="utf-8") as f:
+            schema_sql = f.read()
+        with pg_conn.cursor() as cur:
+            cur.execute(schema_sql)
+            pg_conn.commit()
+        print("✅ Schema verified and ready.")
+    except Exception as e:
+        pg_conn.rollback()
+        print(f"⚠️ Schema initialization notice: {e}")
 
 def migrate_database(sqlite_path: str, pg_url: str, dry_run: bool = False):
     print("=" * 70)
@@ -77,6 +101,9 @@ def migrate_database(sqlite_path: str, pg_url: str, dry_run: bool = False):
         print(f"❌ Failed to connect to Supabase PostgreSQL: {e}")
         print("\nPlease check your DATABASE_URL in .env or provide --postgres-url")
         sys.exit(1)
+
+    if not dry_run:
+        ensure_postgres_schema(pg_conn)
 
     total_migrated = 0
 
@@ -127,10 +154,10 @@ def migrate_database(sqlite_path: str, pg_url: str, dry_run: bool = False):
             pg_cur.executemany(insert_query, data)
             pg_conn.commit()
 
-            # Sync sequence ID
+            # Sync sequence ID for BIGSERIAL primary keys
             if "id" in columns:
                 try:
-                    pg_cur.execute(f"SELECT setval(pg_get_serial_sequence('{table}', 'id'), coalesce(max(id), 1)) FROM {table};")
+                    pg_cur.execute(f"SELECT setval(pg_get_serial_sequence('{table}', 'id'), coalesce(max(id), 1)) FROM \"{table}\";")
                     pg_conn.commit()
                 except Exception:
                     pg_conn.rollback()

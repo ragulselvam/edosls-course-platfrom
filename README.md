@@ -121,3 +121,36 @@ PYTHONPATH=. pytest
 ```bash
 cd frontend && npm run build
 ```
+
+---
+
+## ☁️ Supabase PostgreSQL & Cloud Storage Connection
+
+To connect the platform to **Supabase** (or any PostgreSQL instance) for production-grade cloud persistence:
+
+### 1. Configure `.env`
+Open or create `.env` in the root directory and add your Supabase connection parameters:
+```env
+# Supabase PostgreSQL URI (from Supabase Dashboard -> Project Settings -> Database -> Connection String)
+DATABASE_URL=postgresql://postgres.[YOUR-PROJECT-REF]:[YOUR-PASSWORD]@aws-0-[REGION].pooler.supabase.com:6543/postgres
+
+# Supabase Storage & API Keys (from Supabase Dashboard -> Project Settings -> API)
+SUPABASE_URL=https://[YOUR-PROJECT-REF].supabase.co
+SUPABASE_KEY=[YOUR-SUPABASE-SERVICE-ROLE-OR-ANON-KEY]
+SUPABASE_STORAGE_BUCKET=platform-media
+STORAGE_BACKEND=supabase
+```
+
+### 2. Auto-Migrate Seed & SQLite Data to Supabase
+Run the built-in migration utility:
+```bash
+# Test connection and table schema (dry run)
+python migrate_to_supabase.py --dry-run
+
+# Execute full schema initialization & transfer all records to Supabase
+python migrate_to_supabase.py
+```
+
+### 3. Restart FastAPI Backend
+When `DATABASE_URL` starts with `postgresql://` or `postgres://`, FastAPI automatically enables connection pooling (`psycopg2`), initializes the schema from `supabase_schema.sql`, and connects directly to Supabase.
+

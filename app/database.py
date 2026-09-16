@@ -1,9 +1,10 @@
 import os
+import re
 import sqlite3
 import threading
 from contextlib import contextmanager
 from typing import Generator, List, Dict, Any, Optional
-from app.config import DATABASE_PATH, DATABASE_URL, USE_POSTGRES
+from app.config import DATABASE_PATH, DATABASE_URL, USE_POSTGRES, BASE_DIR
 
 # Thread-local storage for DB connections in multi-threaded FastAPI
 _local = threading.local()
@@ -29,7 +30,7 @@ def get_pg_pool():
     return _pg_pool
 
 def _translate_query_for_pg(query: str) -> str:
-    """Translates SQLite ? parameter placeholders into PostgreSQL %s."""
+    """Translates SQLite queries and ? parameter placeholders into PostgreSQL %s dialect."""
     parts = []
     in_single = False
     in_double = False
@@ -44,7 +45,24 @@ def _translate_query_for_pg(query: str) -> str:
             parts.append('%s')
         else:
             parts.append(char)
-    return "".join(parts)
+    translated = "".join(parts)
+
+    # SQLite INSERT OR IGNORE -> PostgreSQL ON CONFLICT DO NOTHING
+    if re.search(r'\bINSERT\s+OR\s+IGNORE\s+INTO\b', translated, re.IGNORECASE):
+        translated = re.sub(r'\bINSERT\s+OR\s+IGNORE\s+INTO\b', 'INSERT INTO', translated, flags=re.IGNORECASE)
+        if "ON CONFLICT" not in translated.upper():
+            translated = translated.rstrip().rstrip(";") + " ON CONFLICT DO NOTHING"
+
+    # SQLite INSERT OR REPLACE INTO system_settings -> PostgreSQL ON CONFLICT DO UPDATE
+    if re.search(r'\bINSERT\s+OR\s+REPLACE\s+INTO\s+system_settings\b', translated, re.IGNORECASE):
+        translated = re.sub(r'\bINSERT\s+OR\s+REPLACE\s+INTO\s+system_settings\b', 'INSERT INTO system_settings', translated, flags=re.IGNORECASE)
+        if "ON CONFLICT" not in translated.upper():
+            translated = translated.rstrip().rstrip(";") + " ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = NOW()"
+
+    # Replace DATETIME('now') -> CURRENT_TIMESTAMP
+    translated = re.sub(r"DATETIME\('now'\)", "CURRENT_TIMESTAMP", translated, flags=re.IGNORECASE)
+
+    return translated
 
 def get_connection():
     """Returns an active database connection (PostgreSQL / Supabase or SQLite)."""
@@ -469,7 +487,20 @@ def init_db():
     CREATE INDEX IF NOT EXISTS idx_audit_college ON audit_logs(college_id);
     """
     conn = get_connection()
-    if not USE_POSTGRES:
+    if USE_POSTGRES:
+        try:
+            schema_file = BASE_DIR / "supabase_schema.sql"
+            if schema_file.exists():
+                with open(schema_file, "r", encoding="utf-8") as f:
+                    pg_schema_sql = f.read()
+                with conn.cursor() as cur:
+                    cur.execute(pg_schema_sql)
+                    conn.commit()
+            print("[init_db] PostgreSQL / Supabase schema initialized successfully.")
+        except Exception as e:
+            print(f"[init_db] PostgreSQL schema initialization notice: {e}")
+            conn.rollback()
+    else:
         conn.executescript(schema_sql)
         conn.commit()
 
