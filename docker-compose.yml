@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  training-platform:
+    build: .
+    container_name: multi_college_training_platform
+    ports:
+      - "6966:6966"
+    environment:
+      - PORT=6966
+      - HOST=0.0.0.0
+      - DEBUG=False
+      - JWT_SECRET=production_jwt_secret_change_me_before_launch_2026
+      - DATABASE_URL=sqlite:////app/data/platform.db
+      - UPLOAD_DIR=/app/data/uploads
+    volumes:
+      - platform_data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6966/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  platform_data:
+    driver: local
