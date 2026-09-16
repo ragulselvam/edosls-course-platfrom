@@ -15,6 +15,7 @@ import {
   Bot,
   ChevronDown,
   Sparkles,
+  ArrowLeft,
 } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
 
@@ -124,10 +125,10 @@ export default function LoginPage() {
         {/* ======================================================== */}
         <div className="lg:col-span-6 p-7 sm:p-10 lg:p-12 flex flex-col justify-between relative bg-white dark:bg-[#0f172a]">
           
-          {/* Top Left Branding Logo & Theme Toggle */}
+          {/* Top Left Branding Logo & Navigation */}
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2 group">
-              <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-[#1d63ff] to-[#38bdf8] flex items-center justify-center text-white p-1 shadow-sm">
+              <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-[#1d63ff] to-[#38bdf8] flex items-center justify-center text-white p-1 shadow-sm group-hover:scale-105 transition-transform">
                 <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
               </div>
               <span className="font-bold text-sm tracking-tight text-slate-800 dark:text-white">
@@ -135,13 +136,21 @@ export default function LoginPage() {
               </span>
             </Link>
 
-            <button
-              onClick={toggleTheme}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-              title="Toggle Theme"
-            >
-              {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-500" />}
-            </button>
+            <div className="flex items-center gap-2">
+              <Link
+                href="/"
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" /> Back to Home
+              </Link>
+              <button
+                onClick={toggleTheme}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                title="Toggle Theme"
+              >
+                {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-500" />}
+              </button>
+            </div>
           </div>
 
           {/* Center Form Section */}
