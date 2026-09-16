@@ -841,63 +841,55 @@ const SuperAdmin = {
             <label class="form-label">Logo Image URL (Optional)</label>
             <input type="url" class="form-input" name="logo_url" placeholder="https://images.unsplash.com/photo-..." />
           </div>
-  async renderGlobalCoursesView() {
-    const container = document.getElementById('super-admin-content');
-    if (!container) return;
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="App.closeModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary"><i class="fi fi-rr-check"></i> Register College</button>
+        </div>
+      </form>
+    `, 'modal-md');
+  },
 
-    container.innerHTML = `
-      <div class="flex items-center justify-between" style="margin-bottom: 1.5rem;">
-        <div>
-          <h2>Global Course Curriculum & Catalog</h2>
-          <p class="text-secondary" style="font-size: 0.85rem;">Create, structure modules, upload materials, and publish training programs across all colleges</p>
-        </div>
-        <div class="flex items-center gap-2">
-          <button class="btn btn-outline" onclick="SuperAdmin.openCreateTrainerModal()" title="Register a new trainer account">
-            <i class="fi fi-rr-user-add"></i> + Create Trainer
-          </button>
-          <button class="btn btn-primary" onclick="SuperAdmin.openCreateCourseModal()">
-            <i class="fi fi-rr-plus"></i> Create New Course
-          </button>
-        </div>
-      </div>
-
-      <div class="card">
-        <div id="sa-global-courses-table" class="table-container">
-          <div style="padding: 2rem; text-align: center;"><div class="spinner"></div> Loading courses...</div>
-        </div>
-      </div>
-    `;
+  async handleCreateCollege(e) {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+    const data = {
+      name: formData.get('name'),
+      code: formData.get('code'),
+      domain: formData.get('domain') || undefined,
+      contact_email: formData.get('contact_email') || undefined,
+      logo_url: formData.get('logo_url') || undefined
+    };
 
     try {
-      const courses = await API.get('/api/courses');
-      const rows = (courses || []).map(c => {
-        const isAssigned = c.trainer_id || (c.trainer_name && c.trainer_name !== 'Not Assigned');
-        const trainerDisplay = isAssigned ? `
-          <div class="flex items-center justify-between gap-2">
-            <div class="flex items-center gap-2">
-              <div style="width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 700; flex-shrink: 0;">
-                ${(c.trainer_name || 'T').split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase()}
-              </div>
-              <div style="min-width: 0;">
-                <div style="font-weight: 600; font-size: 0.85rem; color: var(--text-primary);">${c.trainer_name}</div>
-                <div class="text-muted" style="font-size: 0.72rem;">${c.trainer_email || 'Assigned Trainer'}</div>
-              </div>
-            </div>
-            <div class="flex items-center gap-1">
-              <button class="btn btn-outline btn-sm" onclick="SuperAdmin.openAssignTrainerModal(${c.id})" style="padding: 2px 6px; font-size: 0.7rem;" title="Change Trainer">
-                <i class="fi fi-rr-edit"></i>
-              </button>
-              <button class="btn btn-outline btn-sm" onclick="SuperAdmin.openCreateTrainerModal(${c.id})" style="padding: 2px 6px; font-size: 0.7rem; color: var(--primary);" title="Create New Trainer & Assign to this Class">
-                + New
-              </button>
-            </div>
-          </div>
-        ` : `
-          <div>
-            <span class="badge" style="background: rgba(148, 163, 184, 0.12); color: var(--text-muted); border: 1px dashed rgba(148, 163, 184, 0.4); font-size: 0.76rem; padding: 3px 6px; display: inline-flex; align-items: center; gap: 4px;">
-              <i class="fi fi-rr-user-slash" style="font-size: 0.7rem;"></i> Not Assigned
-            </span>
-            <div class="flex items-center gap-1" style="margin-top: 5px;">
+      await API.post('/api/colleges', data);
+      API.toast('College registered successfully!', 'success');
+      App.closeModal();
+      this.renderCollegesView();
+    } catch (err) {
+      API.toast(err.message || 'Failed to create college', 'error');
+    }
+  },
+
+  async openCreateAdminModal() {
+    let colleges = [];
+    try {
+      colleges = await API.get('/api/colleges');
+    } catch(e) {}
+    const options = (colleges || []).map(c => `<option value="${c.id}">${c.name} (${c.code})</option>`).join('');
+
+    App.showModal(`
+      <div class="modal-header">
+        <div>
+          <h3>Create College Administrator</h3>
+          <p class="text-secondary" style="font-size: 0.8rem; margin-top: 2px;">Assign an institutional admin to manage college resources.</p>
+        </div>
+        <button class="icon-btn" onclick="App.closeModal()">✕</button>
+      </div>
+      <form id="create-admin-form" onsubmit="SuperAdmin.handleCreateAdmin(event)">
+        <div class="modal-body">
+          <div class="form-group">
             <label class="form-label">Assign to College *</label>
             <select class="form-select" name="college_id" required>
               ${options}
@@ -937,7 +929,7 @@ const SuperAdmin = {
           <button type="submit" class="btn btn-primary">Create Admin Account</button>
         </div>
       </form>
-    `);
+    `, 'modal-md');
   },
 
   async handleCreateAdmin(e) {
@@ -1257,6 +1249,36 @@ const SuperAdmin = {
 
       tableContainer.innerHTML = `
         <table class="data-table">
+          <thead>
+            <tr>
+              <th>Student Name</th>
+              <th>College</th>
+              <th>Roll Number</th>
+              <th>Department</th>
+              <th>Year</th>
+              <th>Enrollments</th>
+              <th>Certificates</th>
+              <th style="text-align: right;">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows || '<tr><td colspan="8" class="text-center p-4">No students found matching current filters.</td></tr>'}
+          </tbody>
+        </table>
+      `;
+    } catch (err) {
+      console.error(err);
+      if (tableContainer) {
+        tableContainer.innerHTML = `<div class="p-4 text-center text-danger">Failed to load students: ${err.message || err}</div>`;
+      }
+    }
+  },
+
+  async openCreateTrainerModal(targetCourseId = null, fromStudio = false) {
+    let colleges = this.cachedColleges || [];
+    if (!colleges || colleges.length === 0) {
+      try {
+        colleges = await API.get('/api/colleges');
         this.cachedColleges = colleges || [];
       } catch (e) {
         colleges = [];
@@ -1288,7 +1310,7 @@ const SuperAdmin = {
         <button class="icon-btn" onclick="App.closeModal()">✕</button>
       </div>
 
-      <form id="sa-create-trainer-form" onsubmit="event.preventDefault(); SuperAdmin.submitCreateTrainer(${targetCourseId}, ${fromStudio});">
+      <form id="sa-create-trainer-form" onsubmit="event.preventDefault(); SuperAdmin.submitCreateTrainer(${targetCourseId || 'null'}, ${fromStudio ? 'true' : 'false'});">
         <div class="modal-body" style="padding: 1.4rem; max-height: 75vh; overflow-y: auto;">
           ${targetCourseId && courseTitle ? `
             <div style="background: var(--primary-light); border: 1.5px solid rgba(99, 102, 241, 0.25); border-radius: 8px; padding: 10px 14px; margin-bottom: 1.25rem; font-size: 0.84rem; display: flex; align-items: center; gap: 8px;">
@@ -1318,6 +1340,112 @@ const SuperAdmin = {
             <div class="form-group">
               <label class="form-label" style="font-weight: 600;">Phone Number (Optional)</label>
               <input type="tel" id="new-trainer-phone" class="form-input" placeholder="e.g. +1 555-0199" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3" style="margin-bottom: 1rem;">
+            <div class="form-group">
+              <label class="form-label" style="font-weight: 600;">Affiliated College</label>
+              <select id="new-trainer-college" class="form-select">
+                <option value="">Global / Independent Trainer (All Colleges)</option>
+                ${collegeOptions}
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" style="font-weight: 600;">Temporary Password</label>
+              <input type="password" id="new-trainer-password" class="form-input" value="Trainer@123" placeholder="Default: Trainer@123" />
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer" style="padding: 1rem 1.4rem; background: var(--bg-secondary); border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 8px;">
+          <button type="button" class="btn btn-secondary" onclick="App.closeModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-new-trainer">
+            <i class="fi fi-rr-check"></i> Register Trainer
+          </button>
+        </div>
+      </form>
+    `, 'modal-md');
+  },
+
+  async submitCreateTrainer(targetCourseId = null, fromStudio = false) {
+    const btn = document.getElementById('btn-save-new-trainer');
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Registering...';
+    }
+
+    try {
+      const firstName = document.getElementById('new-trainer-first-name')?.value?.trim();
+      const lastName = document.getElementById('new-trainer-last-name')?.value?.trim();
+      const email = document.getElementById('new-trainer-email')?.value?.trim();
+      const phone = document.getElementById('new-trainer-phone')?.value?.trim() || null;
+      const collegeVal = document.getElementById('new-trainer-college')?.value;
+      const collegeId = collegeVal ? parseInt(collegeVal, 10) : null;
+      const password = document.getElementById('new-trainer-password')?.value || 'Trainer@123';
+
+      if (!firstName || !lastName || !email) {
+        API.toast('Please fill in all required fields.', 'error');
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fi fi-rr-check"></i> Register Trainer';
+        }
+        return;
+      }
+
+      const payload = {
+        first_name: firstName,
+        last_name: lastName,
+        email: email,
+        phone: phone,
+        college_id: collegeId,
+        password: password
+      };
+
+      const result = await API.post('/api/courses/trainers', payload);
+      API.toast(`Trainer ${firstName} ${lastName} registered successfully!`, 'success');
+
+      if (targetCourseId && result && result.id) {
+        try {
+          await API.post(`/api/courses/${targetCourseId}/trainer`, { trainer_id: result.id, notes: 'Assigned upon trainer account registration.' });
+          API.toast(`Assigned to course automatically!`, 'success');
+        } catch (assignErr) {
+          console.warn('Auto-assignment failed:', assignErr);
+        }
+      }
+
+      App.closeModal();
+
+      if (fromStudio && typeof this.reloadStudioTrainersDropdown === 'function') {
+        await this.reloadStudioTrainersDropdown(result?.id);
+      } else if (this.currentTrainersTab) {
+        await this.fetchAndRenderTrainersData();
+      }
+    } catch (err) {
+      console.error(err);
+      API.toast(err.message || 'Failed to create trainer', 'error');
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fi fi-rr-check"></i> Register Trainer';
+      }
+    }
+  },
+
+  async viewStudentProfileModal(studentId) {
+    try {
+      const s = await API.get(`/api/super-admin/students/${studentId}`);
+      if (!s) {
+        API.toast('Student details not found', 'warning');
+        return;
+      }
+
+      const enrollments = s.enrollments || [];
+      const enrollRows = enrollments.map(e => `
+        <tr>
+          <td>
+            <div style="font-weight: 600;">${e.course_title || 'Course #' + e.course_id}</div>
+            <div class="text-muted" style="font-size: 0.75rem;">ID: ${e.course_id}</div>
+          </td>
           <td>
             <span class="badge ${e.status === 'completed' ? 'badge-success' : 'badge-primary'}">${e.status}</span>
           </td>
@@ -1437,47 +1565,34 @@ const SuperAdmin = {
               <img src="${c.thumbnail_url || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600'}" style="width: 50px; height: 35px; border-radius: 4px; object-fit: cover;" />
               <div>
                 <div style="font-weight: 700;">${c.title}</div>
-      trainers = await API.get('/api/courses/trainers');
-    } catch (e) {
-      trainers = [];
-    }
-
-    const collegeOptions = (colleges || []).map(col => `
-      <option value="${col.id}">[${col.code}] ${col.name}</option>
-    `).join('');
-
-    const trainerOptions = (trainers || []).map(t => `
-      <option value="${t.id}">${t.first_name} ${t.last_name} (${t.college_code || 'GLOBAL'})</option>
-    `).join('');
-
-    App.showModal(`
-      <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding: 1.1rem 1.4rem;">
-        <div>
-          <div style="font-size: 0.72rem; color: var(--primary); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Curriculum & Classes</div>
-          <h3 style="margin: 2px 0 0 0; font-size: 1.15rem; display: flex; align-items: center; gap: 8px;">
-            <i class="fi fi-rr-book-alt" style="color: var(--primary);"></i> Create New Course / Class
-          </h3>
-        </div>
-        <button class="icon-btn" onclick="App.closeModal()">✕</button>
-      </div>
-
-      <form id="sa-create-course-form" onsubmit="SuperAdmin.submitCreateCourse(event)">
-        <div class="modal-body" style="padding: 1.4rem; max-height: 75vh; overflow-y: auto;">
-          <div class="grid grid-cols-2 gap-3" style="margin-bottom: 1rem;">
-            <div class="form-group">
-              <label class="form-label" style="font-weight: 600;">Course Title <span style="color: var(--accent-rose);">*</span></label>
-              <input type="text" id="ncc-title" class="form-input" placeholder="e.g. Artificial Intelligence & Robotics" required />
+                <div class="text-secondary" style="font-size: 0.75rem;">${c.category || 'General'} • ${c.level || 'All Levels'}</div>
+              </div>
             </div>
-            <div class="form-group">
-              <label class="form-label" style="font-weight: 600;">Course Code <span style="color: var(--accent-rose);">*</span></label>
-              <input type="text" id="ncc-code" class="form-input font-mono" placeholder="e.g. AI-201" style="text-transform: uppercase;" required />
+          </td>
+          <td>
+            ${c.college_name ? `<span class="badge badge-outline">${c.college_code || c.college_name}</span>` : '<span class="badge badge-primary">Global (All)</span>'}
+          </td>
+          <td>
+            <span style="font-size: 0.82rem;">${c.module_count || 0} Modules (${c.lesson_count || 0} Lessons)</span>
+          </td>
+          <td>
+            <span class="badge badge-info font-mono">${c.enrollment_count || 0} Students</span>
+          </td>
+          <td>
+            <span class="badge ${c.is_published ? 'badge-success' : 'badge-amber'}">${c.is_published ? 'Published' : 'Draft'}</span>
+          </td>
+          <td>
+            <div class="flex items-center gap-2">
+              <button class="btn btn-outline btn-sm" onclick="SuperAdmin.startCourseWizard(${c.id})" title="Open Studio Editor">
+                <i class="fi fi-rr-edit"></i> Edit
+              </button>
+              <button class="btn btn-ghost btn-sm text-danger" onclick="SuperAdmin.deleteCourse(${c.id}, '${(c.title || '').replace(/'/g, "\\'")}')" title="Delete Course">
+                <i class="fi fi-rr-trash"></i>
+              </button>
             </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-3" style="margin-bottom: 1rem;">
-            <div class="form-group">
-              <label class="form-label" style="font-weight: 600;">Target Institution</label>
-              <select id="ncc-college" class="form-select" style="width: 100%;">
+          </td>
+        </tr>
+      `).join('');
 
       document.getElementById('sa-global-courses-table').innerHTML = `
         <table class="data-table">
@@ -1501,6 +1616,28 @@ const SuperAdmin = {
         <div class="p-4 text-center text-danger">Failed to load global courses: ${err.message || err}</div>
       `;
     }
+  },
+
+  async deleteCourse(courseId, courseTitle) {
+    App.showDangerConfirmModal({
+      title: 'Delete Course Curriculum',
+      warningBanner: 'Warning: This will permanently delete this course and all associated modules and enrollments.',
+      description: `You are about to delete <strong>${courseTitle}</strong>. This action is irreversible.`,
+      itemName: courseTitle,
+      itemType: 'course',
+      confirmButtonText: 'I understand, delete this course',
+      onConfirm: async () => {
+        try {
+          await API.delete(`/api/courses/${courseId}`);
+          API.toast(`Course "${courseTitle}" deleted successfully.`, 'success');
+          App.closeModal();
+          await this.renderGlobalCoursesView();
+        } catch (err) {
+          console.error(err);
+          API.toast(err.message || 'Failed to delete course', 'error');
+        }
+      }
+    });
   },
 
   // =========================================================================
@@ -1633,81 +1770,29 @@ const SuperAdmin = {
     const fd = new FormData(form);
     const c = this.activeCourseStudio.course;
 
-  async openEditCourseModal(courseId) {
-    App.showModal(`
-      <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding: 1.1rem 1.4rem;">
-        <h3 style="margin: 0; font-size: 1.15rem;">Loading Course Details...</h3>
-        <button class="icon-btn" onclick="App.closeModal()">✕</button>
-      </div>
-      <div class="modal-body" style="padding: 2.5rem; text-align: center;">
-        <div class="spinner"></div>
-      </div>
-    `, 'modal-lg');
+    const payload = {
+      enrollment_type: fd.get('enrollment_type') || c.enrollment_type || 'open',
+      visibility: fd.get('visibility') || c.visibility || 'public',
+      passing_percentage: parseInt(fd.get('passing_percentage') || c.passing_percentage || 60, 10),
+      certificate_enabled: fd.get('certificate_enabled') === 'on' || fd.get('certificate_enabled') === 'true' || fd.get('certificate_enabled') === '1',
+      trainer_id: fd.get('trainer_id') && fd.get('trainer_id') !== 'none' ? parseInt(fd.get('trainer_id'), 10) : null
+    };
 
+    API.put(`/api/courses/${c.id}`, payload).then(res => {
+      this.activeCourseStudio.course = { ...this.activeCourseStudio.course, ...payload };
+    }).catch(err => console.error(err));
+  },
+
+  async toggleStudioPublish() {
+    if (!this.activeCourseStudio || !this.activeCourseStudio.course) return;
+    const course = this.activeCourseStudio.course;
+    const newStatus = course.is_published ? 0 : 1;
     try {
-      const [data, colleges, trainers] = await Promise.all([
-        API.get(`/api/courses/${courseId}`),
-        API.get('/api/colleges').catch(() => []),
-        API.get('/api/courses/trainers').catch(() => [])
-      ]);
-
-      const c = data.course || data;
-      this.cachedColleges = colleges || [];
-
-      const collegeOptions = (colleges || []).map(col => `
-        <option value="${col.id}" ${c.college_id === col.id ? 'selected' : ''}>[${col.code}] ${col.name}</option>
-      `).join('');
-
-      const trainerOptions = (trainers || []).map(t => `
-        <option value="${t.id}" ${c.trainer_id === t.id ? 'selected' : ''}>${t.first_name} ${t.last_name} (${t.college_code || 'GLOBAL'})</option>
-      `).join('');
-
-      const batches = ['All Batches', '2021-2025', '2022-2026', '2023-2027', '2024-2028', '2025-2029'];
-      const batchOptions = batches.map(b => `
-        <option value="${b}" ${(c.batch || 'All Batches') === b ? 'selected' : ''}>${b}</option>
-      `).join('');
-
-      App.showModal(`
-        <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding: 1.1rem 1.4rem;">
-          <div>
-            <div style="font-size: 0.72rem; color: var(--primary); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Edit Course Settings</div>
-            <h3 style="margin: 2px 0 0 0; font-size: 1.15rem; display: flex; align-items: center; gap: 8px;">
-              <i class="fi fi-rr-edit" style="color: var(--primary);"></i> Edit Course: ${c.title}
-            </h3>
-          </div>
-          <button class="icon-btn" onclick="App.closeModal()">✕</button>
-        </div>
-
-        <form id="sa-edit-course-form" onsubmit="SuperAdmin.submitEditCourse(event, ${courseId})">
-          <div class="modal-body" style="padding: 1.4rem; max-height: 75vh; overflow-y: auto;">
-            <div class="grid grid-cols-2 gap-3" style="margin-bottom: 1rem;">
-              <div class="form-group">
-                <label class="form-label" style="font-weight: 600;">Course Title <span style="color: var(--accent-rose);">*</span></label>
-                <input type="text" id="ecc-title" class="form-input" value="${(c.title || '').replace(/"/g, '&quot;')}" required />
-              </div>
-              <div class="form-group">
-                <label class="form-label" style="font-weight: 600;">Course Code <span style="color: var(--accent-rose);">*</span></label>
-                <input type="text" id="ecc-code" class="form-input font-mono" value="${(c.code || '').replace(/"/g, '&quot;')}" style="text-transform: uppercase;" required />
-              </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3" style="margin-bottom: 1rem;">
-              <div class="form-group">
-                <label class="form-label" style="font-weight: 600;">Target Institution</label>
-                <select id="ecc-college" class="form-select" style="width: 100%;">
-                  <option value="" ${!c.college_id ? 'selected' : ''}>All Colleges (Universal Global Curriculum)</option>
-                  ${collegeOptions}
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="form-label" style="font-weight: 600;">Target Batch</label>
-                <select id="ecc-batch" class="form-select" style="width: 100%;">
-                  ${batchOptions}
-                </select>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-3 gap-3" style="margin-bottom: 1rem;">
+      await API.put(`/api/courses/${course.id}`, { is_published: newStatus });
+      course.is_published = newStatus;
+      API.toast(newStatus ? '🎉 Course is now Published and live for students!' : 'Course unpublished and saved to Drafts.', 'success');
+      this.renderCourseStudio();
+    } catch (err) {
       console.error(err);
       API.toast('Failed to update published status', 'error');
     }
@@ -2657,3 +2742,36 @@ const SuperAdmin = {
     }
 
     try {
+      const courseId = this.activeCourseStudio?.course?.id;
+      await API.post('/api/assessments', {
+        course_id: courseId,
+        title,
+        description: instructions,
+        assessment_type: 'quiz',
+        time_limit_minutes: duration,
+        passing_percentage: passing,
+        max_attempts: 3,
+        is_published: true,
+        questions: [
+          {
+            question_text: 'What is the primary principle covered in this module?',
+            question_type: 'mcq',
+            points: 10,
+            options: [
+              { option_text: 'Applying structured design and interactive systems', is_correct: true },
+              { option_text: 'Ignoring layout constraints', is_correct: false },
+              { option_text: 'Bypassing validation checks', is_correct: false },
+              { option_text: 'Disabling user inputs', is_correct: false }
+            ]
+          }
+        ]
+      });
+      API.toast(`Quiz '${title}' created successfully!`, 'success');
+      App.closeModal();
+      await this.reloadStudioData();
+    } catch (err) {
+      console.error(err);
+      API.toast(err.message || 'Failed to create quiz', 'error');
+    }
+  }
+};

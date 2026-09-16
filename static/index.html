@@ -1,22 +1,24 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEXUS — AI & Robotics Multi-College Training & Assessment Platform</title>
+  <link rel="icon" type="image/png" href="/static/img/logo.png" />
+  <link rel="stylesheet" href="/static/css/style.css?v=2.9.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Cinzel:wght@600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css" />
+  <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-bold-rounded/css/uicons-bold-rounded.css" />
+  <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-rounded/css/uicons-solid-rounded.css" />
+  <!-- Chart.js for Dashboards -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Canvas Confetti for Completion Celebrations -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+  <div id="app-root">
 
     <!-- =========================================================================
          0. LANDING PAGE VIEW (Deflexai High-End SaaS Experience)
@@ -518,395 +520,238 @@
                   <path d="M6 12c0-3.3 2.7-6 6-6s6 2.7 6 6-2.7 6-6 6-6-2.7-6-6z" stroke="#76B900" stroke-width="1.8" fill="none"/>
                   <path d="M9 12a3 3 0 0 1 3-3v6a3 3 0 0 1-3-3z" fill="#76B900"/>
                   <text x="12" y="19" font-size="5" font-weight="900" fill="#76B900" text-anchor="middle">TRT</text>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-              <div class="topbar-divider"></div>
-
-              <!-- User Profile Dropdown Pill -->
+                </svg>
+              </div>
+
+            </div>
+            
+            <!-- Orbit Carousel Indicators -->
+            <div class="orbit-indicators">
+              <span class="indicator-dot active" onclick="Auth.setOrbitSlide(0)"></span>
+              <span class="indicator-dot" onclick="Auth.setOrbitSlide(1)"></span>
+              <span class="indicator-dot" onclick="Auth.setOrbitSlide(2)"></span>
+            </div>
+
+            <!-- Orbit Subtitle / Description -->
+            <p class="orbit-description" id="orbit-description-text">
+              Unified multi-tenant cloud sandbox, real-time ROS & JetBot robotics simulations, and certified credentials.
+            </p>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- =========================================================================
+         2. SUPER ADMIN VIEW (Global Governance & Multi-College Analytics)
+         ========================================================================= -->
+    <div id="super-admin-view" class="app-view-container" style="display: none;">
+      <div class="app-layout">
+        <aside class="sidebar" id="app-sidebar-container"></aside>
+        <div class="app-main">
+          <header class="top-navbar">
+            <div class="navbar-left">
+              <button class="icon-btn mobile-menu-btn" onclick="App.toggleMobileSidebar()">
+                <i class="fi fi-rr-menu-burger"></i>
+              </button>
+              <div class="page-breadcrumb">
+                <span class="breadcrumb-role-tag super-admin"><i class="fi fi-rr-shield-check"></i> Super Admin</span>
+                <i class="fi fi-rr-angle-small-right text-muted"></i>
+                <span class="topbar-breadcrumb-current">Overview</span>
+              </div>
+            </div>
+            <div class="navbar-right">
+              <button class="topbar-search-trigger" onclick="App.openQuickSearchModal()">
+                <i class="fi fi-rr-search"></i>
+                <span>Search platform...</span>
+                <kbd>⌘K</kbd>
+              </button>
+              <button class="topbar-icon-btn" onclick="App.toggleTheme()" title="Toggle Dark/Light Mode">
+                <i class="fi fi-rr-moon theme-toggle-icon"></i>
+              </button>
+              <button class="topbar-icon-btn notification-trigger-btn" onclick="App.openNotificationsModal()" title="Notifications">
+                <i class="fi fi-rr-bell"></i>
+                <span class="notification-badge" style="display: none;">0</span>
+              </button>
               <div class="topbar-user-profile-wrapper">
-                <div class="topbar-user-pill" onclick="App.toggleUserDropdown(this, event)" title="Account menu">
-                  <div class="topbar-user-avatar user-avatar-display">SA</div>
-                  <div class="topbar-user-details">
-                    <span class="topbar-user-name user-name-display">System SuperAdmin</span>
-                    <span class="topbar-user-role user-role-display">Super Admin</span>
+                <div class="topbar-user-pill" onclick="App.toggleUserDropdown(this, event)">
+                  <div class="user-avatar topbar-user-avatar">SA</div>
+                  <div class="user-meta">
+                    <div class="user-meta-name topbar-user-name">Super Admin</div>
+                    <div class="user-meta-role topbar-user-role">SUPER ADMIN</div>
                   </div>
-                  <i class="fi fi-rr-angle-small-down topbar-user-chevron"></i>
+                  <i class="fi fi-rr-angle-small-down"></i>
                 </div>
-                
-                <!-- Popover Menu -->
                 <div class="user-dropdown-popover" style="display: none;">
-                  <div class="dropdown-user-header">
-                    <div class="topbar-user-avatar user-avatar-display" style="width: 36px; height: 36px; font-size: 0.85rem;">SA</div>
-                    <div style="min-width: 0; flex: 1;">
-                      <div class="dropdown-user-title user-name-display">System SuperAdmin</div>
-                      <div class="dropdown-user-email user-email-display">superadmin@platform.edu</div>
-                      <span class="badge badge-primary font-mono user-role-display" style="font-size: 0.65rem; padding: 2px 6px;">Super Admin</span>
-                    </div>
+                  <div class="user-dropdown-header">
+                    <div class="user-meta-name topbar-user-name">Super Admin</div>
+                    <div class="user-dropdown-email">superadmin@platform.edu</div>
                   </div>
-                  <div class="dropdown-sep"></div>
-                  <a class="dropdown-item-link" onclick="App.navigate('settings'); App.closeAllDropdowns();">
-                    <i class="fi fi-rr-settings"></i>
-                    <span>Platform Settings</span>
-                  </a>
-                  <a class="dropdown-item-link" onclick="App.navigate('reports'); App.closeAllDropdowns();">
-                    <i class="fi fi-rr-chart-histogram"></i>
-                    <span>Audit & Compliance Logs</span>
-                  </a>
-                  <a class="dropdown-item-link" onclick="CertificateViewer.openVerifier(); App.closeAllDropdowns();">
-                    <i class="fi fi-rr-shield-check"></i>
-                    <span>Credential Verifier</span>
-                  </a>
-                  <a class="dropdown-item-link" onclick="App.toggleTheme();">
-                    <i class="fi fi-rr-moon theme-toggle-icon"></i>
-                    <span>Toggle Dark/Light Mode</span>
-                  </a>
-                  <div class="dropdown-sep"></div>
-                  <a class="dropdown-item-link danger-action" onclick="Auth.logout();">
-                    <i class="fi fi-rr-sign-out-alt"></i>
-                    <span>Sign Out</span>
-                  </a>
+                  <div class="user-dropdown-divider"></div>
+                  <div class="dropdown-item-link" onclick="App.navigate('settings'); App.closeAllDropdowns();">
+                    <i class="fi fi-rr-settings"></i> Settings
+                  </div>
+                  <div class="dropdown-item-link text-danger" onclick="Auth.logout()">
+                    <i class="fi fi-rr-sign-out-alt"></i> Logout
+                  </div>
                 </div>
               </div>
             </div>
           </header>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+          <main class="app-content-area" id="super-admin-content"></main>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================================================
+         3. COLLEGE ADMIN / TRAINER VIEW (Tenant Governance & Class Ops)
+         ========================================================================= -->
+    <div id="college-admin-view" class="app-view-container" style="display: none;">
+      <div class="app-layout">
+        <aside class="sidebar" id="college-sidebar-container"></aside>
+        <div class="app-main">
+          <header class="top-navbar">
+            <div class="navbar-left">
+              <button class="icon-btn mobile-menu-btn" onclick="App.toggleMobileSidebar()">
+                <i class="fi fi-rr-menu-burger"></i>
+              </button>
+              <div class="page-breadcrumb">
+                <span class="breadcrumb-role-tag college-admin"><i class="fi fi-rr-building"></i> College Admin</span>
+                <i class="fi fi-rr-angle-small-right text-muted"></i>
+                <span class="topbar-breadcrumb-current">Dashboard</span>
+              </div>
+            </div>
+            <div class="navbar-right">
+              <button class="topbar-search-trigger" onclick="App.openQuickSearchModal()">
+                <i class="fi fi-rr-search"></i>
+                <span>Search college portal...</span>
+                <kbd>⌘K</kbd>
+              </button>
+              <button class="topbar-icon-btn" onclick="App.toggleTheme()" title="Toggle Dark/Light Mode">
+                <i class="fi fi-rr-moon theme-toggle-icon"></i>
+              </button>
+              <button class="topbar-icon-btn notification-trigger-btn" onclick="App.openNotificationsModal()" title="Notifications">
+                <i class="fi fi-rr-bell"></i>
+                <span class="notification-badge" style="display: none;">0</span>
+              </button>
+              <div class="topbar-user-profile-wrapper">
+                <div class="topbar-user-pill" onclick="App.toggleUserDropdown(this, event)">
+                  <div class="user-avatar topbar-user-avatar">CA</div>
+                  <div class="user-meta">
+                    <div class="user-meta-name topbar-user-name">College Admin</div>
+                    <div class="user-meta-role topbar-user-role">COLLEGE ADMIN</div>
+                  </div>
+                  <i class="fi fi-rr-angle-small-down"></i>
+                </div>
+                <div class="user-dropdown-popover" style="display: none;">
+                  <div class="user-dropdown-header">
+                    <div class="user-meta-name topbar-user-name">College Admin</div>
+                    <div class="user-dropdown-email">admin@college.edu</div>
+                  </div>
+                  <div class="user-dropdown-divider"></div>
+                  <div class="dropdown-item-link" onclick="App.navigate('settings'); App.closeAllDropdowns();">
+                    <i class="fi fi-rr-settings"></i> Settings
+                  </div>
+                  <div class="dropdown-item-link text-danger" onclick="Auth.logout()">
+                    <i class="fi fi-rr-sign-out-alt"></i> Logout
+                  </div>
+                </div>
+              </div>
+            </div>
+          </header>
+          <main class="app-content-area" id="college-admin-content"></main>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================================================
+         4. STUDENT VIEW (Interactive Learning & Lab Hub)
+         ========================================================================= -->
+    <div id="student-view" class="app-view-container" style="display: none;">
+      <div class="app-layout">
+        <aside class="sidebar" id="student-sidebar-container"></aside>
+        <div class="app-main">
+          <header class="top-navbar">
+            <div class="navbar-left">
+              <button class="icon-btn mobile-menu-btn" onclick="App.toggleMobileSidebar()">
+                <i class="fi fi-rr-menu-burger"></i>
+              </button>
+              <div class="page-breadcrumb">
+                <span class="breadcrumb-role-tag student"><i class="fi fi-rr-graduation-cap"></i> Student</span>
+                <i class="fi fi-rr-angle-small-right text-muted"></i>
+                <span class="topbar-breadcrumb-current">Learning Hub</span>
+              </div>
+            </div>
+            <div class="navbar-right">
+              <button class="topbar-search-trigger" onclick="App.openQuickSearchModal()">
+                <i class="fi fi-rr-search"></i>
+                <span>Search courses...</span>
+                <kbd>⌘K</kbd>
+              </button>
+              <button class="topbar-icon-btn" onclick="App.toggleTheme()" title="Toggle Dark/Light Mode">
+                <i class="fi fi-rr-moon theme-toggle-icon"></i>
+              </button>
+              <button class="topbar-icon-btn notification-trigger-btn" onclick="App.openNotificationsModal()" title="Notifications">
+                <i class="fi fi-rr-bell"></i>
+                <span class="notification-badge" style="display: none;">0</span>
+              </button>
+              <div class="topbar-user-profile-wrapper">
+                <div class="topbar-user-pill" onclick="App.toggleUserDropdown(this, event)">
+                  <div class="user-avatar topbar-user-avatar">ST</div>
+                  <div class="user-meta">
+                    <div class="user-meta-name topbar-user-name">Student User</div>
+                    <div class="user-meta-role topbar-user-role">STUDENT</div>
+                  </div>
+                  <i class="fi fi-rr-angle-small-down"></i>
+                </div>
+                <div class="user-dropdown-popover" style="display: none;">
+                  <div class="user-dropdown-header">
+                    <div class="user-meta-name topbar-user-name">Student User</div>
+                    <div class="user-dropdown-email">student@college.edu</div>
+                  </div>
+                  <div class="user-dropdown-divider"></div>
+                  <div class="dropdown-item-link" onclick="App.navigate('profile'); App.closeAllDropdowns();">
+                    <i class="fi fi-rr-user"></i> My Profile
+                  </div>
+                  <div class="dropdown-item-link text-danger" onclick="Auth.logout()">
+                    <i class="fi fi-rr-sign-out-alt"></i> Logout
+                  </div>
+                </div>
+              </div>
+            </div>
+          </header>
+          <main class="app-content-area" id="student-content"></main>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================================================
+         5. COURSE PLAYER VIEW (Interactive Lesson Player & JetBot Sandbox)
+         ========================================================================= -->
+    <div id="player-view" class="app-view-container" style="display: none;">
+      <div id="player-view-container"></div>
+    </div>
+
+    <!-- =========================================================================
+         6. TIMED ASSESSMENT VIEW (MCQ & Coding Exam Engine)
+         ========================================================================= -->
+    <div id="assessment-view" class="app-view-container" style="display: none;">
+      <div id="assessment-view-container"></div>
+    </div>
+
+    <!-- =========================================================================
+         7. COURSE STUDIO VIEW (Figma LMS Style Curriculum Studio)
+         ========================================================================= -->
+    <div id="course-studio-view" class="app-view-container" style="display: none;">
+      <div id="course-studio-container"></div>
+    </div>
+
+    <!-- =========================================================================
+         8. PUBLIC COURSE REGISTRATION VIEW
+         ========================================================================= -->
+    <div id="course-registration-view" class="app-view-container" style="display: none;">
       <div id="course-registration-container"></div>
     </div>
 

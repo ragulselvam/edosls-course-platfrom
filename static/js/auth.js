@@ -187,16 +187,6 @@ const Auth = {
     });
   },
 
-
-    document.querySelectorAll('.orbit-carousel-bars span').forEach((bar, i) => {
-      if (i === index) {
-        bar.className = 'carousel-bar-pill';
-      } else {
-        bar.className = 'carousel-dot-pill';
-      }
-    });
-  },
-
   logout() {
     API.setToken(null);
     this.currentUser = null;

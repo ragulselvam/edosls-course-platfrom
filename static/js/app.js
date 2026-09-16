@@ -237,17 +237,6 @@ const App = {
     document.querySelectorAll('.app-view-container').forEach(el => {
       el.style.display = 'none';
       el.classList.remove('active');
-      if (role === 'super_admin') viewId = 'super-admin-view';
-      else if (role === 'college_admin' || role === 'trainer') viewId = 'college-admin-view';
-      else if (role === 'student') viewId = 'student-view';
-      else viewId = 'login-view';
-      target = document.getElementById(viewId);
-    }
-    if (!target) return;
-
-    document.querySelectorAll('.app-view-container').forEach(el => {
-      el.style.display = 'none';
-      el.classList.remove('active');
     });
     
     if (viewId === 'login-view') {
@@ -307,12 +296,6 @@ const App = {
       this.executeRoute(raw);
     }
   },
-      return;
-    }
-    this.currentRoute = raw;
-    sessionStorage.setItem('platform_current_route', raw);
-    this.executeRoute(raw);
-  },
 
   routeToUserDashboard() {
     const role = Auth.getRole();
@@ -358,15 +341,15 @@ const App = {
     }
 
     if (route === 'labs' || route === 'interactive-labs' || route === 'landing-interactive-labs') {
-    }
-
-    // Handle general student registration route
-    if (route === 'register' || route === 'student-registration') {
-      this.renderGeneralStudentRegistration();
+      this.showLandingView();
+      setTimeout(() => { if (typeof LandingPage !== 'undefined') LandingPage.scrollTo('landing-interactive-labs'); }, 100);
       return;
     }
 
-    const role = Auth.getRole();
+    if (route === 'curriculum' || route === 'landing-courses') {
+      this.showLandingView();
+      setTimeout(() => { if (typeof LandingPage !== 'undefined') LandingPage.scrollTo('landing-courses'); }, 100);
+      return;
     }
 
     if (route === 'verifier' || route === 'verify') {
@@ -546,8 +529,42 @@ const App = {
       this.showView('student-view');
       switch (baseRoute) {
         case 'available-courses':
+        case 'courses':
+        case 'catalog':
           Student.renderAvailableCourses();
           break;
+        case 'my-courses':
+        case 'enrolled':
+          Student.renderMyCourses();
+          break;
+        case 'assessments':
+        case 'exams':
+          Student.renderAssessmentsView();
+          break;
+        case 'certificates':
+        case 'certs':
+          Student.renderCertificatesView();
+          break;
+        case 'assignments':
+          Student.renderAssignmentsView();
+          break;
+        case 'results':
+        case 'grades':
+          Student.renderResultsView();
+          break;
+        case 'notifications':
+          Student.renderNotificationsView();
+          break;
+        case 'profile':
+        case 'settings':
+          Student.renderProfileView();
+          break;
+        case 'dashboard':
+        default:
+          Student.renderDashboard();
+          break;
+      }
+    }
   },
 
   filterQuickSearch(query) {
@@ -587,7 +604,7 @@ const App = {
         <div class="sidebar-college-badge">
           <div class="college-badge-text">
             <div class="college-badge-name">${user.college_name}</div>
-            <div class="college-badge-role">${user.role_name.replace('_', ' ')}</div>
+            <div class="college-badge-role">${(user.role_name || role).replace('_', ' ')}</div>
           </div>
         </div>
       `;
@@ -598,55 +615,143 @@ const App = {
       navItems = `
         <div class="nav-section-title">GLOBAL PLATFORM</div>
         <div class="nav-item" data-route="dashboard" onclick="App.navigate('dashboard')">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
-          Dashboard
+          <i class="fi fi-rr-apps"></i> <span>Dashboard</span>
         </div>
         <div class="nav-item" data-route="colleges" onclick="App.navigate('colleges')">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-          Colleges
+          <i class="fi fi-rr-building"></i> <span>Colleges</span>
         </div>
         <div class="nav-item" data-route="admins" onclick="App.navigate('admins')">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-          Admins
+          <i class="fi fi-rr-users-alt"></i> <span>Admins</span>
         </div>
         <div class="nav-item" data-route="students" onclick="App.navigate('students')">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-          Students
+          <i class="fi fi-rr-graduation-cap"></i> <span>Students</span>
         </div>
         <div class="nav-item" data-route="courses" onclick="App.navigate('courses')">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-          Courses
+          <i class="fi fi-rr-book-alt"></i> <span>Courses</span>
         </div>
         <div class="nav-item" data-route="enrollments" onclick="App.navigate('enrollments')">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
-          Enrollments
+          <i class="fi fi-rr-user-add"></i> <span>Enrollments</span>
+        </div>
+        <div class="nav-item" data-route="assessments" onclick="App.navigate('assessments')">
+          <i class="fi fi-rr-checkbox"></i> <span>Assessments</span>
+        </div>
+        <div class="nav-item" data-route="reports" onclick="App.navigate('reports')">
+          <i class="fi fi-rr-chart-pie-alt"></i> <span>Reports & Logs</span>
         </div>
         <div class="nav-item" data-route="settings" onclick="App.navigate('settings')">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-          Settings
+          <i class="fi fi-rr-settings"></i> <span>Settings</span>
         </div>
       `;
-    } else if (role === 'college_admin') {
+    } else if (role === 'college_admin' || role === 'trainer') {
       navItems = `
         <div class="nav-section-title">COLLEGE PORTAL</div>
         <div class="nav-item" data-route="dashboard" onclick="App.navigate('dashboard')">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-          Dashboard
+          <i class="fi fi-rr-apps"></i> <span>Dashboard</span>
         </div>
         <div class="nav-item" data-route="students" onclick="App.navigate('students')">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-          Students
+          <i class="fi fi-rr-graduation-cap"></i> <span>Students</span>
         </div>
         <div class="nav-item" data-route="courses" onclick="App.navigate('courses')">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-          Courses
+          <i class="fi fi-rr-book-alt"></i> <span>Courses</span>
         </div>
         <div class="nav-item" data-route="enrollments" onclick="App.navigate('enrollments')">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
-          Enrollments
+          <i class="fi fi-rr-user-add"></i> <span>Enrollments</span>
         </div>
         <div class="nav-item" data-route="assessments" onclick="App.navigate('assessments')">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <i class="fi fi-rr-checkbox"></i> <span>Assessments</span>
+        </div>
+        <div class="nav-item" data-route="results" onclick="App.navigate('results')">
+          <i class="fi fi-rr-trophy"></i> <span>Results & Grades</span>
+        </div>
+        <div class="nav-item" data-route="certificates" onclick="App.navigate('certificates')">
+          <i class="fi fi-rr-diploma"></i> <span>Certificates</span>
+        </div>
+        <div class="nav-item" data-route="reports" onclick="App.navigate('reports')">
+          <i class="fi fi-rr-chart-pie-alt"></i> <span>Reports</span>
+        </div>
+        <div class="nav-item" data-route="notifications" onclick="App.navigate('notifications')">
+          <i class="fi fi-rr-bell"></i> <span>Announcements</span>
+        </div>
+        <div class="nav-item" data-route="settings" onclick="App.navigate('settings')">
+          <i class="fi fi-rr-settings"></i> <span>Settings</span>
+        </div>
+      `;
+    } else if (role === 'student') {
+      navItems = `
+        <div class="nav-section-title">LEARNER PORTAL</div>
+        <div class="nav-item" data-route="dashboard" onclick="App.navigate('dashboard')">
+          <i class="fi fi-rr-apps"></i> <span>Dashboard</span>
+        </div>
+        <div class="nav-item" data-route="my-courses" onclick="App.navigate('my-courses')">
+          <i class="fi fi-rr-play-alt"></i> <span>My Courses</span>
+        </div>
+        <div class="nav-item" data-route="available-courses" onclick="App.navigate('available-courses')">
+          <i class="fi fi-rr-book-alt"></i> <span>Browse Courses</span>
+        </div>
+        <div class="nav-item" data-route="assignments" onclick="App.navigate('assignments')">
+          <i class="fi fi-rr-document"></i> <span>Assignments</span>
+        </div>
+        <div class="nav-item" data-route="assessments" onclick="App.navigate('assessments')">
+          <i class="fi fi-rr-checkbox"></i> <span>Assessments</span>
+        </div>
+        <div class="nav-item" data-route="results" onclick="App.navigate('results')">
+          <i class="fi fi-rr-trophy"></i> <span>My Results</span>
+        </div>
+        <div class="nav-item" data-route="certificates" onclick="App.navigate('certificates')">
+          <i class="fi fi-rr-diploma"></i> <span>Certificates</span>
+        </div>
+        <div class="nav-item" data-route="notifications" onclick="App.navigate('notifications')">
+          <i class="fi fi-rr-bell"></i> <span>Notifications</span>
+        </div>
+        <div class="nav-item" data-route="profile" onclick="App.navigate('profile')">
+          <i class="fi fi-rr-user"></i> <span>My Profile</span>
+        </div>
+      `;
+    }
+
+    sidebar.innerHTML = `
+      ${collegeBadge}
+      <div class="sidebar-nav-menu">
+        ${navItems}
+      </div>
+    `;
+  },
+
+  updateUserNavbarInfo() {
+    const user = Auth.getUser();
+    if (!user) return;
+    const firstName = user.first_name || '';
+    const lastName = user.last_name || '';
+    const name = `${firstName} ${lastName}`.trim() || user.email || 'User';
+    const initials = (firstName[0] || user.email?.[0] || 'U') + (lastName[0] || '');
+    
+    document.querySelectorAll('.topbar-user-name, .user-meta-name').forEach(el => el.textContent = name);
+    document.querySelectorAll('.topbar-user-role, .user-meta-role').forEach(el => el.textContent = (user.role_name || Auth.getRole() || '').replace(/_/g, ' ').toUpperCase());
+    document.querySelectorAll('.topbar-user-avatar, .user-avatar').forEach(el => el.textContent = initials.toUpperCase());
+    document.querySelectorAll('.user-dropdown-email').forEach(el => el.textContent = user.email || '');
+  },
+
+  updateDynamicBreadcrumb(role, route) {
+    const routeMap = {
+      'dashboard': { title: 'Dashboard', icon: 'fi fi-rr-apps' },
+      'colleges': { title: 'Institutions & Colleges', icon: 'fi fi-rr-building' },
+      'admins': { title: 'Institutional Administrators', icon: 'fi fi-rr-users-alt' },
+      'students': { title: 'Student Management', icon: 'fi fi-rr-graduation-cap' },
+      'courses': { title: 'Course Studio & Curriculum', icon: 'fi fi-rr-book-alt' },
+      'available-courses': { title: 'Course Catalog', icon: 'fi fi-rr-book-alt' },
+      'my-courses': { title: 'My Enrolled Courses', icon: 'fi fi-rr-play-alt' },
+      'enrollments': { title: 'Enrollment Management', icon: 'fi fi-rr-user-add' },
+      'assessments': { title: 'Examinations & Assessments', icon: 'fi fi-rr-checkbox' },
+      'results': { title: 'Results & Performance', icon: 'fi fi-rr-trophy' },
+      'certificates': { title: 'Verifiable Credentials', icon: 'fi fi-rr-diploma' },
+      'assignments': { title: 'Practical Assignments', icon: 'fi fi-rr-document' },
+      'reports': { title: 'Analytics & Audit Logs', icon: 'fi fi-rr-chart-pie-alt' },
+      'notifications': { title: 'Announcements & Alerts', icon: 'fi fi-rr-bell' },
+      'settings': { title: 'Platform Settings', icon: 'fi fi-rr-settings' },
+      'profile': { title: 'My Account Profile', icon: 'fi fi-rr-user' }
+    };
+    const currentInfo = routeMap[route] || { title: (route || 'Dashboard').replace(/-/g, ' ').toUpperCase(), icon: 'fi fi-rr-folder' };
+    document.querySelectorAll('.topbar-breadcrumb-current').forEach(el => {
       let iconColor = 'var(--primary)';
       if (role === 'college_admin') iconColor = 'var(--accent-emerald)';
       if (role === 'student') iconColor = 'var(--accent-purple)';
@@ -678,164 +783,82 @@ const App = {
     let searchOptions = [];
     if (role === 'super_admin') {
       searchOptions = [
-        <div class="sidebar-logo-icon">L</div>
-        <div>
-          <div class="sidebar-title">LMS Platform</div>
-          <div class="sidebar-subtitle">Multi-Tenant 2026</div>
-        </div>
-      </div>
-      ${collegeBadge}
-      <div class="sidebar-nav">
-        ${navItems}
-          </div>
-        </div>
-      `;
+        { title: 'Dashboard & Metrics', cat: 'Overview', route: 'dashboard', icon: 'fi fi-rr-apps' },
+        { title: 'Institutions & Colleges', cat: 'Governance', route: 'colleges', icon: 'fi fi-rr-building' },
+        { title: 'College Administrators', cat: 'Governance', route: 'admins', icon: 'fi fi-rr-users-alt' },
+        { title: 'Global Student Directory', cat: 'Users', route: 'students', icon: 'fi fi-rr-graduation-cap' },
+        { title: 'Course Studio & Curriculum', cat: 'Academic', route: 'courses', icon: 'fi fi-rr-book-alt' },
+        { title: 'Student Enrollments', cat: 'Academic', route: 'enrollments', icon: 'fi fi-rr-user-add' },
+        { title: 'Global Examinations', cat: 'Testing', route: 'assessments', icon: 'fi fi-rr-checkbox' },
+        { title: 'Audit & Compliance Logs', cat: 'System', route: 'reports', icon: 'fi fi-rr-chart-pie-alt' },
+        { title: 'Platform Settings', cat: 'System', route: 'settings', icon: 'fi fi-rr-settings' }
+      ];
+    } else if (role === 'college_admin' || role === 'trainer') {
+      searchOptions = [
+        { title: 'Dashboard', cat: 'Overview', route: 'dashboard', icon: 'fi fi-rr-apps' },
+        { title: 'Student Directory', cat: 'Roster', route: 'students', icon: 'fi fi-rr-graduation-cap' },
+        { title: 'Courses & Curriculum', cat: 'Curriculum', route: 'courses', icon: 'fi fi-rr-book-alt' },
+        { title: 'Student Enrollments', cat: 'Roster', route: 'enrollments', icon: 'fi fi-rr-user-add' },
+        { title: 'Examinations & MCQs', cat: 'Exams', route: 'assessments', icon: 'fi fi-rr-checkbox' },
+        { title: 'Submissions & Grading', cat: 'Grades', route: 'results', icon: 'fi fi-rr-trophy' },
+        { title: 'Certificates Center', cat: 'Credentials', route: 'certificates', icon: 'fi fi-rr-diploma' },
+        { title: 'College Analytics', cat: 'Reports', route: 'reports', icon: 'fi fi-rr-chart-pie-alt' },
+        { title: 'Announcements', cat: 'Broadcast', route: 'notifications', icon: 'fi fi-rr-bell' },
+        { title: 'Settings & Profile', cat: 'Account', route: 'settings', icon: 'fi fi-rr-settings' }
+      ];
+    } else if (role === 'student') {
+      searchOptions = [
+        { title: 'Student Dashboard', cat: 'Home', route: 'dashboard', icon: 'fi fi-rr-apps' },
+        { title: 'My Enrolled Courses', cat: 'Learning', route: 'my-courses', icon: 'fi fi-rr-play-alt' },
+        { title: 'Browse Available Courses', cat: 'Catalog', route: 'available-courses', icon: 'fi fi-rr-book-alt' },
+        { title: 'Course Assignments', cat: 'Tasks', route: 'assignments', icon: 'fi fi-rr-document' },
+        { title: 'Exams & Quizzes', cat: 'Exams', route: 'assessments', icon: 'fi fi-rr-checkbox' },
+        { title: 'Grades & Test Results', cat: 'Performance', route: 'results', icon: 'fi fi-rr-trophy' },
+        { title: 'Earned Certificates', cat: 'Credentials', route: 'certificates', icon: 'fi fi-rr-diploma' },
+        { title: 'Notifications & Alerts', cat: 'Alerts', route: 'notifications', icon: 'fi fi-rr-bell' },
+        { title: 'My Profile', cat: 'Account', route: 'profile', icon: 'fi fi-rr-user' }
+      ];
     }
 
-    let navItems = '';
-    if (role === 'super_admin') {
-      navItems = `
-        <div class="nav-section-title">SUPER ADMIN CONSOLE</div>
-        <div class="nav-item" data-route="dashboard" onclick="App.navigate('dashboard')">
-          <i class="fi fi-rr-apps"></i>
-          <span>Dashboard</span>
-        </div>
-        <div class="nav-item" data-route="colleges" onclick="App.navigate('colleges')">
-          <i class="fi fi-rr-building"></i>
-          <span>Colleges</span>
-        </div>
-        <div class="nav-item" data-route="admins" onclick="App.navigate('admins')">
-          <i class="fi fi-rr-shield-check"></i>
-          <span>Admins</span>
-        </div>
-        <div class="nav-item" data-route="students" onclick="App.navigate('students')">
-          <i class="fi fi-rr-graduation-cap"></i>
-          <span>Students</span>
-        </div>
-        <div class="nav-item" data-route="courses" onclick="App.navigate('courses')">
-          <i class="fi fi-rr-book-alt"></i>
-          <span>Courses</span>
-        </div>
-        <div class="nav-item" data-route="reports" onclick="App.navigate('reports')">
-          <i class="fi fi-rr-chart-pie-alt"></i>
-          <span>Reports</span>
-        </div>
-      `;
-    } else if (role === 'trainer') {
-      navItems = `
-        <div class="nav-section-title">TRAINER CONSOLE</div>
-        <div class="nav-item" data-route="dashboard" onclick="App.navigate('dashboard')">
-          <i class="fi fi-rr-apps"></i>
-          <span>Trainer Dashboard</span>
-        </div>
-        <div class="nav-item" data-route="courses" onclick="App.navigate('courses')">
-          <i class="fi fi-rr-book-alt"></i>
-          <span>My Assigned Classes</span>
-        </div>
-        <div class="nav-item" data-route="results" onclick="App.navigate('results')">
-          <i class="fi fi-rr-trophy"></i>
-          <span>Grading & Submissions</span>
-        </div>
-        <div class="nav-item" data-route="assessments" onclick="App.navigate('assessments')">
-          <i class="fi fi-rr-document-signed"></i>
-          <span>Assessments</span>
-        </div>
-        <div class="nav-item" data-route="notifications" onclick="App.navigate('notifications')">
-          <i class="fi fi-rr-bell"></i>
-          <span>Notifications</span>
-        </div>
-      `;
-    } else if (role === 'college_admin') {
-      navItems = `
-        <div class="nav-section-title">INSTITUTION PORTAL</div>
-        <div class="nav-item" data-route="dashboard" onclick="App.navigate('dashboard')">
-          <i class="fi fi-rr-apps"></i>
-          <span>Dashboard</span>
-        </div>
-        <div class="nav-item" data-route="courses" onclick="App.navigate('courses')">
-          <i class="fi fi-rr-book-alt"></i>
-          <span>Course Catalog</span>
-        </div>
-        <div class="nav-item" data-route="results" onclick="App.navigate('results')">
-          <i class="fi fi-rr-trophy"></i>
-          <span>Results & Grading</span>
-        </div>
-        <div class="nav-item" data-route="certificates" onclick="App.navigate('certificates')">
-          <i class="fi fi-rr-award"></i>
-          <span>Certificates</span>
-        </div>
-        <div class="nav-item" data-route="reports" onclick="App.navigate('reports')">
-          <i class="fi fi-rr-chart-histogram"></i>
-          <span>Reports</span>
-        </div>
-        <div class="nav-item" data-route="notifications" onclick="App.navigate('notifications')">
-          <i class="fi fi-rr-bell"></i>
-          <span>Notifications</span>
-        </div>
-      `;
-    } else if (role === 'student') {
-      navItems = `
-        <div class="nav-section-title">STUDENT HUB</div>
-        <div class="nav-item" data-route="dashboard" onclick="App.navigate('dashboard')">
-          <i class="fi fi-rr-apps"></i>
-          <span>Dashboard</span>
-        </div>
-        <div class="nav-item" data-route="available-courses" onclick="App.navigate('available-courses')">
-          <i class="fi fi-rr-book-open-cover"></i>
-          <span>Available Courses</span>
-        </div>
-        <div class="nav-item" data-route="my-courses" onclick="App.navigate('my-courses')">
-          <i class="fi fi-rr-book-alt"></i>
-          <span>My Courses</span>
-        </div>
-                </tr>
-              </thead>
-              <tbody>
-                ${contentsRows}
-              </tbody>
-            </table>
-          </div>
-        `;
-      }).join('');
+    this.cachedSearchOptions = searchOptions;
 
-      const assessmentsDocHtml = assessments.length > 0 ? `
-        <div style="margin-top: 24px; page-break-inside: avoid;">
-          <h3 style="font-size: 14px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; border-bottom: 2px solid #2563eb; padding-bottom: 4px;">
-            Assessment & Examination Framework
-          </h3>
-          <table style="width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
-            <thead>
-              <tr style="background: #f8fafc; color: #475569; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #e2e8f0;">
-                <th style="padding: 8px 12px;">Assessment Title</th>
-                <th style="padding: 8px 12px;">Type</th>
-                <th style="padding: 8px 12px;">Duration</th>
-                <th style="padding: 8px 12px; text-align: right;">Passing Requirement</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${assessments.map(a => `
-                <tr>
-                  <td style="padding: 8px 12px; border-bottom: 1px solid #e2e8f0; font-weight: 600; color: #0f172a;">${a.title}</td>
-                  <td style="padding: 8px 12px; border-bottom: 1px solid #e2e8f0;"><span style="background: #f1f5f9; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">${a.assessment_type}</span></td>
-                  <td style="padding: 8px 12px; border-bottom: 1px solid #e2e8f0; color: #64748b;">${a.duration_minutes} Minutes</td>
-                  <td style="padding: 8px 12px; border-bottom: 1px solid #e2e8f0; text-align: right; font-weight: 700; color: #059669;">${a.passing_score}% Score</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
+    this.showModal(`
+      <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding: 1rem 1.25rem;">
+        <div style="display: flex; align-items: center; gap: 8px; width: 100%;">
+          <i class="fi fi-rr-search" style="color: var(--primary); font-size: 1.1rem;"></i>
+          <input 
+            type="text" 
+            id="quick-search-input" 
+            class="form-input" 
+            placeholder="Type to search pages, modules, exams (Cmd+K)..." 
+            style="border: none; background: transparent; font-size: 1rem; width: 100%; box-shadow: none;" 
+            oninput="App.filterQuickSearch(this.value)"
+            autofocus
+          />
         </div>
-      ` : '';
-
-      const printableDoc = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>${c.code} - ${c.title} Syllabus & Details</title>
-          <meta charset="utf-8" />
-      <div class="sidebar-nav">
-        ${navItems}
+        <button class="icon-btn" onclick="App.closeModal()">✕</button>
       </div>
-    `;
+      <div class="modal-body" style="padding: 0.75rem; max-height: 380px; overflow-y: auto;" id="quick-search-results">
+        ${searchOptions.map(opt => `
+          <div class="dropdown-item-link" style="padding: 0.65rem 0.85rem; margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between;" onclick="App.closeModal(); App.navigate('${opt.route}');">
+            <div class="flex items-center gap-3">
+              <span style="width: 28px; height: 28px; border-radius: 6px; background: var(--primary-light); color: var(--primary); display: inline-flex; align-items: center; justify-content: center;"><i class="${opt.icon}"></i></span>
+              <span style="font-weight: 600;">${opt.title}</span>
+            </div>
+            <span class="badge badge-secondary font-mono" style="font-size: 0.65rem;">${opt.cat}</span>
+          </div>
+        `).join('')}
+      </div>
+      <div class="modal-footer" style="padding: 0.6rem 1.25rem; font-size: 0.75rem; color: var(--text-muted); display: flex; justify-content: space-between;">
+        <span>Press <kbd style="background: var(--bg-tertiary); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border-color);">ESC</kbd> to exit</span>
+        <span>Navigation Command Center</span>
+      </div>
+    `, 'modal-md');
+
+    setTimeout(() => {
+      const inp = document.getElementById('quick-search-input');
+      if (inp) inp.focus();
+    }, 100);
   },
 
   toggleMobileSidebar() {
@@ -938,6 +961,140 @@ const App = {
     try {
       const data = await API.get('/api/notifications');
       const countEls = document.querySelectorAll('.notification-badge');
+      const unread = (data.notifications || []).filter(n => !n.is_read).length;
+      countEls.forEach(el => {
+        if (unread > 0) {
+          el.textContent = unread > 99 ? '99+' : unread;
+          el.style.display = 'inline-flex';
+        } else {
+          el.style.display = 'none';
+        }
+      });
+    } catch (e) {
+      console.warn('Failed to fetch notification count:', e);
+    }
+  },
+
+  showModal(html, sizeClass = '') {
+    const backdrop = document.getElementById('global-modal-backdrop');
+    const dialog = document.getElementById('global-modal-dialog');
+    if (!backdrop || !dialog) return;
+    dialog.className = 'modal-dialog ' + sizeClass;
+    dialog.innerHTML = html;
+    backdrop.style.display = 'flex';
+  },
+
+  closeModal() {
+    const backdrop = document.getElementById('global-modal-backdrop');
+    if (backdrop) backdrop.style.display = 'none';
+  },
+
+  async downloadSyllabusPDF(courseId) {
+    try {
+      const data = await API.get(`/api/courses/${courseId}`);
+      const c = data.course;
+      const modules = data.modules || [];
+      const assessments = data.assessments || [];
+      const totalLessons = modules.reduce((acc, m) => acc + (m.contents ? m.contents.length : 0), 0);
+      const totalHours = modules.reduce((acc, m) => acc + (m.duration_hours || 2), 0);
+
+      const printWindow = window.open('', '_blank');
+      if (!printWindow) {
+        API.toast('Popup blocked! Please allow popups to download/print the syllabus.', 'warning');
+        return;
+      }
+
+      const modulesDocHtml = modules.map((m, idx) => {
+        const contentsRows = (m.contents || []).map(cnt => `
+          <tr>
+            <td style="padding: 6px 12px; border-bottom: 1px solid #e2e8f0; color: #475569;">${cnt.title}</td>
+            <td style="padding: 6px 12px; border-bottom: 1px solid #e2e8f0; color: #64748b;"><span style="text-transform: uppercase; font-size: 10px; font-weight: 700; background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">${cnt.content_type}</span></td>
+            <td style="padding: 6px 12px; border-bottom: 1px solid #e2e8f0; color: #64748b; text-align: right;">${cnt.duration_minutes || 15} Mins</td>
+          </tr>
+        `).join('');
+
+        return `
+          <div style="margin-bottom: 16px; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; page-break-inside: avoid;">
+            <div style="background: #f8fafc; padding: 8px 12px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+              <strong style="color: #0f172a; font-size: 13px;">Module ${idx + 1}: ${m.title}</strong>
+              <span style="font-size: 11px; color: #64748b; font-weight: 600;">~${m.duration_hours || 2} Hours</span>
+            </div>
+            ${m.description ? `<div style="padding: 8px 12px; font-size: 12px; color: #64748b; font-style: italic; background: #fafafa;">${m.description}</div>` : ''}
+            <table style="width: 100%; border-collapse: collapse; font-size: 12px; text-align: left;">
+              <thead>
+                <tr style="background: #f1f5f9; color: #475569; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em;">
+                  <th style="padding: 6px 12px;">Lesson / Topic</th>
+                  <th style="padding: 6px 12px;">Type</th>
+                  <th style="padding: 6px 12px; text-align: right;">Duration</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${contentsRows || '<tr><td colspan="3" style="padding: 8px 12px; color: #94a3b8; font-style: italic;">No lessons in this module.</td></tr>'}
+              </tbody>
+            </table>
+          </div>
+        `;
+      }).join('');
+
+      const assessmentsDocHtml = assessments.length > 0 ? `
+        <div style="margin-top: 24px; page-break-inside: avoid;">
+          <h3 style="font-size: 14px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; border-bottom: 2px solid #2563eb; padding-bottom: 4px;">
+            Assessment & Examination Framework
+          </h3>
+          <table style="width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
+            <thead>
+              <tr style="background: #f8fafc; color: #475569; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #e2e8f0;">
+                <th style="padding: 8px 12px;">Assessment Title</th>
+                <th style="padding: 8px 12px;">Type</th>
+                <th style="padding: 8px 12px;">Duration</th>
+                <th style="padding: 8px 12px; text-align: right;">Passing Requirement</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${assessments.map(a => `
+                <tr>
+                  <td style="padding: 8px 12px; border-bottom: 1px solid #e2e8f0; font-weight: 600; color: #0f172a;">${a.title}</td>
+                  <td style="padding: 8px 12px; border-bottom: 1px solid #e2e8f0;"><span style="background: #f1f5f9; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">${a.assessment_type}</span></td>
+                  <td style="padding: 8px 12px; border-bottom: 1px solid #e2e8f0; color: #64748b;">${a.duration_minutes} Minutes</td>
+                  <td style="padding: 8px 12px; border-bottom: 1px solid #e2e8f0; text-align: right; font-weight: 700; color: #059669;">${a.passing_score}% Score</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      ` : '';
+
+      const printableDoc = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>${c.code} - ${c.title} Syllabus & Details</title>
+          <meta charset="utf-8" />
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 30px; color: #0f172a; }
+            @media print { body { padding: 0; } }
+          </style>
+        </head>
+        <body>
+          <div style="max-width: 800px; margin: 0 auto;">
+            <div style="border-bottom: 2px solid #2563eb; padding-bottom: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-start;">
+              <div>
+                <h1 style="font-size: 24px; margin: 0 0 6px 0; color: #0f172a;">${c.title}</h1>
+                <div style="font-size: 13px; color: #64748b;">Course Code: <strong>${c.code}</strong> | Category: <strong>${c.category}</strong></div>
+              </div>
+              <div style="text-align: right; font-size: 13px; color: #64748b;">
+                <div>${c.college_name || 'Multi-Tenant Platform'}</div>
+                <div>Level: <strong>${c.level || 'Beginner'}</strong></div>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0;">
+              <div>
+                <span style="display: block; font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: 700;">Target Batch</span>
+                <strong style="color: #0f172a; font-size: 13px;">${c.batch || 'All Batches'}</strong>
+              </div>
+              <div>
+                <span style="display: block; font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: 700;">Estimated Duration</span>
                 <strong style="color: #0f172a; font-size: 13px;">${c.duration || '6 Weeks'}</strong>
               </div>
               <div>
@@ -946,7 +1103,6 @@ const App = {
               </div>
             </div>
 
-            <!-- Description -->
             <div style="margin-bottom: 18px;">
               <h3 style="font-size: 13px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 4px;">
                 Course Overview
@@ -967,7 +1123,6 @@ const App = {
               </div>
             ` : ''}
 
-            <!-- Modules -->
             <div style="margin-top: 20px;">
               <h3 style="font-size: 14px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; border-bottom: 2px solid #2563eb; padding-bottom: 4px; display: flex; justify-content: space-between; align-items: center;">
                 <span>Curriculum Modules & Topics</span>
@@ -976,10 +1131,8 @@ const App = {
               ${modulesDocHtml || '<div style="color: #94a3b8; font-style: italic; font-size: 12px;">No curriculum modules configured yet.</div>'}
             </div>
 
-            <!-- Assessments -->
             ${assessmentsDocHtml}
 
-            <!-- Institutional Verification Footer -->
             <div style="margin-top: 30px; padding-top: 16px; border-top: 1.5px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #64748b; page-break-inside: avoid;">
               <div>
                 <div><strong>NEXUS ENTERPRISE PLATFORM</strong> • Institutional Academic Suite</div>
@@ -990,14 +1143,11 @@ const App = {
                 <div>Ref: SYL-${c.code}-${c.id}</div>
               </div>
             </div>
-
           </div>
 
           <script>
             window.addEventListener('DOMContentLoaded', () => {
-              setTimeout(() => {
-                window.print();
-              }, 400);
+              setTimeout(() => { window.print(); }, 400);
             });
           <\/script>
         </body>

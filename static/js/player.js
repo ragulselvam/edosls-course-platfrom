@@ -348,30 +348,6 @@ const Player = {
       .replace(/^# (.*$)/gim, '<h1>$1</h1>')
       .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
       .replace(/\*(.*)\*/gim, '<em>$1</em>')
-    }
-
-    if (type === 'jetbot') {
-      return JetBotSimulator.renderPanel(content);
-    }
-
-    return `
-      <div class="markdown-body" style="max-width: 960px; margin: 0 auto;">
-        <h2>${content.title}</h2>
-        <div class="card" style="padding: 2rem;">
-          ${content.content_data || 'Lesson Content'}
-        </div>
-      </div>
-    `;
-  },
-
-  formatMarkdownToHtml(md) {
-    if (!md) return '';
-    return md
-      .replace(/^### (.*$)/gim, '<h3>$1</h3>')
-      .replace(/^## (.*$)/gim, '<h2>$1</h2>')
-      .replace(/^# (.*$)/gim, '<h1>$1</h1>')
-      .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
-      .replace(/\*(.*)\*/gim, '<em>$1</em>')
       .replace(/\`\`\`python([\s\S]*?)\`\`\`/gim, '<pre><code class="language-python">$1</code></pre>')
       .replace(/\`\`\`([\s\S]*?)\`\`\`/gim, '<pre><code>$1</code></pre>')
       .replace(/\`([^\`]+)\`/gim, '<code class="font-mono" style="background: var(--bg-surface); padding: 2px 6px; border-radius: 4px;">$1</code>')
@@ -437,6 +413,14 @@ const Player = {
       });
 
       // Update sidebar tick
+      const itemEl = document.querySelector(`.player-lesson-item[data-content-id="${this.currentContentId}"]`);
+      if (itemEl) itemEl.classList.add('completed');
+
+      if (res && res.certificate) {
+        App.showModal(`
+          <div class="modal-body" style="text-align: center; padding: 2.5rem;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">🏆</div>
+            <h3>Congratulations on Course Completion!</h3>
             <p class="text-secondary" style="margin: 0.5rem 0 1.5rem;">
               You have completed 100% of the training program. Your verified certificate has been issued and registered.
             </p>

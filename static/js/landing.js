@@ -237,59 +237,6 @@ import math
 
 class JetBotVisionNav:
     def __init__(self, target_angle=0.0):
-          <div class="landing-course-header">
-            <div class="landing-card-tags">
-              <span class="landing-badge badge-${levelClass}">${c.level || 'Beginner'}</span>
-              <span class="landing-badge badge-category">${c.category || 'Engineering'}</span>
-            </div>
-            <div class="landing-course-code">${c.code || 'ENG-101'}</div>
-          </div>
-
-          <h3 class="landing-course-title">${c.title}</h3>
-
-          <div class="course-summary-container">
-            <div class="course-summary-label">
-              <i class="fi fi-rr-document-signed"></i>
-              <span>Course Summary</span>
-            </div>
-            <p class="course-summary-text">${summary.overview}</p>
-            
-            <div class="course-summary-highlights">
-              <div class="summary-highlights-title">Core Competencies & Key Topics:</div>
-              <ul class="summary-highlights-list">
-                ${summary.highlights.map(h => `
-                  <li>
-                    <i class="fi fi-sr-check"></i>
-                    <span>${h}</span>
-                  </li>
-                `).join('')}
-              </ul>
-            </div>
-          </div>
-        </div>
-      `;
-    }).join('');
-  },
-
-  openCourseRegistration(courseId) {
-    App.navigate(`register-course/${courseId}`);
-  },
-
-  scrollTo(elementId) {
-    const el = document.getElementById(elementId);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  },
-
-  initSandboxDemo() {
-    const editor = document.getElementById('landing-sandbox-code');
-    if (editor && !editor.value) {
-      editor.value = `# NVIDIA JetBot Autonomous Vision Pipeline Demo
-import math
-
-class JetBotVisionNav:
-    def __init__(self, target_angle=0.0):
         self.target_angle = target_angle
         self.detected_obstacles = [0.15, 0.42, 0.88] # distances in meters
         

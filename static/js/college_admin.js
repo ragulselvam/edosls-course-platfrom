@@ -667,24 +667,6 @@ James, Holden, CS-203, james@college.edu, Autonomous Systems, 1"></textarea>
         </div>
         <div class="flex items-center gap-2">
           <button class="btn btn-primary" onclick="CollegeAdmin.openCreateCourseModal()">
-    });
-  },
-
-  // =========================================================================
-  // COURSE CURRICULUM & CATALOG (VIEW-ONLY FOR COLLEGE ADMIN)
-  // =========================================================================
-  async renderCoursesView() {
-    const container = document.getElementById('college-admin-content');
-    if (!container) return;
-
-    container.innerHTML = `
-      <div class="flex items-center justify-between" style="margin-bottom: 1.5rem;">
-        <div>
-          <h2>Course Curriculum & Catalog</h2>
-          <p class="text-secondary" style="font-size: 0.85rem;">Assigned institutional training programs, syllabus structure, and enrolled student metrics</p>
-        </div>
-        <div class="flex items-center gap-2">
-          <button class="btn btn-primary" onclick="CollegeAdmin.openCreateCourseModal()">
             <i class="fi fi-rr-plus"></i> + Create Course
           </button>
         </div>
@@ -827,67 +809,6 @@ James, Holden, CS-203, james@college.edu, Autonomous Systems, 1"></textarea>
       App.showModal(`
         <div class="modal-header">
           <div>
-      `;
-    } catch (err) {
-      console.error(err);
-      document.getElementById('ca-courses-table').innerHTML = `
-        <div class="p-4 text-center text-danger">Failed to load courses: ${err.message || err}</div>
-      `;
-    }
-  },
-
-  async viewCourseDetails(courseId) {
-    App.showModal(`
-      <div class="modal-header">
-        <div>
-          <h3>Loading Course Details...</h3>
-        </div>
-        <button class="icon-btn" onclick="App.closeModal()">✕</button>
-      </div>
-      <div class="modal-body" style="text-align: center; padding: 3rem;">
-        <div class="spinner"></div>
-      </div>
-    `, 'modal-lg');
-
-    try {
-      const data = await API.get(`/api/courses/${courseId}`);
-      const c = data.course;
-      const modules = data.modules || [];
-      const assessments = data.assessments || [];
-
-      const modulesHtml = modules.map((m, mIdx) => `
-        <div class="card" style="margin-bottom: 0.75rem; padding: 1rem 1.25rem; background: var(--bg-tertiary);">
-          <div style="font-weight: 700; color: var(--primary); font-size: 0.95rem; margin-bottom: 0.35rem;">
-            Module ${mIdx + 1}: ${m.title}
-          </div>
-          ${m.description ? `<p class="text-secondary" style="font-size: 0.8rem; margin-bottom: 0.5rem;">${m.description}</p>` : ''}
-          ${(m.contents && m.contents.length > 0) ? `
-            <div style="display: flex; flex-direction: column; gap: 6px;">
-              ${m.contents.map((cnt, cIdx) => {
-                let icon = '<i class="fi fi-rr-document"></i>';
-                if (cnt.content_type === 'video') icon = '<i class="fi fi-rr-play-alt" style="color: var(--primary);"></i>';
-                if (cnt.content_type === 'coding') icon = '<i class="fi fi-rr-laptop-code" style="color: var(--accent-emerald);"></i>';
-                if (cnt.content_type === 'jetbot') icon = '<i class="fi fi-rr-robot" style="color: var(--nvidia-green);"></i>';
-                if (cnt.content_type === 'pdf') icon = '<i class="fi fi-rr-document" style="color: #64748b;"></i>';
-                return `
-                  <div style="display: flex; align-items: center; justify-content: space-between; padding: 6px 12px; background: var(--bg-card); border-radius: 6px; font-size: 0.82rem; border: 1px solid var(--border-color);">
-                    <div class="flex items-center gap-2">
-                      <span>${icon}</span>
-                      <strong style="color: var(--text-primary);">${cIdx + 1}. ${cnt.title}</strong>
-                      <span class="badge badge-primary font-mono" style="font-size: 0.65rem;">${cnt.content_type}</span>
-                    </div>
-                    <span class="text-muted font-mono" style="font-size: 0.75rem;"><i class="fi fi-rr-clock"></i> ${cnt.duration_minutes} min</span>
-                  </div>
-                `;
-              }).join('')}
-            </div>
-          ` : '<div class="text-muted" style="font-size: 0.78rem;">No lessons added to this module yet.</div>'}
-        </div>
-      `).join('');
-
-      App.showModal(`
-        <div class="modal-header">
-          <div>
             <h3>${c.title}</h3>
             <span class="badge badge-primary font-mono">${c.code}</span>
             <span class="badge ${c.is_published ? 'badge-success' : 'badge-warning'}" style="margin-left: 4px;">
@@ -948,6 +869,58 @@ James, Holden, CS-203, james@college.edu, Autonomous Systems, 1"></textarea>
             <div class="card" style="padding: 1rem 1.25rem;">
               <h4 style="font-size: 0.95rem; margin-bottom: 0.5rem;"><i class="fi fi-rr-diploma"></i> Attached Assessments & Exams</h4>
               <div style="display: flex; flex-direction: column; gap: 6px;">
+                ${assessments.map(a => `
+                  <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 12px; background: var(--bg-card); border-radius: 6px; font-size: 0.82rem; border: 1px solid var(--border-color);">
+                    <strong style="color: var(--text-primary);">${a.title}</strong>
+                    <span class="badge badge-success font-mono" style="font-size: 0.7rem;">${a.assessment_type} • ${a.duration_minutes}m • Pass: ${a.passing_score}%</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="App.closeModal()">Close</button>
+        </div>
+      `, 'modal-lg');
+    } catch (err) {
+      console.error(err);
+      App.showModal(`
+        <div class="modal-header">
+          <h3>Error Loading Details</h3>
+          <button class="icon-btn" onclick="App.closeModal()">✕</button>
+        </div>
+        <div class="modal-body p-4 text-danger">
+          Failed to load course details: ${err.message || err}
+        </div>
+      `);
+    }
+  },
+
+  async openCreateCourseModal() {
+    let trainerOptions = '';
+    try {
+      const trainers = await API.get('/api/admins/trainers');
+      trainerOptions = (trainers || []).map(t => `<option value="${t.id}">${t.full_name} (${t.email})</option>`).join('');
+    } catch (e) {
+      trainerOptions = '<option value="">No trainers available</option>';
+    }
+
+    App.showModal(`
+      <form onsubmit="CollegeAdmin.submitCreateCourse(event)">
+        <div class="modal-header">
+          <div>
+            <h3>Create New Course</h3>
+            <span class="text-secondary" style="font-size: 0.82rem;">Add a new course curriculum to your college portal</span>
+          </div>
+          <button type="button" class="icon-btn" onclick="App.closeModal()">✕</button>
+        </div>
+
+        <div class="modal-body" style="padding: 1.4rem;">
+          <div class="grid grid-cols-2 gap-3" style="margin-bottom: 1rem;">
+            <div class="form-group">
+              <label class="form-label" style="font-weight: 600;">Course Title <span style="color: var(--accent-rose);">*</span></label>
               <input type="text" id="ca-ncc-title" class="form-input" placeholder="e.g. Advanced Machine Learning" required />
             </div>
             <div class="form-group">
@@ -969,104 +942,6 @@ James, Holden, CS-203, james@college.edu, Autonomous Systems, 1"></textarea>
               </select>
             </div>
             <label class="form-label" style="font-weight: 600;">Course Description</label>
-            <textarea id="ca-ncc-desc" class="form-textarea" style="height: 70px;" placeholder="Summary of topics covered, outcomes, and prerequisites..."></textarea>
-          </div>
-
-          <div class="grid grid-cols-2 gap-3">
-            <div class="form-group">
-              <label class="form-label" style="font-weight: 600;">Thumbnail Image URL</label>
-              <input type="url" id="ca-ncc-thumb" class="form-input" value="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600" />
-            </div>
-            <div class="form-group">
-              <label class="form-label" style="font-weight: 600;">Initial Status</label>
-              <select id="ca-ncc-status" class="form-select" style="width: 100%;">
-                <option value="draft">Draft (Private)</option>
-                <option value="published">Published (Active & Visible)</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding: 1rem 1.4rem; background: var(--bg-surface-elevated, transparent);">
-          <button type="button" class="btn btn-secondary btn-sm" onclick="App.closeModal()">Cancel</button>
-          <button type="submit" class="btn btn-primary btn-sm" id="ca-btn-create-course">
-            <i class="fi fi-rr-check"></i> Create Course
-          </button>
-        </div>
-      </form>
-    `, 'modal-lg');
-  },
-
-  async submitCreateCourse(event) {
-    if (event) event.preventDefault();
-    const user = Auth.getUser();
-    const collegeId = user ? user.college_id : null;
-
-    const title = document.getElementById('ca-ncc-title')?.value.trim();
-    const code = document.getElementById('ca-ncc-code')?.value.trim().toUpperCase();
-    const batch = document.getElementById('ca-ncc-batch')?.value || 'All Batches';
-    const category = document.getElementById('ca-ncc-category')?.value || 'Computer Science';
-    const level = document.getElementById('ca-ncc-level')?.value || 'Beginner';
-    const duration = document.getElementById('ca-ncc-duration')?.value.trim() || '6 Weeks';
-    const trainerVal = document.getElementById('ca-ncc-trainer')?.value;
-    const trainerId = trainerVal ? parseInt(trainerVal) : null;
-    const description = document.getElementById('ca-ncc-desc')?.value.trim() || '';
-    const thumbnail = document.getElementById('ca-ncc-thumb')?.value.trim() || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600';
-    const statusVal = document.getElementById('ca-ncc-status')?.value || 'draft';
-
-    if (!title || !code) {
-      API.toast('Please enter both Course Title and Course Code.', 'warning');
-      return;
-    }
-
-    const btn = document.getElementById('ca-btn-create-course');
-    if (btn) {
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner-sm"></span> Creating...';
-    }
-
-    try {
-      const course = await API.post('/api/courses', {
-        title,
-        code,
-        college_id: collegeId,
-        category,
-        level,
-        duration,
-        batch,
-        description,
-        thumbnail_url: thumbnail,
-        status: statusVal,
-    const collegeId = user ? user.college_id : null;
-
-    const title = document.getElementById('ca-ncc-title')?.value.trim();
-    const code = document.getElementById('ca-ncc-code')?.value.trim().toUpperCase();
-    const batch = document.getElementById('ca-ncc-batch')?.value || 'All Batches';
-    const category = document.getElementById('ca-ncc-category')?.value || 'Computer Science';
-    const level = document.getElementById('ca-ncc-level')?.value || 'Beginner';
-    const duration = document.getElementById('ca-ncc-duration')?.value.trim() || '6 Weeks';
-    const trainerVal = document.getElementById('ca-ncc-trainer')?.value;
-    const trainerId = trainerVal ? parseInt(trainerVal) : null;
-    const description = document.getElementById('ca-ncc-desc')?.value.trim() || '';
-    const thumbnail = document.getElementById('ca-ncc-thumb')?.value.trim() || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600';
-    const statusVal = document.getElementById('ca-ncc-status')?.value || 'draft';
-
-    if (!title || !code) {
-      API.toast('Please enter both Course Title and Course Code.', 'warning');
-      return;
-    }
-
-    const btn = document.getElementById('ca-btn-create-course');
-    if (btn) {
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner-sm"></span> Creating...';
-    }
-
-    try {
-      const course = await API.post('/api/courses', {
-        title,
-        code,
-        college_id: collegeId,
             <textarea id="ca-ncc-desc" class="form-textarea" style="height: 70px;" placeholder="Summary of topics covered, outcomes, and prerequisites..."></textarea>
           </div>
 
@@ -1159,15 +1034,63 @@ James, Holden, CS-203, james@college.edu, Autonomous Systems, 1"></textarea>
     }
   },
 
-  // =========================================================================
-  // ENROLLMENTS & ASSESSMENTS & RESULTS
-  // =========================================================================
-  async renderEnrollmentsView() {
-    const container = document.getElementById('college-admin-content');
-    container.innerHTML = `
-      <div class="flex items-center justify-between" style="margin-bottom: 1.5rem;">
-        <div>
-          <h2>Student Course Enrollments & Progress</h2>
+  async openEditCourseModal(courseId) {
+    try {
+      const data = await API.get(`/api/courses/${courseId}`);
+      const c = data.course;
+      const isPub = c.is_published;
+      let trainerOptions = '';
+      try {
+        const trainers = await API.get('/api/admins/trainers');
+        trainerOptions = (trainers || []).map(t => `<option value="${t.id}" ${t.id === c.trainer_id ? 'selected' : ''}>${t.full_name} (${t.email})</option>`).join('');
+      } catch (e) {
+        trainerOptions = '<option value="">No trainers</option>';
+      }
+
+      App.showModal(`
+        <form onsubmit="CollegeAdmin.submitEditCourse(event, ${c.id})">
+          <div class="modal-header">
+            <div>
+              <h3>Edit Course: ${c.code}</h3>
+              <span class="text-secondary" style="font-size: 0.82rem;">Update course metadata and training settings</span>
+            </div>
+            <button type="button" class="icon-btn" onclick="App.closeModal()">✕</button>
+          </div>
+
+          <div class="modal-body" style="padding: 1.4rem;">
+            <div class="grid grid-cols-2 gap-3" style="margin-bottom: 1rem;">
+              <div class="form-group">
+                <label class="form-label" style="font-weight: 600;">Course Title</label>
+                <input type="text" id="ca-ecc-title" class="form-input" value="${(c.title || '').replace(/"/g, '&quot;')}" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label" style="font-weight: 600;">Course Code</label>
+                <input type="text" id="ca-ecc-code" class="form-input font-mono" value="${c.code || ''}" required />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3" style="margin-bottom: 1rem;">
+              <div class="form-group">
+                <label class="form-label" style="font-weight: 600;">Target Batch</label>
+                <select id="ca-ecc-batch" class="form-select" style="width: 100%;">
+                  <option value="All Batches" ${c.batch === 'All Batches' ? 'selected' : ''}>All Batches</option>
+                  <option value="2021-2025" ${c.batch === '2021-2025' ? 'selected' : ''}>2021-2025</option>
+                  <option value="2022-2026" ${c.batch === '2022-2026' ? 'selected' : ''}>2022-2026</option>
+                  <option value="2023-2027" ${c.batch === '2023-2027' ? 'selected' : ''}>2023-2027</option>
+                  <option value="2024-2028" ${c.batch === '2024-2028' ? 'selected' : ''}>2024-2028</option>
+                  <option value="2025-2029" ${c.batch === '2025-2029' ? 'selected' : ''}>2025-2029</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" style="font-weight: 600;">Assigned Trainer</label>
+                <select id="ca-ecc-trainer" class="form-select" style="width: 100%;">
+                  <option value="">-- Select Trainer --</option>
+                  ${trainerOptions}
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1rem;">
               <label class="form-label" style="font-weight: 600;">Description</label>
               <textarea id="ca-ecc-desc" class="form-textarea" style="height: 70px;">${c.description || ''}</textarea>
             </div>
@@ -1713,7 +1636,210 @@ James, Holden, CS-203, james@college.edu, Autonomous Systems, 1"></textarea>
       const courses = (data.charts && data.charts.course_enrollments) || data.course_popularity || [];
 
       const reportsEl = document.getElementById('ca-full-reports');
-      if (!reportsEl) return;
+      reportsEl.innerHTML = `
+        <div class="grid grid-cols-4 gap-4" style="margin-bottom: 1.5rem;">
+          <div class="card stat-card">
+            <div class="stat-label">Total Students</div>
+            <div class="stat-value">${s.total_students || 0}</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-label">Total Courses</div>
+            <div class="stat-value">${s.total_courses || 0}</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-label">Total Enrollments</div>
+            <div class="stat-value">${s.total_enrollments || 0}</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-label">Certificates Issued</div>
+            <div class="stat-value">${s.total_certificates || 0}</div>
+          </div>
+        </div>
+
+        <div class="card" style="padding: 1.5rem;">
+          <h3 style="margin-bottom: 1rem;">Course Enrollment Distribution</h3>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Course Title</th>
+                  <th>Category</th>
+                  <th>Enrollments</th>
+                  <th>Completion Rate</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${courses.length > 0 ? courses.map(c => `
+                  <tr>
+                    <td><strong>${c.title || c.course_title || 'Course'}</strong></td>
+                    <td><span class="badge badge-primary font-mono">${c.category || 'General'}</span></td>
+                    <td>${c.count || c.enrollments || 0} Students</td>
+                    <td><span class="badge badge-success">${c.completion_rate || '85%'}</span></td>
+                  </tr>
+                `).join('') : '<tr><td colspan="4" class="text-center">No enrollment metrics recorded yet.</td></tr>'}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    } catch (err) {
+      console.error(err);
+      const reportsEl = document.getElementById('ca-full-reports');
+      if (reportsEl) reportsEl.innerHTML = `<div class="card p-4 text-center text-danger">Failed to load reports: ${err.message || err}</div>`;
+    }
+  },
+
+  async renderNotificationsView() {
+    const container = document.getElementById('college-admin-content');
+    if (!container) return;
+
+    container.innerHTML = `
+      <div class="flex items-center justify-between" style="margin-bottom: 1.5rem;">
+        <div>
+          <h2>Announcements & Alerts</h2>
+          <p class="text-secondary" style="font-size: 0.85rem;">System notifications and student broadcast history</p>
+        </div>
+        <button class="btn btn-primary" onclick="CollegeAdmin.openBroadcastModal()">
+          <i class="fi fi-rr-paper-plane"></i> Send Announcement
+        </button>
+      </div>
+      <div class="card" id="ca-notifs-container">
+        <div class="p-4 text-center">Loading notifications...</div>
+      </div>
+    `;
+
+    try {
+      const data = await API.get('/api/notifications');
+      const notifs = data.notifications || [];
+      const el = document.getElementById('ca-notifs-container');
+      if (!el) return;
+
+      if (notifs.length === 0) {
+        el.innerHTML = '<div class="p-4 text-center text-muted">No notifications found.</div>';
+        return;
+      }
+
+      el.innerHTML = notifs.map(n => `
+        <div style="padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: flex-start;">
+          <div>
+            <div style="font-weight: 700; color: var(--text-primary); font-size: 0.95rem; margin-bottom: 0.25rem;">${n.title}</div>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.35rem;">${n.message}</p>
+            <span class="text-muted font-mono" style="font-size: 0.72rem;">${new Date(n.created_at || Date.now()).toLocaleString()}</span>
+          </div>
+          <span class="badge ${n.is_read ? 'badge-secondary' : 'badge-primary'}">${n.is_read ? 'Read' : 'New'}</span>
+        </div>
+      `).join('');
+    } catch (e) {
+      console.error(e);
+      const el = document.getElementById('ca-notifs-container');
+      if (el) el.innerHTML = `<div class="p-4 text-center text-danger">Failed to load: ${e.message || e}</div>`;
+    }
+  },
+
+  openBroadcastModal() {
+    App.showModal(`
+      <form onsubmit="CollegeAdmin.submitBroadcast(event)">
+        <div class="modal-header">
+          <h3>Broadcast Announcement</h3>
+          <button type="button" class="icon-btn" onclick="App.closeModal()">✕</button>
+        </div>
+        <div class="modal-body" style="padding: 1.4rem;">
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label class="form-label">Announcement Title</label>
+            <input type="text" id="ca-broadcast-title" class="form-input" placeholder="e.g. Midterm Examination Schedule Released" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Message Content</label>
+            <textarea id="ca-broadcast-msg" class="form-textarea" rows="4" placeholder="Type announcement details for your enrolled students..." required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="App.closeModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary"><i class="fi fi-rr-paper-plane"></i> Send Announcement</button>
+        </div>
+      </form>
+    `);
+  },
+
+  async submitBroadcast(e) {
+    if (e) e.preventDefault();
+    const title = document.getElementById('ca-broadcast-title')?.value.trim();
+    const message = document.getElementById('ca-broadcast-msg')?.value.trim();
+    if (!title || !message) return;
+
+    try {
+      await API.post('/api/notifications/broadcast', { title, message });
+      API.toast('Announcement broadcast sent successfully!', 'success');
+      App.closeModal();
+      this.renderNotificationsView();
+    } catch (err) {
+      API.toast(err.message || 'Failed to send announcement', 'error');
+    }
+  },
+
+  renderSettingsView() {
+    const user = Auth.getUser() || {};
+    const container = document.getElementById('college-admin-content');
+    if (!container) return;
+
+    container.innerHTML = `
+      <div class="flex items-center justify-between" style="margin-bottom: 1.5rem;">
+        <div>
+          <h2>Account & Institution Settings</h2>
+          <p class="text-secondary" style="font-size: 0.85rem;">Manage your administrator profile and security credentials</p>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="card" style="padding: 1.5rem;">
+          <h3 style="margin-bottom: 1rem;">Administrator Profile</h3>
+          <div style="margin-bottom: 0.75rem;">
+            <label class="form-label">Full Name</label>
+            <input type="text" class="form-input" value="${user.full_name || ''}" readonly />
+          </div>
+          <div style="margin-bottom: 0.75rem;">
+            <label class="form-label">Email Address</label>
+            <input type="email" class="form-input" value="${user.email || ''}" readonly />
+          </div>
+          <div style="margin-bottom: 0.75rem;">
+            <label class="form-label">Assigned College</label>
+            <input type="text" class="form-input" value="${user.college_name || 'Autonomous Institution'}" readonly />
+          </div>
+        </div>
+
+        <div class="card" style="padding: 1.5rem;">
+          <h3 style="margin-bottom: 1rem;">Change Password</h3>
+          <form onsubmit="CollegeAdmin.changePassword(event)">
+            <div style="margin-bottom: 0.75rem;">
+              <label class="form-label">Current Password</label>
+              <input type="password" id="ca-old-pass" class="form-input" placeholder="••••••••••••" required />
+            </div>
+            <div style="margin-bottom: 0.75rem;">
+              <label class="form-label">New Password</label>
+              <input type="password" id="ca-new-pass" class="form-input" placeholder="••••••••••••" required />
+            </div>
+            <button type="submit" class="btn btn-primary" style="margin-top: 0.5rem;">Update Password</button>
+          </form>
+        </div>
+      </div>
+    `;
+  },
+
+  async changePassword(e) {
+    if (e) e.preventDefault();
+    const oldPass = document.getElementById('ca-old-pass')?.value;
+    const newPass = document.getElementById('ca-new-pass')?.value;
+    if (!oldPass || !newPass) return;
+
+    try {
+      await API.post('/api/auth/change-password', { old_password: oldPass, new_password: newPass });
+      API.toast('Password updated successfully!', 'success');
+      document.getElementById('ca-old-pass').value = '';
+      document.getElementById('ca-new-pass').value = '';
+    } catch (err) {
+      API.toast(err.message || 'Failed to update password', 'error');
+    }
+  }
+};
 
 
 
