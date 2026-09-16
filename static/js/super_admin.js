@@ -49,15 +49,15 @@ const SuperAdmin = {
 
     try {
       const data = await API.get('/api/reports/super-admin-dashboard');
-      const m = data.metrics;
+      const m = data?.metrics || data || {};
 
       // Render Stat Cards
       document.getElementById('sa-stats-grid').innerHTML = `
         <div class="stat-card">
           <div>
             <div class="stat-label">Total Colleges</div>
-            <div class="stat-value">${m.total_colleges}</div>
-            <div class="stat-trend">${m.active_colleges} Active Institutions</div>
+            <div class="stat-value">${m.total_colleges || 0}</div>
+            <div class="stat-trend">${m.active_colleges || 0} Active Institutions</div>
           </div>
           <div class="stat-icon-wrapper">🏛️</div>
         </div>
@@ -88,7 +88,7 @@ const SuperAdmin = {
       `;
 
       // Render Colleges Table
-      const colRows = data.colleges_breakdown.map(c => `
+      const colRows = (data.colleges_breakdown || []).map(c => `
         <tr>
           <td>
             <div style="font-weight: 700;">${c.name}</div>
@@ -127,7 +127,7 @@ const SuperAdmin = {
       `;
 
       // Render Recent Audits
-      const auditRows = data.recent_audits.map(a => `
+      const auditRows = (data.recent_audits || []).map(a => `
         <div style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between;">
           <div>
             <div style="font-weight: 600; font-size: 0.85rem;">
