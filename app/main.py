@@ -69,17 +69,15 @@ app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 def health_check():
     return {"status": "healthy", "service": "multi-college-platform", "version": "1.0.0"}
 
-# Single-page application route: serve index.html for all UI routes
-@app.get("/{full_path:path}")
-async def serve_spa(full_path: str):
-    # If request is an API route that didn't match, return 404 JSON
-    if full_path.startswith("api/"):
-        return JSONResponse(status_code=404, content={"detail": "API route not found"})
-        
-    index_file = STATIC_DIR / "index.html"
-    if index_file.exists():
-        return FileResponse(index_file)
-    return {"message": "Platform API is running. Frontend static assets initializing..."}
+@app.get("/")
+def root():
+    return {
+        "name": "Multi-College Student Training & Assessment Platform API",
+        "status": "online",
+        "version": "1.0.0",
+        "docs": "/api/docs",
+        "frontend": "http://localhost:3000"
+    }
 
 if __name__ == "__main__":
     import uvicorn
