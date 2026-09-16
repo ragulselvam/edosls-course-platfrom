@@ -33,7 +33,7 @@ export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
-  const [showDemoProfiles, setShowDemoProfiles] = useState(false);
+  const [showDemoProfiles, setShowDemoProfiles] = useState(true);
 
   // Forgot Password modal
   const [isForgotOpen, setIsForgotOpen] = useState(false);
@@ -53,10 +53,18 @@ export default function LoginPage() {
     }
   };
 
-  const handleQuickLogin = (roleEmail: string) => {
+  const handleQuickLogin = async (roleEmail: string, roleName?: string) => {
     setEmail(roleEmail);
     setPassword('Password@123');
-    login(roleEmail, 'Password@123');
+    setIsLoading(true);
+    try {
+      await login(roleEmail, 'Password@123');
+      toast(`Signed in as ${roleName || 'demo user'}`, 'success');
+    } catch {
+      // Toast shown in login
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleForgotPassword = async (e: React.FormEvent) => {
@@ -307,67 +315,64 @@ export default function LoginPage() {
             </div>
 
             {/* Quick Demo Profiles Accordion */}
-            <div className="pt-1">
-              <button
-                type="button"
-                onClick={() => setShowDemoProfiles(!showDemoProfiles)}
-                className="w-full flex items-center justify-between text-[11px] font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 py-1 transition-colors"
-              >
-                <span>🔑 1-Click Demo Profiles</span>
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showDemoProfiles ? 'rotate-180' : ''}`} />
-              </button>
+            <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-between text-[11px] font-semibold text-slate-500 dark:text-slate-400 pb-1.5">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  Pre-Seeded Demo Logins
+                </span>
+                <span className="text-[10px] font-mono text-slate-400">PWD: Password@123</span>
+              </div>
 
-              {showDemoProfiles && (
-                <div className="grid grid-cols-2 gap-1.5 pt-2 animate-in fade-in duration-200">
-                  <button
-                    type="button"
-                    onClick={() => handleQuickLogin('superadmin@platform.edu')}
-                    className="p-2 rounded-lg border border-slate-200 dark:border-slate-700/60 bg-slate-50 dark:bg-slate-800/40 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-left transition-all group"
-                  >
-                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-blue-600">
-                      <ShieldCheck className="w-3 h-3 text-blue-500 shrink-0" />
-                      Super Admin
-                    </div>
-                    <div className="text-[9px] text-slate-400 truncate">superadmin@platform.edu</div>
-                  </button>
+              <div className="grid grid-cols-2 gap-1.5 pt-1">
+                <button
+                  type="button"
+                  onClick={() => handleQuickLogin('superadmin@platform.edu', 'Super Admin')}
+                  className="p-2 rounded-xl border border-slate-200/90 dark:border-slate-700/60 bg-slate-50/80 dark:bg-slate-800/40 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-left transition-all group shadow-2xs"
+                >
+                  <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-blue-600">
+                    <ShieldCheck className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+                    Super Admin
+                  </div>
+                  <div className="text-[9px] text-slate-500 dark:text-slate-400 truncate">superadmin@platform.edu</div>
+                </button>
 
-                  <button
-                    type="button"
-                    onClick={() => handleQuickLogin('admin@ait.edu')}
-                    className="p-2 rounded-lg border border-slate-200 dark:border-slate-700/60 bg-slate-50 dark:bg-slate-800/40 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 text-left transition-all group"
-                  >
-                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600">
-                      <Building2 className="w-3 h-3 text-emerald-500 shrink-0" />
-                      College Admin
-                    </div>
-                    <div className="text-[9px] text-slate-400 truncate">admin@ait.edu</div>
-                  </button>
+                <button
+                  type="button"
+                  onClick={() => handleQuickLogin('admin@ait.edu', 'College Admin (AIT)')}
+                  className="p-2 rounded-xl border border-slate-200/90 dark:border-slate-700/60 bg-slate-50/80 dark:bg-slate-800/40 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 text-left transition-all group shadow-2xs"
+                >
+                  <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600">
+                    <Building2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                    College Admin
+                  </div>
+                  <div className="text-[9px] text-slate-500 dark:text-slate-400 truncate">admin@ait.edu</div>
+                </button>
 
-                  <button
-                    type="button"
-                    onClick={() => handleQuickLogin('dr.arun@platform.edu')}
-                    className="p-2 rounded-lg border border-slate-200 dark:border-slate-700/60 bg-slate-50 dark:bg-slate-800/40 hover:bg-amber-50 dark:hover:bg-amber-900/20 text-left transition-all group"
-                  >
-                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-amber-600">
-                      <Bot className="w-3 h-3 text-amber-500 shrink-0" />
-                      Trainer
-                    </div>
-                    <div className="text-[9px] text-slate-400 truncate">dr.arun@platform.edu</div>
-                  </button>
+                <button
+                  type="button"
+                  onClick={() => handleQuickLogin('dr.arun@platform.edu', 'Faculty Trainer')}
+                  className="p-2 rounded-xl border border-slate-200/90 dark:border-slate-700/60 bg-slate-50/80 dark:bg-slate-800/40 hover:bg-amber-50 dark:hover:bg-amber-900/20 text-left transition-all group shadow-2xs"
+                >
+                  <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-amber-600">
+                    <Bot className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                    Trainer
+                  </div>
+                  <div className="text-[9px] text-slate-500 dark:text-slate-400 truncate">dr.arun@platform.edu</div>
+                </button>
 
-                  <button
-                    type="button"
-                    onClick={() => handleQuickLogin('student1@ait.edu')}
-                    className="p-2 rounded-lg border border-slate-200 dark:border-slate-700/60 bg-slate-50 dark:bg-slate-800/40 hover:bg-purple-50 dark:hover:bg-purple-900/20 text-left transition-all group"
-                  >
-                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-purple-600">
-                      <GraduationCap className="w-3 h-3 text-purple-500 shrink-0" />
-                      Student
-                    </div>
-                    <div className="text-[9px] text-slate-400 truncate">student1@ait.edu</div>
-                  </button>
-                </div>
-              )}
+                <button
+                  type="button"
+                  onClick={() => handleQuickLogin('student1@ait.edu', 'Student (AIT)')}
+                  className="p-2 rounded-xl border border-slate-200/90 dark:border-slate-700/60 bg-slate-50/80 dark:bg-slate-800/40 hover:bg-purple-50 dark:hover:bg-purple-900/20 text-left transition-all group shadow-2xs"
+                >
+                  <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-purple-600">
+                    <GraduationCap className="w-3.5 h-3.5 text-purple-500 shrink-0" />
+                    Student
+                  </div>
+                  <div className="text-[9px] text-slate-500 dark:text-slate-400 truncate">student1@ait.edu</div>
+                </button>
+              </div>
             </div>
           </div>
 

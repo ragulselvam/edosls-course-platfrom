@@ -31,7 +31,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const targetRole = r || user?.role_name;
     if (targetRole === 'super_admin') return '/super-admin';
     if (targetRole === 'college_admin') return '/college-admin';
-    if (targetRole === 'trainer') return '/college-admin';
+    if (targetRole === 'trainer') return '/trainer';
     if (targetRole === 'student') return '/student';
     return '/';
   }, [user]);
