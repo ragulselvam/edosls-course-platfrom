@@ -21,6 +21,7 @@ import {
   LayoutDashboard,
   Clock,
   X,
+  ChevronDown,
 } from 'lucide-react';
 
 export default function LandingPage() {
@@ -51,90 +52,104 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] flex flex-col selection:bg-blue-600 selection:text-white">
-      {/* 1. Header (Directly on Main Display without White Box) */}
-      <header className="w-full z-40 px-6 sm:px-10 lg:px-16 py-6 flex items-center justify-between">
-        {/* Brand Logo (Top Left) */}
-        <Link href="/" className="flex items-center gap-3 group shrink-0">
-          <div className="w-9 h-9 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-            <img src="/edsols-emblem.svg" alt="EDSOLS" className="w-full h-full object-contain" />
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="font-extrabold text-lg tracking-tight text-[var(--text-primary)]">EDSOLS</span>
-            <span className="hidden sm:inline-flex text-[9px] font-bold px-2 py-0.5 rounded bg-blue-500/10 text-blue-500 border border-blue-500/20 whitespace-nowrap">
-              EDGE AI & ROBOTICS
-            </span>
-          </div>
-        </Link>
+      {/* 1. Header & Hero Viewport Container (100% Viewport Height) */}
+      <div className="min-h-screen w-full flex flex-col justify-between relative overflow-hidden">
+        {/* Header */}
+        <header className="w-full z-40 px-6 sm:px-10 lg:px-16 py-6 flex items-center justify-between shrink-0">
+          {/* Brand Logo (Top Left) */}
+          <Link href="/" className="flex items-center gap-3 group shrink-0">
+            <div className="w-9 h-9 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+              <img src="/edsols-emblem.svg" alt="EDSOLS" className="w-full h-full object-contain" />
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="font-extrabold text-lg tracking-tight text-[var(--text-primary)]">EDSOLS</span>
+              <span className="hidden sm:inline-flex text-[9px] font-bold px-2 py-0.5 rounded bg-blue-500/10 text-blue-500 border border-blue-500/20 whitespace-nowrap">
+                EDGE AI & ROBOTICS
+              </span>
+            </div>
+          </Link>
 
-        {/* Action CTAs (Top Right) */}
-        <div className="flex items-center gap-3">
-          <button
-            onClick={toggleTheme}
-            className="w-10 h-10 rounded-xl flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors border border-[var(--border-color)] shadow-xs"
-            title="Toggle theme"
-          >
-            {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-500" />}
-          </button>
-
-          {isAuthenticated ? (
-            <Link
-              href={getDashboardPath()}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-md shadow-blue-600/25 whitespace-nowrap"
-            >
-              <LayoutDashboard className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Dashboard</span>
-            </Link>
-          ) : (
-            <Link
-              href="/login"
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-md shadow-blue-600/25 whitespace-nowrap"
-            >
-              <span>Sign In</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          )}
-        </div>
-      </header>
-
-      {/* 2. Hero Section */}
-      <section className="relative w-full pt-20 pb-24 px-6 sm:px-10 lg:px-16 overflow-hidden flex flex-col items-center text-center">
-        {/* Concentric Orbital Background Visualizer */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] pointer-events-none -z-10 opacity-30 dark:opacity-20">
-          <div className="absolute inset-0 rounded-full border border-blue-500/20 animate-spin-slow" />
-          <div className="absolute inset-16 rounded-full border border-indigo-500/20 animate-spin-slow" style={{ animationDirection: 'reverse' }} />
-          <div className="absolute inset-32 rounded-full border border-purple-500/20" />
-          <div className="absolute inset-48 rounded-full border border-blue-500/30" />
-          <div className="absolute inset-64 rounded-full bg-blue-500/10 blur-3xl animate-pulse-glow" />
-        </div>
-
-        <div className="max-w-4xl mx-auto space-y-6">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-500 text-xs font-bold tracking-wide">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>EDSOLS INNOVATIONS · INTELLIGENCE AT THE EDGE</span>
-          </div>
-
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1]">
-            Edge AI & Robotics <br />
-            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-              for Next-Gen Engineers
-            </span>
-          </h1>
-
-          <p className="text-base sm:text-xl text-[var(--text-secondary)] max-w-2xl mx-auto leading-relaxed">
-            Equipping universities, research labs, and industrial enterprises with NVIDIA Jetson hardware integration, interactive in-browser Python 3.12 coding sandboxes, real-time JetBot physics arenas, and globally recognized Edge AI certifications.
-          </p>
-
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+          {/* Action CTAs (Top Right) */}
+          <div className="flex items-center gap-3">
             <button
-              onClick={() => scrollToSection('curriculum')}
-              className="flex items-center gap-2 px-7 py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm transition-all shadow-xl shadow-blue-600/30 hover:scale-105"
+              onClick={toggleTheme}
+              className="w-10 h-10 rounded-xl flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors border border-[var(--border-color)] shadow-xs cursor-pointer"
+              title="Toggle theme"
             >
-              <BookOpen className="w-4 h-4" />
-              <span>Explore Curriculum</span>
+              {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-500" />}
             </button>
+
+            {isAuthenticated ? (
+              <Link
+                href={getDashboardPath()}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-md shadow-blue-600/25 whitespace-nowrap"
+              >
+                <LayoutDashboard className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Dashboard</span>
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-md shadow-blue-600/25 whitespace-nowrap"
+              >
+                <span>Sign In</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            )}
           </div>
+        </header>
+
+        {/* 2. Hero Section (Vertically & Horizontally Centered, 100% Fit) */}
+        <section className="relative w-full px-6 sm:px-10 lg:px-16 flex-1 flex flex-col items-center justify-center text-center my-auto py-8">
+          {/* Concentric Orbital Background Visualizer */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] lg:w-[850px] h-[700px] lg:h-[850px] pointer-events-none -z-10 opacity-30 dark:opacity-20">
+            <div className="absolute inset-0 rounded-full border border-blue-500/20 animate-spin-slow" />
+            <div className="absolute inset-16 rounded-full border border-indigo-500/20 animate-spin-slow" style={{ animationDirection: 'reverse' }} />
+            <div className="absolute inset-32 rounded-full border border-purple-500/20" />
+            <div className="absolute inset-48 rounded-full border border-blue-500/30" />
+            <div className="absolute inset-64 rounded-full bg-blue-500/10 blur-3xl animate-pulse-glow" />
+          </div>
+
+          <div className="max-w-4xl mx-auto space-y-6">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-500 text-xs font-bold tracking-wide">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>EDSOLS INNOVATIONS · INTELLIGENCE AT THE EDGE</span>
+            </div>
+
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1]">
+              Edge AI & Robotics <br />
+              <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                for Next-Gen Engineers
+              </span>
+            </h1>
+
+            <p className="text-base sm:text-lg lg:text-xl text-[var(--text-secondary)] max-w-2xl mx-auto leading-relaxed">
+              Equipping universities, research labs, and industrial enterprises with NVIDIA Jetson hardware integration, interactive in-browser Python 3.12 coding sandboxes, real-time JetBot physics arenas, and globally recognized Edge AI certifications.
+            </p>
+
+            <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
+              <button
+                onClick={() => scrollToSection('curriculum')}
+                className="flex items-center gap-2 px-7 py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm transition-all shadow-xl shadow-blue-600/30 hover:scale-105 cursor-pointer"
+              >
+                <BookOpen className="w-4 h-4" />
+                <span>Explore Curriculum</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* Bottom subtle scroll anchor indicator */}
+        <div className="pb-6 flex justify-center shrink-0">
+          <button
+            onClick={() => scrollToSection('features')}
+            className="flex flex-col items-center gap-1.5 text-[var(--text-muted)] hover:text-blue-500 transition-colors text-xs font-semibold cursor-pointer group"
+          >
+            <span className="text-[11px] tracking-wider uppercase opacity-70 group-hover:opacity-100">Scroll to explore</span>
+            <ChevronDown className="w-4 h-4 animate-bounce text-blue-500" />
+          </button>
         </div>
-      </section>
+      </div>
 
       {/* 3. Features Bento Grid */}
       <section id="features" className="py-20 px-6 sm:px-10 lg:px-16 max-w-7xl w-full mx-auto">
