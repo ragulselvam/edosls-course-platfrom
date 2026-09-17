@@ -97,7 +97,7 @@ export default function LandingPage() {
       </header>
 
       {/* 2. Hero Section */}
-      <section className="relative pt-20 pb-24 px-4 overflow-hidden flex flex-col items-center text-center">
+      <section className="relative w-full pt-20 pb-24 px-6 sm:px-10 lg:px-16 overflow-hidden flex flex-col items-center text-center">
         {/* Concentric Orbital Background Visualizer */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] pointer-events-none -z-10 opacity-30 dark:opacity-20">
           <div className="absolute inset-0 rounded-full border border-blue-500/20 animate-spin-slow" />
@@ -137,7 +137,7 @@ export default function LandingPage() {
       </section>
 
       {/* 3. Features Bento Grid */}
-      <section id="features" className="py-20 px-4 max-w-6xl w-full mx-auto">
+      <section id="features" className="py-20 px-6 sm:px-10 lg:px-16 max-w-7xl w-full mx-auto">
         <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
           <span className="text-xs font-bold text-blue-500 uppercase tracking-widest">EDSOLS ECOSYSTEM</span>
           <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
@@ -215,7 +215,7 @@ export default function LandingPage() {
       </section>
 
       {/* 4. Live Interactive Labs Section */}
-      <section id="labs" className="py-20 px-4 max-w-6xl w-full mx-auto border-t border-[var(--border-color)]">
+      <section id="labs" className="py-20 px-6 sm:px-10 lg:px-16 max-w-7xl w-full mx-auto border-t border-[var(--border-color)]">
         <div className="text-center max-w-2xl mx-auto mb-12 space-y-3">
           <span className="text-xs font-bold text-blue-500 uppercase tracking-widest">HANDS-ON STEM DEMO</span>
           <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
@@ -264,7 +264,7 @@ export default function LandingPage() {
       </section>
 
       {/* 5. Curriculum Catalog Section */}
-      <section id="curriculum" className="py-20 px-4 max-w-6xl w-full mx-auto border-t border-[var(--border-color)]">
+      <section id="curriculum" className="py-20 px-6 sm:px-10 lg:px-16 max-w-7xl w-full mx-auto border-t border-[var(--border-color)]">
         <div className="flex flex-col items-center text-center mb-12 space-y-6">
           <div className="max-w-2xl mx-auto space-y-2">
             <span className="text-xs font-bold text-blue-500 uppercase tracking-widest">EDSOLS CURRICULUM</span>
@@ -462,8 +462,8 @@ export default function LandingPage() {
       )}
 
       {/* 6. Footer */}
-      <footer className="mt-auto border-t border-[var(--border-color)] bg-[var(--bg-secondary)] py-8 px-4">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--text-muted)]">
+      <footer className="mt-auto border-t border-[var(--border-color)] bg-[var(--bg-secondary)] py-8 px-6 sm:px-10 lg:px-16 w-full">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--text-muted)]">
           <div className="flex items-center gap-2.5">
             <div className="w-7 h-7 flex items-center justify-center">
               <img src="/edsols-emblem.svg" alt="EDSOLS" className="w-full h-full object-contain" />

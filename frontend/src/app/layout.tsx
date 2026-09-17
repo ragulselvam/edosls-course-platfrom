@@ -1,7 +1,13 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Inter, JetBrains_Mono, Cinzel } from "next/font/google";
 import { Providers } from "@/components/providers/Providers";
 import "./globals.css";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
