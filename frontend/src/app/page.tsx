@@ -21,7 +21,6 @@ import {
   LayoutDashboard,
   Clock,
   X,
-  ChevronDown,
 } from 'lucide-react';
 
 export default function LandingPage() {
@@ -139,16 +138,6 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Bottom subtle scroll anchor indicator */}
-        <div className="pb-6 flex justify-center shrink-0">
-          <button
-            onClick={() => scrollToSection('features')}
-            className="flex flex-col items-center gap-1.5 text-[var(--text-muted)] hover:text-blue-500 transition-colors text-xs font-semibold cursor-pointer group"
-          >
-            <span className="text-[11px] tracking-wider uppercase opacity-70 group-hover:opacity-100">Scroll to explore</span>
-            <ChevronDown className="w-4 h-4 animate-bounce text-blue-500" />
-          </button>
-        </div>
       </div>
 
       {/* 3. Features Bento Grid */}
