@@ -51,30 +51,21 @@ export default function LandingPage() {
       {/* 1. Floating Pill Header Navbar */}
       <header className="sticky top-4 z-40 px-4 max-w-6xl w-full mx-auto">
         <div className="h-16 px-4 sm:px-6 rounded-2xl bg-[var(--bg-secondary)]/85 backdrop-blur-xl border border-[var(--border-color)] shadow-xl shadow-black/5 flex items-center justify-between">
-          {/* Brand Logo (Left-aligned) */}
-          <div className="flex-1 flex items-center justify-start min-w-0">
-            <Link href="/" className="flex items-center gap-2.5 group shrink-0">
-              <div className="w-8 h-8 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                <img src="/edsols-emblem.svg" alt="EDSOLS" className="w-full h-full object-contain" />
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="font-extrabold text-base tracking-tight text-[var(--text-primary)]">EDSOLS</span>
-                <span className="hidden sm:inline-flex text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-500 border border-blue-500/20 whitespace-nowrap">
-                  EDGE AI & ROBOTICS
-                </span>
-              </div>
-            </Link>
-          </div>
+          {/* Brand Logo (Top Left) */}
+          <Link href="/" className="flex items-center gap-2.5 group shrink-0">
+            <div className="w-8 h-8 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+              <img src="/edsols-emblem.svg" alt="EDSOLS" className="w-full h-full object-contain" />
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="font-extrabold text-base tracking-tight text-[var(--text-primary)]">EDSOLS</span>
+              <span className="hidden sm:inline-flex text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-500 border border-blue-500/20 whitespace-nowrap">
+                EDGE AI & ROBOTICS
+              </span>
+            </div>
+          </Link>
 
-          {/* Navigation Links (Exact Center) */}
-          <nav className="hidden md:flex items-center justify-center gap-6 lg:gap-8 text-[13px] font-semibold text-[var(--text-secondary)]">
-            <button onClick={() => scrollToSection('features')} className="hover:text-blue-500 transition-colors whitespace-nowrap cursor-pointer">Ecosystem</button>
-            <button onClick={() => scrollToSection('labs')} className="hover:text-blue-500 transition-colors whitespace-nowrap cursor-pointer">Turnkey Labs</button>
-            <button onClick={() => scrollToSection('curriculum')} className="hover:text-blue-500 transition-colors whitespace-nowrap cursor-pointer">Certifications</button>
-          </nav>
-
-          {/* Action CTAs (Right-aligned) */}
-          <div className="flex-1 flex items-center justify-end gap-2 sm:gap-3">
+          {/* Action CTAs (Top Right) */}
+          <div className="flex items-center gap-2 sm:gap-3">
             <button
               onClick={toggleTheme}
               className="w-9 h-9 rounded-xl flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)] transition-colors border border-transparent hover:border-[var(--border-color)]"
