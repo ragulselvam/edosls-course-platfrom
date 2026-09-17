@@ -19,7 +19,6 @@ import {
   Moon,
   Sun,
   LayoutDashboard,
-  ExternalLink,
 } from 'lucide-react';
 
 export default function LandingPage() {
@@ -68,15 +67,10 @@ export default function LandingPage() {
           </div>
 
           {/* Navigation Links (Exact Center) */}
-          <nav className="hidden md:flex items-center justify-center gap-6 lg:gap-7 text-[13px] font-semibold text-[var(--text-secondary)]">
+          <nav className="hidden md:flex items-center justify-center gap-6 lg:gap-8 text-[13px] font-semibold text-[var(--text-secondary)]">
             <button onClick={() => scrollToSection('features')} className="hover:text-blue-500 transition-colors whitespace-nowrap cursor-pointer">Ecosystem</button>
             <button onClick={() => scrollToSection('labs')} className="hover:text-blue-500 transition-colors whitespace-nowrap cursor-pointer">Turnkey Labs</button>
             <button onClick={() => scrollToSection('curriculum')} className="hover:text-blue-500 transition-colors whitespace-nowrap cursor-pointer">Certifications</button>
-            <Link href="/verify" className="hover:text-blue-500 transition-colors whitespace-nowrap">Verify Certificate</Link>
-            <a href="https://www.edsols.in" target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors flex items-center gap-1 whitespace-nowrap">
-              <span>edsols.in</span>
-              <ExternalLink className="w-3 h-3 text-slate-400" />
-            </a>
           </nav>
 
           {/* Action CTAs (Right-aligned) */}
