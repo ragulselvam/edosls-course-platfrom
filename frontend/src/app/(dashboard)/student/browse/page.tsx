@@ -198,8 +198,8 @@ export default function StudentBrowseCoursesPage() {
                           <p className="font-bold text-slate-200 mt-0.5">{c.duration || "8 Weeks"}</p>
                         </div>
                         <div>
-                          <p className="text-slate-500 text-[10px] font-medium">Curriculum</p>
-                          <p className="font-bold text-slate-200 mt-0.5">{c.module_count || 1} Modules</p>
+                          <p className="text-slate-500 text-[10px] font-medium">Certification</p>
+                          <p className="font-bold text-emerald-400 mt-0.5">Verified</p>
                         </div>
                       </div>
                     </div>

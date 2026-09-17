@@ -336,16 +336,9 @@ export default function LandingPage() {
               </div>
 
               <div className="p-6 pt-0 flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2 text-xs font-semibold text-[var(--text-secondary)]">
-                  <span className="flex items-center gap-1 text-blue-500">
-                    <BookOpen className="w-3.5 h-3.5 shrink-0" />
-                    <span>{c.module_count ? `${c.module_count} Modules` : 'Curriculum'}</span>
-                  </span>
-                  <span className="w-1 h-1 rounded-full bg-[var(--border-color)]" />
-                  <span className="text-emerald-500 flex items-center gap-1">
-                    <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
-                    <span>Certified</span>
-                  </span>
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-500">
+                  <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                  <span>Certified Course</span>
                 </div>
                 <button
                   onClick={() => setSelectedCourse(c)}
@@ -398,16 +391,11 @@ export default function LandingPage() {
 
             {/* Modal Body */}
             <div className="p-6 sm:p-8 space-y-6 overflow-y-auto">
-              <div className="grid grid-cols-3 gap-3 text-center">
+              <div className="grid grid-cols-2 gap-4 text-center">
                 <div className="p-3.5 rounded-2xl bg-[var(--bg-tertiary)] border border-[var(--border-color)]">
                   <Clock className="w-4 h-4 mx-auto mb-1 text-blue-500" />
                   <p className="text-[10px] text-[var(--text-secondary)] font-medium">Duration</p>
-                  <p className="text-xs font-bold text-[var(--text-primary)] mt-0.5">{selectedCourse.duration || '8 Weeks'}</p>
-                </div>
-                <div className="p-3.5 rounded-2xl bg-[var(--bg-tertiary)] border border-[var(--border-color)]">
-                  <BookOpen className="w-4 h-4 mx-auto mb-1 text-indigo-500" />
-                  <p className="text-[10px] text-[var(--text-secondary)] font-medium">Curriculum</p>
-                  <p className="text-xs font-bold text-[var(--text-primary)] mt-0.5">{selectedCourse.module_count || 4} Modules</p>
+                  <p className="text-xs font-bold text-[var(--text-primary)] mt-0.5">{selectedCourse.duration || 'Self-Paced'}</p>
                 </div>
                 <div className="p-3.5 rounded-2xl bg-[var(--bg-tertiary)] border border-[var(--border-color)]">
                   <CheckCircle2 className="w-4 h-4 mx-auto mb-1 text-emerald-500" />
