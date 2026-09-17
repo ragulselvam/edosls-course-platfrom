@@ -1,0 +1,12 @@
+{
+  "files.associations": {
+    "supabase_schema.sql": "postgres",
+    "schema.sql": "sqlite",
+    "*.sql": "postgres"
+  },
+  "bigquery.validateQueries": false,
+  "bigquery.linter.enabled": false,
+  "googlecloudtools.cloudcode.bigquery.validation.enabled": false,
+  "googlecloudtools.bigquery.enableQueryValidation": false,
+  "gcp.bigquery.validateQueries": false
+}
