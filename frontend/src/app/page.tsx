@@ -156,28 +156,6 @@ export default function LandingPage() {
               <span>Explore Curriculum</span>
             </button>
           </div>
-
-          {/* Quick Metrics Strip */}
-          {stats && (
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-12 max-w-3xl mx-auto">
-              <div className="p-4 rounded-2xl bg-[var(--bg-secondary)]/50 border border-[var(--border-color)] backdrop-blur-md">
-                <div className="text-2xl font-extrabold text-blue-500">{stats.colleges || 3}+</div>
-                <div className="text-xs text-[var(--text-muted)] font-medium mt-0.5">Partner Institutions</div>
-              </div>
-              <div className="p-4 rounded-2xl bg-[var(--bg-secondary)]/50 border border-[var(--border-color)] backdrop-blur-md">
-                <div className="text-2xl font-extrabold text-emerald-500">{stats.students?.toLocaleString() || '1,200'}+</div>
-                <div className="text-xs text-[var(--text-muted)] font-medium mt-0.5">Engineers Certified</div>
-              </div>
-              <div className="p-4 rounded-2xl bg-[var(--bg-secondary)]/50 border border-[var(--border-color)] backdrop-blur-md">
-                <div className="text-2xl font-extrabold text-purple-500">{stats.courses || '12'}+</div>
-                <div className="text-xs text-[var(--text-muted)] font-medium mt-0.5">Edge AI Tracks</div>
-              </div>
-              <div className="p-4 rounded-2xl bg-[var(--bg-secondary)]/50 border border-[var(--border-color)] backdrop-blur-md">
-                <div className="text-2xl font-extrabold text-amber-500">99.6%</div>
-                <div className="text-xs text-[var(--text-muted)] font-medium mt-0.5">Industry Alignment</div>
-              </div>
-            </div>
-          )}
         </div>
       </section>
 
