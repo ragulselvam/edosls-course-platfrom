@@ -48,50 +48,48 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] flex flex-col selection:bg-blue-600 selection:text-white">
-      {/* 1. Floating Pill Header Navbar */}
-      <header className="sticky top-4 z-40 px-4 max-w-6xl w-full mx-auto">
-        <div className="h-16 px-4 sm:px-6 rounded-2xl bg-[var(--bg-secondary)]/85 backdrop-blur-xl border border-[var(--border-color)] shadow-xl shadow-black/5 flex items-center justify-between">
-          {/* Brand Logo (Top Left) */}
-          <Link href="/" className="flex items-center gap-2.5 group shrink-0">
-            <div className="w-8 h-8 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-              <img src="/edsols-emblem.svg" alt="EDSOLS" className="w-full h-full object-contain" />
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="font-extrabold text-base tracking-tight text-[var(--text-primary)]">EDSOLS</span>
-              <span className="hidden sm:inline-flex text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-500 border border-blue-500/20 whitespace-nowrap">
-                EDGE AI & ROBOTICS
-              </span>
-            </div>
-          </Link>
-
-          {/* Action CTAs (Top Right) */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            <button
-              onClick={toggleTheme}
-              className="w-9 h-9 rounded-xl flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)] transition-colors border border-transparent hover:border-[var(--border-color)]"
-              title="Toggle theme"
-            >
-              {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-500" />}
-            </button>
-
-            {isAuthenticated ? (
-              <Link
-                href={getDashboardPath()}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-md shadow-blue-600/25 whitespace-nowrap"
-              >
-                <LayoutDashboard className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Dashboard</span>
-              </Link>
-            ) : (
-              <Link
-                href="/login"
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-md shadow-blue-600/25 whitespace-nowrap"
-              >
-                <span>Sign In</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            )}
+      {/* 1. Header (Directly on Main Display without White Box) */}
+      <header className="w-full z-40 px-6 sm:px-10 lg:px-16 py-6 flex items-center justify-between">
+        {/* Brand Logo (Top Left) */}
+        <Link href="/" className="flex items-center gap-3 group shrink-0">
+          <div className="w-9 h-9 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+            <img src="/edsols-emblem.svg" alt="EDSOLS" className="w-full h-full object-contain" />
           </div>
+          <div className="flex items-center gap-2">
+            <span className="font-extrabold text-lg tracking-tight text-[var(--text-primary)]">EDSOLS</span>
+            <span className="hidden sm:inline-flex text-[9px] font-bold px-2 py-0.5 rounded bg-blue-500/10 text-blue-500 border border-blue-500/20 whitespace-nowrap">
+              EDGE AI & ROBOTICS
+            </span>
+          </div>
+        </Link>
+
+        {/* Action CTAs (Top Right) */}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={toggleTheme}
+            className="w-10 h-10 rounded-xl flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors border border-[var(--border-color)] shadow-xs"
+            title="Toggle theme"
+          >
+            {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-500" />}
+          </button>
+
+          {isAuthenticated ? (
+            <Link
+              href={getDashboardPath()}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-md shadow-blue-600/25 whitespace-nowrap"
+            >
+              <LayoutDashboard className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Dashboard</span>
+            </Link>
+          ) : (
+            <Link
+              href="/login"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-md shadow-blue-600/25 whitespace-nowrap"
+            >
+              <span>Sign In</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          )}
         </div>
       </header>
 
