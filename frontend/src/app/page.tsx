@@ -143,28 +143,12 @@ export default function LandingPage() {
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
-            <Link
-              href="/login"
-              className="flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-[#1d63ff] hover:bg-[#1554e0] text-white font-bold text-sm transition-all shadow-xl shadow-blue-600/30 hover:scale-105"
-            >
-              <span>Access Learning Portal</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-
             <button
               onClick={() => scrollToSection('curriculum')}
-              className="flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-[var(--bg-secondary)] hover:bg-[var(--bg-tertiary)] border border-[var(--border-color)] text-[var(--text-primary)] font-bold text-sm transition-all shadow-md hover:scale-105"
+              className="flex items-center gap-2 px-7 py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm transition-all shadow-xl shadow-blue-600/30 hover:scale-105"
             >
-              <BookOpen className="w-4 h-4 text-blue-500" />
+              <BookOpen className="w-4 h-4" />
               <span>Explore Curriculum</span>
-            </button>
-
-            <button
-              onClick={() => scrollToSection('labs')}
-              className="flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-[var(--bg-secondary)] hover:bg-[var(--bg-tertiary)] border border-[var(--border-color)] text-[var(--text-primary)] font-bold text-sm transition-all shadow-md hover:scale-105"
-            >
-              <Terminal className="w-4 h-4 text-emerald-500" />
-              <span>Try Live Sandbox Demo</span>
             </button>
           </div>
 
