@@ -62,37 +62,39 @@ export default function LandingPage() {
     <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] flex flex-col selection:bg-blue-600 selection:text-white">
       {/* 1. Floating Pill Header Navbar */}
       <header className="sticky top-4 z-40 px-4 max-w-6xl w-full mx-auto">
-        <div className="flex items-center justify-between p-2.5 sm:px-5 rounded-2xl bg-[var(--bg-secondary)]/80 backdrop-blur-xl border border-[var(--border-color)] shadow-xl shadow-black/5">
-          {/* Brand Logo */}
-          <Link href="/" className="flex items-center gap-3">
-            <div className="w-9 h-9 flex items-center justify-center">
-              <img src="/edsols-emblem.svg" alt="EDSOLS" className="w-full h-full object-contain" />
-            </div>
-            <div>
-              <span className="font-extrabold text-base tracking-tight text-[var(--text-primary)]">EDSOLS</span>
-              <span className="ml-1.5 text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-500 border border-blue-500/20">
-                EDGE AI & ROBOTICS
-              </span>
-            </div>
-          </Link>
+        <div className="h-16 px-4 sm:px-6 rounded-2xl bg-[var(--bg-secondary)]/85 backdrop-blur-xl border border-[var(--border-color)] shadow-xl shadow-black/5 flex items-center justify-between">
+          {/* Brand Logo (Left-aligned) */}
+          <div className="flex-1 flex items-center justify-start min-w-0">
+            <Link href="/" className="flex items-center gap-2.5 group shrink-0">
+              <div className="w-8 h-8 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <img src="/edsols-emblem.svg" alt="EDSOLS" className="w-full h-full object-contain" />
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="font-extrabold text-base tracking-tight text-[var(--text-primary)]">EDSOLS</span>
+                <span className="hidden sm:inline-flex text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-500 border border-blue-500/20 whitespace-nowrap">
+                  EDGE AI & ROBOTICS
+                </span>
+              </div>
+            </Link>
+          </div>
 
-          {/* Navigation Links */}
-          <nav className="hidden md:flex items-center gap-6 text-sm font-semibold text-[var(--text-secondary)]">
-            <button onClick={() => scrollToSection('features')} className="hover:text-blue-500 transition-colors">Ecosystem</button>
-            <button onClick={() => scrollToSection('labs')} className="hover:text-blue-500 transition-colors">Turnkey Labs</button>
-            <button onClick={() => scrollToSection('curriculum')} className="hover:text-blue-500 transition-colors">Certifications</button>
-            <Link href="/verify" className="hover:text-blue-500 transition-colors">Verify Certificate</Link>
-            <a href="https://www.edsols.in" target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors flex items-center gap-1">
+          {/* Navigation Links (Exact Center) */}
+          <nav className="hidden md:flex items-center justify-center gap-6 lg:gap-7 text-[13px] font-semibold text-[var(--text-secondary)]">
+            <button onClick={() => scrollToSection('features')} className="hover:text-blue-500 transition-colors whitespace-nowrap cursor-pointer">Ecosystem</button>
+            <button onClick={() => scrollToSection('labs')} className="hover:text-blue-500 transition-colors whitespace-nowrap cursor-pointer">Turnkey Labs</button>
+            <button onClick={() => scrollToSection('curriculum')} className="hover:text-blue-500 transition-colors whitespace-nowrap cursor-pointer">Certifications</button>
+            <Link href="/verify" className="hover:text-blue-500 transition-colors whitespace-nowrap">Verify Certificate</Link>
+            <a href="https://www.edsols.in" target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors flex items-center gap-1 whitespace-nowrap">
               <span>edsols.in</span>
               <ExternalLink className="w-3 h-3 text-slate-400" />
             </a>
           </nav>
 
-          {/* Action CTAs */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          {/* Action CTAs (Right-aligned) */}
+          <div className="flex-1 flex items-center justify-end gap-2 sm:gap-3">
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-xl text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)] transition-colors"
+              className="w-9 h-9 rounded-xl flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)] transition-colors border border-transparent hover:border-[var(--border-color)]"
               title="Toggle theme"
             >
               {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-500" />}
@@ -101,15 +103,15 @@ export default function LandingPage() {
             {isAuthenticated ? (
               <Link
                 href={getDashboardPath()}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-md shadow-blue-600/25"
+                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-md shadow-blue-600/25 whitespace-nowrap"
               >
                 <LayoutDashboard className="w-3.5 h-3.5" />
-                <span>Dashboard ({user?.role_name?.replace('_', ' ')})</span>
+                <span className="hidden sm:inline">Dashboard</span>
               </Link>
             ) : (
               <Link
                 href="/login"
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-md shadow-blue-600/25"
+                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-md shadow-blue-600/25 whitespace-nowrap"
               >
                 <span>Sign In</span>
                 <ArrowRight className="w-3.5 h-3.5" />
