@@ -1,26 +1,51 @@
 version: '3.8'
 
 services:
-  training-platform:
-    build: .
-    container_name: multi_college_training_platform
+  # 1. FastAPI REST Backend Service
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nexus_lms_backend
     ports:
-      - "6966:6966"
+      - "8000:8000"
     environment:
-      - PORT=6966
+      - PORT=8000
       - HOST=0.0.0.0
       - DEBUG=False
+      - ENVIRONMENT=production
       - JWT_SECRET=production_jwt_secret_change_me_before_launch_2026
-      - DATABASE_URL=sqlite:////app/data/platform.db
+      - DATABASE_URL=${DATABASE_URL:-sqlite:////app/data/platform.db}
       - UPLOAD_DIR=/app/data/uploads
+      - CORS_ORIGINS=*
+      - SUPABASE_URL=${SUPABASE_URL:-}
+      - SUPABASE_KEY=${SUPABASE_KEY:-}
+      - SUPABASE_STORAGE_BUCKET=${SUPABASE_STORAGE_BUCKET:-platform-media}
+      - STORAGE_BACKEND=${STORAGE_BACKEND:-local}
     volumes:
       - platform_data:/app/data
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:6966/health"]
-      interval: 30s
-      timeout: 10s
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 20s
+      timeout: 5s
       retries: 3
+
+  # 2. Next.js 15+ App Router Frontend Service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: nexus_lms_frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - BACKEND_API_URL=http://backend:8000
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
 
 volumes:
   platform_data:

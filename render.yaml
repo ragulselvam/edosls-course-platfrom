@@ -1,0 +1,47 @@
+# Render Blueprint Configuration (render.yaml)
+# Multi-Tenant Student Training & Assessment Platform
+
+services:
+  # 1. FastAPI REST Backend API
+  - type: web
+    name: nexus-lms-backend
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: DEBUG
+        value: "false"
+      - key: ENVIRONMENT
+        value: "production"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        placeholder: "postgresql://postgres.[REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:6543/postgres"
+      - key: SUPABASE_URL
+        placeholder: "https://[YOUR-PROJECT-REF].supabase.co"
+      - key: SUPABASE_KEY
+        placeholder: "[YOUR-SUPABASE-SERVICE-ROLE-KEY]"
+      - key: SUPABASE_STORAGE_BUCKET
+        value: "platform-media"
+      - key: STORAGE_BACKEND
+        value: "supabase"
+      - key: CORS_ORIGINS
+        value: "*"
+
+  # 2. Next.js 15+ App Router Frontend
+  - type: web
+    name: nexus-lms-frontend
+    runtime: node
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_VERSION
+        value: 20.12.0
+      - key: BACKEND_API_URL
+        fromService:
+          type: web
+          name: nexus-lms-backend
+          property: host

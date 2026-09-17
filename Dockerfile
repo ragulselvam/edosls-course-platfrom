@@ -1,5 +1,5 @@
-# Multi-College Student Training & Assessment Platform Dockerfile
-FROM python:3.9-slim
+# Multi-College Platform Backend Dockerfile
+FROM python:3.11-slim
 
 WORKDIR /app
 
@@ -7,24 +7,30 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     gcc \
+    libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python requirements
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
-# Copy application source code and static assets
-COPY . .
+# Copy application source code
+COPY app/ ./app/
+COPY supabase_schema.sql .
+COPY migrate_to_supabase.py .
 
-# Create persistent data and uploads directories
-RUN mkdir -p /app/data/uploads
+# Create directories for static assets and persistent uploads
+RUN mkdir -p /app/data/uploads /app/static
 
-# Expose server port
-EXPOSE 6966
+EXPOSE 8000
 
-ENV PORT=6966
+ENV PORT=8000
 ENV HOST=0.0.0.0
 ENV PYTHONUNBUFFERED=1
+ENV ENVIRONMENT=production
 
-# Run FastAPI backend with Uvicorn
-CMD ["python3", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "6966"]
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:8000/health || exit 1
+
+CMD ["python3", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
