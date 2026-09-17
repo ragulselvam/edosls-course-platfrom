@@ -99,14 +99,14 @@ export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
         <div className="h-16 px-5 flex items-center justify-between border-b border-[var(--border-color)]">
           <Link href="/" className="flex items-center gap-3 group">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform overflow-hidden p-1">
-              <img src="/logo.png" alt="NEXUS" className="w-full h-full object-contain" />
+              <img src="/logo.png" alt="EDSOLS" className="w-full h-full object-contain" />
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="font-extrabold text-base tracking-tight text-[var(--text-primary)]">NEXUS</span>
-                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-500 border border-blue-500/20">LMS</span>
+                <span className="font-extrabold text-base tracking-tight text-[var(--text-primary)]">EDSOLS</span>
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-500 border border-blue-500/20">PORTAL</span>
               </div>
-              <p className="text-[10px] font-medium text-[var(--text-muted)] tracking-wider">AI & ROBOTICS</p>
+              <p className="text-[9px] font-medium text-[var(--text-muted)] tracking-wider">EDGE AI & ROBOTICS</p>
             </div>
           </Link>
           <button

@@ -1,5 +1,5 @@
 -- =====================================================================
--- Multi-Tenant Student Training & Assessment Platform (NEXUS LMS)
+-- EDSOLS: Intelligence at the Edge Learning & Certification Platform
 -- Target: Supabase / PostgreSQL Schema Definition
 -- File: supabase_schema.sql
 -- =====================================================================

@@ -163,7 +163,7 @@ export default function CertificateDetailPage({
       <footer className="max-w-md mx-auto text-center mt-6 print:hidden">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 text-xs font-bold">
           <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-          <span>Authentic & Cryptographically Verified via NEXUS Registry</span>
+          <span>Authentic & Cryptographically Verified via EDSOLS Registry</span>
         </div>
       </footer>
     </div>

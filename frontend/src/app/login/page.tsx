@@ -132,7 +132,7 @@ export default function LoginPage() {
                 <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
               </div>
               <span className="font-bold text-sm tracking-tight text-slate-800 dark:text-white">
-                NEXUS
+                EDSOLS
               </span>
             </Link>
 
@@ -400,7 +400,7 @@ export default function LoginPage() {
           </div>
 
           <div className="text-center text-[10px] text-slate-400">
-            &copy; {new Date().getFullYear()} NEXUS Platform. All rights reserved.
+            &copy; {new Date().getFullYear()} EDSOLS Innovations Private Limited. All rights reserved.
           </div>
         </div>
 

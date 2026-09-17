@@ -26,8 +26,8 @@ const cinzel = Cinzel({
 });
 
 export const metadata: Metadata = {
-  title: "NEXUS — AI & Robotics Multi-College Training & Assessment Platform",
-  description: "Enterprise multi-tenant cloud learning, coding sandbox, robotics simulation, and cryptographic QR certificate platform.",
+  title: "EDSOLS — Intelligence at the Edge | AI Hardware & Learning Platform",
+  description: "Official multi-tenant learning, Edge AI hardware sandbox, NVIDIA JetBot robotics simulation, and verifiable certification ecosystem by EDSOLS Innovations (edsols.in).",
   icons: {
     icon: "/logo.png",
   },

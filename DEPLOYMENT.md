@@ -1,5 +1,5 @@
 # 🚀 Production Deployment Manual
-### Multi-Tenant Student Training & Assessment Platform (NEXUS LMS)
+### EDSOLS · Edge AI & Multi-College Learning Platform
 
 This guide provides end-to-end instructions for deploying the platform into production across popular cloud platforms (Render, Vercel, Railway, Fly.io, AWS, GCP) or any self-hosted Linux VPS / Docker server.
 

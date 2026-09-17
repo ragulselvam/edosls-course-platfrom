@@ -33,8 +33,8 @@ async def lifespan(app: FastAPI):
     yield
 
 app = FastAPI(
-    title="Multi-College Student Training & Assessment Platform API",
-    description="Enterprise multi-tenant learning, coding assessment, certificate, and robotics training platform.",
+    title="EDSOLS — Intelligence at the Edge Course & Training Platform API",
+    description="Enterprise multi-tenant learning, coding assessment, certificate, and robotics training platform by EDSOLS Innovations (edsols.in).",
     version="1.0.0",
     lifespan=lifespan,
     docs_url="/api/docs" if (DEBUG or ENVIRONMENT != "production") else None,

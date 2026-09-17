@@ -25,6 +25,7 @@ import {
   Users,
   Clock,
   LayoutDashboard,
+  ExternalLink,
 } from 'lucide-react';
 
 export default function LandingPage() {
@@ -47,7 +48,7 @@ export default function LandingPage() {
       .catch(() => {});
   }, []);
 
-  const categories = ['all', 'Artificial Intelligence & Robotics', 'Computer Science', 'Cloud Computing'];
+  const categories = ['all', 'Artificial Intelligence & Robotics', 'Edge AI & Embedded Systems', 'Computer Science', 'Cloud Computing'];
   const filteredCourses = activeCategory === 'all'
     ? courses
     : courses.filter((c) => (c.category || '').toLowerCase() === activeCategory.toLowerCase());
@@ -65,22 +66,26 @@ export default function LandingPage() {
           {/* Brand Logo */}
           <Link href="/" className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-md p-1 overflow-hidden">
-              <img src="/logo.png" alt="NEXUS" className="w-full h-full object-contain" />
+              <img src="/logo.png" alt="EDSOLS" className="w-full h-full object-contain" />
             </div>
             <div>
-              <span className="font-extrabold text-base tracking-tight text-[var(--text-primary)]">NEXUS</span>
+              <span className="font-extrabold text-base tracking-tight text-[var(--text-primary)]">EDSOLS</span>
               <span className="ml-1.5 text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-500 border border-blue-500/20">
-                AI & ROBOTICS
+                EDGE AI & ROBOTICS
               </span>
             </div>
           </Link>
 
           {/* Navigation Links */}
           <nav className="hidden md:flex items-center gap-6 text-sm font-semibold text-[var(--text-secondary)]">
-            <button onClick={() => scrollToSection('features')} className="hover:text-blue-500 transition-colors">Features</button>
-            <button onClick={() => scrollToSection('labs')} className="hover:text-blue-500 transition-colors">Interactive Labs</button>
-            <button onClick={() => scrollToSection('curriculum')} className="hover:text-blue-500 transition-colors">Curriculum</button>
+            <button onClick={() => scrollToSection('features')} className="hover:text-blue-500 transition-colors">Ecosystem</button>
+            <button onClick={() => scrollToSection('labs')} className="hover:text-blue-500 transition-colors">Turnkey Labs</button>
+            <button onClick={() => scrollToSection('curriculum')} className="hover:text-blue-500 transition-colors">Certifications</button>
             <Link href="/verify" className="hover:text-blue-500 transition-colors">Verify Certificate</Link>
+            <a href="https://www.edsols.in" target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors flex items-center gap-1">
+              <span>edsols.in</span>
+              <ExternalLink className="w-3 h-3 text-slate-400" />
+            </a>
           </nav>
 
           {/* Action CTAs */}
@@ -90,7 +95,7 @@ export default function LandingPage() {
               className="p-2 rounded-xl text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)] transition-colors"
               title="Toggle theme"
             >
-              {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
+              {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-500" />}
             </button>
 
             {isAuthenticated ? (
@@ -106,7 +111,7 @@ export default function LandingPage() {
                 href="/login"
                 className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-md shadow-blue-600/25"
               >
-                <span>Sign in</span>
+                <span>Sign In</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             )}
@@ -114,8 +119,8 @@ export default function LandingPage() {
         </div>
       </header>
 
-      {/* 2. Hero Section with Concentric Rings */}
-      <section className="relative pt-20 pb-28 px-4 overflow-hidden flex flex-col items-center text-center">
+      {/* 2. Hero Section */}
+      <section className="relative pt-20 pb-24 px-4 overflow-hidden flex flex-col items-center text-center">
         {/* Concentric Orbital Background Visualizer */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] pointer-events-none -z-10 opacity-30 dark:opacity-20">
           <div className="absolute inset-0 rounded-full border border-blue-500/20 animate-spin-slow" />
@@ -128,18 +133,18 @@ export default function LandingPage() {
         <div className="max-w-4xl mx-auto space-y-6">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-500 text-xs font-bold tracking-wide">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>ENTERPRISE MULTI-TENANT DEEP TECH SUITE</span>
+            <span>EDSOLS INNOVATIONS · INTELLIGENCE AT THE EDGE</span>
           </div>
 
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1]">
-            AI & Robotics Training <br />
+            Edge AI & Robotics <br />
             <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
               for Next-Gen Engineers
             </span>
           </h1>
 
           <p className="text-base sm:text-xl text-[var(--text-secondary)] max-w-2xl mx-auto leading-relaxed">
-            From interactive in-browser Python sandboxes to real-time NVIDIA JetBot simulations and tamper-proof QR certificates, empower universities and students to master autonomous systems.
+            Equipping universities, research labs, and industrial enterprises with NVIDIA Jetson hardware integration, interactive in-browser Python 3.12 coding sandboxes, real-time JetBot physics arenas, and globally recognized Edge AI certifications.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
@@ -156,20 +161,20 @@ export default function LandingPage() {
           {stats && (
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-12 max-w-3xl mx-auto">
               <div className="p-4 rounded-2xl bg-[var(--bg-secondary)]/50 border border-[var(--border-color)] backdrop-blur-md">
-                <div className="text-2xl font-extrabold text-blue-500">{stats.colleges}+</div>
-                <div className="text-xs text-[var(--text-muted)] font-medium mt-0.5">Institutions</div>
+                <div className="text-2xl font-extrabold text-blue-500">{stats.colleges || 3}+</div>
+                <div className="text-xs text-[var(--text-muted)] font-medium mt-0.5">Partner Institutions</div>
               </div>
               <div className="p-4 rounded-2xl bg-[var(--bg-secondary)]/50 border border-[var(--border-color)] backdrop-blur-md">
-                <div className="text-2xl font-extrabold text-emerald-500">{stats.students?.toLocaleString()}+</div>
-                <div className="text-xs text-[var(--text-muted)] font-medium mt-0.5">Learners Trained</div>
+                <div className="text-2xl font-extrabold text-emerald-500">{stats.students?.toLocaleString() || '1,200'}+</div>
+                <div className="text-xs text-[var(--text-muted)] font-medium mt-0.5">Engineers Certified</div>
               </div>
               <div className="p-4 rounded-2xl bg-[var(--bg-secondary)]/50 border border-[var(--border-color)] backdrop-blur-md">
-                <div className="text-2xl font-extrabold text-purple-500">{stats.courses}+</div>
-                <div className="text-xs text-[var(--text-muted)] font-medium mt-0.5">Deep Tech Courses</div>
+                <div className="text-2xl font-extrabold text-purple-500">{stats.courses || '12'}+</div>
+                <div className="text-xs text-[var(--text-muted)] font-medium mt-0.5">Edge AI Tracks</div>
               </div>
               <div className="p-4 rounded-2xl bg-[var(--bg-secondary)]/50 border border-[var(--border-color)] backdrop-blur-md">
-                <div className="text-2xl font-extrabold text-amber-500">{stats.satisfaction_rate || '99.4%'}</div>
-                <div className="text-xs text-[var(--text-muted)] font-medium mt-0.5">Satisfaction Score</div>
+                <div className="text-2xl font-extrabold text-amber-500">99.6%</div>
+                <div className="text-xs text-[var(--text-muted)] font-medium mt-0.5">Industry Alignment</div>
               </div>
             </div>
           )}
@@ -179,12 +184,12 @@ export default function LandingPage() {
       {/* 3. Features Bento Grid */}
       <section id="features" className="py-20 px-4 max-w-6xl w-full mx-auto">
         <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
-          <span className="text-xs font-bold text-blue-500 uppercase tracking-widest">PLATFORM CAPABILITIES</span>
+          <span className="text-xs font-bold text-blue-500 uppercase tracking-widest">EDSOLS ECOSYSTEM</span>
           <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
-            Everything modern engineering colleges need to teach deep tech
+            Turnkey AI Labs & Edge Computing Stack
           </h2>
           <p className="text-sm text-[var(--text-secondary)]">
-            A unified stack combining cloud coding sandboxes, autonomous hardware robotics, and university governance.
+            Bridging theoretical artificial intelligence and real-world embedded robotics hardware through our cloud-connected multi-tenant platform.
           </p>
         </div>
 
@@ -196,17 +201,17 @@ export default function LandingPage() {
                 <Terminal className="w-6 h-6" />
               </div>
               <div className="text-[10px] font-bold tracking-wider px-2 py-0.5 rounded bg-blue-500/10 text-blue-500 inline-block border border-blue-500/20">
-                ZERO-SETUP RUNTIME
+                EDGE COMPUTE RUNTIME
               </div>
-              <h3 className="text-xl font-bold">Zero-Install Python Sandbox</h3>
+              <h3 className="text-xl font-bold">Zero-Setup Python 3.12 Sandbox</h3>
               <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                Execute Python 3.12 scripts, PyTorch neural networks, and OpenCV vision pipelines in secure isolated containers with millisecond feedback.
+                Execute PyTorch neural networks, TensorRT optimizations, and OpenCV computer vision algorithms in isolated sandboxes with millisecond execution feedback.
               </p>
             </div>
             <ul className="mt-6 space-y-2 text-xs font-medium text-[var(--text-secondary)]">
-              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Isolated container runtime</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Isolated execution sandbox</li>
               <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Automated test assertion grading</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Real-time stderr & debug traces</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Tensor & NumPy scientific stack</li>
             </ul>
           </div>
 
@@ -217,11 +222,11 @@ export default function LandingPage() {
                 <Cpu className="w-6 h-6" />
               </div>
               <div className="text-[10px] font-bold tracking-wider px-2 py-0.5 rounded bg-[#76b900]/10 text-[#76b900] inline-block border border-[#76b900]/20">
-                HARDWARE IN THE LOOP
+                NVIDIA JETSON & ROBOTICS
               </div>
-              <h3 className="text-xl font-bold">NVIDIA JetBot Simulation</h3>
+              <h3 className="text-xl font-bold">2D JetBot Physics Simulation</h3>
               <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                Interactive 2D robotics arena simulating obstacle avoidance, LiDAR raycasting, PID steering algorithms, and edge inference.
+                Interactive robotics arena simulating obstacle avoidance, LiDAR raycasting, PID steering algorithms, and autonomous navigation for student coursework.
               </p>
             </div>
             <ul className="mt-6 space-y-2 text-xs font-medium text-[var(--text-secondary)]">
@@ -238,70 +243,82 @@ export default function LandingPage() {
                 <Building2 className="w-6 h-6" />
               </div>
               <div className="text-[10px] font-bold tracking-wider px-2 py-0.5 rounded bg-purple-500/10 text-purple-500 inline-block border border-purple-500/20">
-                ENTERPRISE SCALE
+                MULTI-UNIVERSITY GOVERNANCE
               </div>
-              <h3 className="text-xl font-bold">Multi-Tenant Portals</h3>
+              <h3 className="text-xl font-bold">Institutional Tenant Isolation</h3>
               <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                Complete administrative autonomy for colleges with dedicated branding, faculty trainer allocations, batch cohort segregation, and accreditation reports.
+                Custom department branding, independent student rosters, institutional course studio builders, and immutable cryptographic audit ledgers.
               </p>
             </div>
             <ul className="mt-6 space-y-2 text-xs font-medium text-[var(--text-secondary)]">
-              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Strict SQL tenant data isolation</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> CSV batch student onboarding</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Faculty workload management</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Complete multi-tenant privacy</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Bulk CSV batch enrollment</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Verifiable QR digital certificates</li>
             </ul>
           </div>
         </div>
       </section>
 
-      {/* 4. Interactive Labs (Live Demos) */}
-      <section id="labs" className="py-20 px-4 bg-[var(--bg-tertiary)]/50 border-y border-[var(--border-color)]">
-        <div className="max-w-6xl mx-auto space-y-12">
-          <div className="text-center max-w-2xl mx-auto space-y-3">
-            <span className="text-xs font-bold text-blue-500 uppercase tracking-widest">HANDS-ON ENVIRONMENTS</span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
-              Test-drive the interactive engineering labs right now
-            </h2>
-            <p className="text-sm text-[var(--text-secondary)]">
-              No registration or setup needed. Run real Python code or test autonomous navigation physics in live browser viewports.
-            </p>
+      {/* 4. Live Interactive Labs Section */}
+      <section id="labs" className="py-20 px-4 max-w-6xl w-full mx-auto border-t border-[var(--border-color)]">
+        <div className="text-center max-w-2xl mx-auto mb-12 space-y-3">
+          <span className="text-xs font-bold text-blue-500 uppercase tracking-widest">HANDS-ON STEM DEMO</span>
+          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+            Try the Live Edge AI & Robotics Sandbox
+          </h2>
+          <p className="text-sm text-[var(--text-secondary)]">
+            Experience our in-browser execution sandbox and NVIDIA JetBot robotics arena without logging in.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+          {/* Left Lab: Python Sandbox */}
+          <div className="p-6 rounded-3xl bg-[var(--bg-secondary)] border border-[var(--border-color)] shadow-xl space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center font-mono font-bold text-xs">
+                  PY
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold">Python 3.12 Deep Learning Sandbox</h4>
+                  <p className="text-[11px] text-[var(--text-muted)]">Live in-browser interpreter</p>
+                </div>
+              </div>
+            </div>
+            <CodeEditor
+              initialCode={`# EDSOLS Edge AI Neural Computation Demo\nimport math\n\ndef sigmoid(x):\n    return 1 / (1 + math.exp(-x))\n\nprint("⚡ EDSOLS Edge AI Engine Initialized")\nweights = [0.25, 0.50, 0.75]\ninputs = [1.2, 0.8, 2.5]\ndot_product = sum(w * i for w, i in zip(weights, inputs))\nactivation = sigmoid(dot_product)\n\nprint(f"Dot Product: {dot_product:.4f}")\nprint(f"Sigmoid Activation Output: {activation:.4f}")\nprint("✅ Forward pass inference complete on Edge Tensor!")`}
+            />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-            <div>
-              <div className="mb-3 flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] flex items-center gap-2">
-                  <Terminal className="w-4 h-4 text-blue-500" /> Python 3.12 Live Sandbox
-                </span>
-                <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 font-bold border border-emerald-500/20">
-                  ONLINE
-                </span>
+          {/* Right Lab: JetBot Simulator */}
+          <div className="p-6 rounded-3xl bg-[var(--bg-secondary)] border border-[var(--border-color)] shadow-xl space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-[#76b900]/10 text-[#76b900] flex items-center justify-center font-mono font-bold text-xs">
+                  ROS
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold">NVIDIA JetBot 2D Physics Simulator</h4>
+                  <p className="text-[11px] text-[var(--text-muted)]">Autonomous obstacle avoidance</p>
+                </div>
               </div>
-              <CodeEditor />
             </div>
-
-            <div>
-              <div className="mb-3 flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] flex items-center gap-2">
-                  <Cpu className="w-4 h-4 text-[#76b900]" /> JetBot Autonomous Telemetry
-                </span>
-                <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 font-bold border border-emerald-500/20">
-                  REAL-TIME CANVAS
-                </span>
-              </div>
-              <JetBotSimulator />
-            </div>
+            <JetBotSimulator />
           </div>
         </div>
       </section>
 
-      {/* 5. Curriculum & Catalog */}
-      <section id="curriculum" className="py-20 px-4 max-w-6xl w-full mx-auto">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-          <div className="space-y-3">
-            <span className="text-xs font-bold text-blue-500 uppercase tracking-widest">COURSE CATALOG</span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">Featured Engineering Programs</h2>
-            <p className="text-sm text-[var(--text-secondary)]">Industry-aligned curriculums structured with modular lessons and verifiable certifications.</p>
+      {/* 5. Curriculum Catalog Section */}
+      <section id="curriculum" className="py-20 px-4 max-w-6xl w-full mx-auto border-t border-[var(--border-color)]">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+          <div>
+            <span className="text-xs font-bold text-blue-500 uppercase tracking-widest">EDSOLS CURRICULUM</span>
+            <h2 className="text-3xl font-extrabold tracking-tight mt-1">
+              Curated Edge AI & Robotics Certifications
+            </h2>
+            <p className="text-sm text-[var(--text-secondary)] mt-1">
+              Industrial-grade courses designed for academic university cohorts.
+            </p>
           </div>
 
           {/* Category Filter Pills */}
@@ -310,60 +327,55 @@ export default function LandingPage() {
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all ${
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
                   activeCategory === cat
                     ? 'bg-blue-600 text-white shadow-md shadow-blue-600/25'
-                    : 'bg-[var(--bg-secondary)] border border-[var(--border-color)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                    : 'bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] border border-[var(--border-color)]'
                 }`}
               >
-                {cat === 'all' ? 'All Programs' : cat}
+                {cat === 'all' ? 'All Tracks' : cat}
               </button>
             ))}
           </div>
         </div>
 
         {/* Course Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredCourses.map((c) => (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {filteredCourses.slice(0, 6).map((c) => (
             <div
               key={c.id}
-              className="rounded-3xl bg-[var(--bg-secondary)] border border-[var(--border-color)] overflow-hidden shadow-xl shadow-black/5 flex flex-col justify-between card-hover group"
+              className="rounded-3xl bg-[var(--bg-secondary)] border border-[var(--border-color)] shadow-xl overflow-hidden card-hover flex flex-col justify-between"
             >
               <div>
-                <div className="relative h-44 overflow-hidden bg-slate-900">
-                  <img
-                    src={c.thumbnail_url || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600'}
-                    alt={c.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute top-3 left-3 flex gap-2">
-                    <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase bg-black/60 backdrop-blur-md text-white border border-white/20">
-                      {c.level || 'Beginner'}
-                    </span>
-                    <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-600/90 backdrop-blur-md text-white font-mono">
-                      {c.code}
-                    </span>
+                <div className="relative h-44 bg-gradient-to-tr from-slate-800 to-slate-900 overflow-hidden">
+                  {c.thumbnail_url ? (
+                    <img src={c.thumbnail_url} alt={c.title} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-slate-700">
+                      <BookOpen className="w-12 h-12 opacity-30" />
+                    </div>
+                  )}
+                  <div className="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-md text-[10px] font-bold text-white uppercase tracking-wider">
+                    {c.level || 'Beginner'}
+                  </div>
+                  <div className="absolute top-3 right-3 px-2.5 py-1 rounded-lg bg-blue-600/90 backdrop-blur-md text-[10px] font-bold text-white">
+                    {c.code}
                   </div>
                 </div>
 
                 <div className="p-6 space-y-3">
-                  <h3 className="font-extrabold text-lg leading-snug text-[var(--text-primary)] group-hover:text-blue-500 transition-colors">
-                    {c.title}
-                  </h3>
+                  <span className="text-[10px] font-bold text-blue-500 uppercase tracking-wider">
+                    {c.category || 'Artificial Intelligence'}
+                  </span>
+                  <h3 className="text-lg font-bold line-clamp-1">{c.title}</h3>
                   <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed">
-                    {c.description || 'Structured academic curriculum with hands-on live labs and continuous autograded assessments.'}
+                    {c.description || 'Hands-on training curriculum with interactive coding labs, quizzes, and verified certification.'}
                   </p>
-
-                  <div className="flex items-center gap-4 text-xs font-semibold text-[var(--text-muted)] pt-2 border-t border-[var(--border-color)]">
-                    <span className="flex items-center gap-1.5"><BookOpen className="w-3.5 h-3.5" /> {c.module_count || 4} Modules</span>
-                    <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> {c.duration || '6 Weeks'}</span>
-                    <span className="flex items-center gap-1.5"><Users className="w-3.5 h-3.5" /> {c.enrollment_count || 120}</span>
-                  </div>
                 </div>
               </div>
 
               <div className="p-6 pt-0 flex items-center justify-between">
-                <span className="text-xs font-bold text-blue-500 truncate max-w-[140px]">{c.college_name || 'Global Academy'}</span>
+                <span className="text-xs font-bold text-blue-500 truncate max-w-[140px]">{c.college_name || 'EDSOLS Academy'}</span>
                 <Link
                   href={isAuthenticated ? `/student/browse` : `/login`}
                   className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[var(--bg-tertiary)] hover:bg-blue-600 hover:text-white font-bold text-xs transition-all text-[var(--text-primary)]"
@@ -382,16 +394,19 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--text-muted)]">
           <div className="flex items-center gap-2.5">
             <div className="w-6 h-6 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-sm p-1">
-              <img src="/logo.png" alt="NEXUS" className="w-full h-full object-contain" />
+              <img src="/logo.png" alt="EDSOLS" className="w-full h-full object-contain" />
             </div>
-            <span className="font-extrabold text-sm tracking-tight text-[var(--text-primary)]">NEXUS</span>
+            <span className="font-extrabold text-sm tracking-tight text-[var(--text-primary)]">EDSOLS</span>
             <span className="text-[11px] text-[var(--text-secondary)] pl-2 border-l border-[var(--border-color)]">
-              Multi-Tenant Autonomous Robotics & AI Learning Platform
+              Intelligence at the Edge · AI Hardware & Ecosystems
             </span>
           </div>
 
           <div className="flex items-center gap-4">
-            <p>© {new Date().getFullYear()} NEXUS Platform. All rights reserved.</p>
+            <a href="https://www.edsols.in" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+              www.edsols.in
+            </a>
+            <p>© {new Date().getFullYear()} EDSOLS Innovations Private Limited. All rights reserved.</p>
           </div>
         </div>
       </footer>

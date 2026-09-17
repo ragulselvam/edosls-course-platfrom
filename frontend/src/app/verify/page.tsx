@@ -20,9 +20,9 @@ export default function VerifyIndexPage() {
       <header className="max-w-5xl w-full mx-auto flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white p-1">
-            <img src="/logo.png" alt="NEXUS" className="w-full h-full object-contain" />
+            <img src="/logo.png" alt="EDSOLS" className="w-full h-full object-contain" />
           </div>
-          <span className="font-extrabold text-base tracking-tight text-[var(--text-primary)]">NEXUS</span>
+          <span className="font-extrabold text-base tracking-tight text-[var(--text-primary)]">EDSOLS</span>
         </Link>
 
         <Link
@@ -76,7 +76,7 @@ export default function VerifyIndexPage() {
       </main>
 
       <footer className="text-center text-xs text-[var(--text-muted)]">
-        &copy; {new Date().getFullYear()} NEXUS Multi-College Credential Infrastructure
+        &copy; {new Date().getFullYear()} EDSOLS Innovations Private Limited. All rights reserved.
       </footer>
     </div>
   );
