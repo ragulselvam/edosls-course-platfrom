@@ -155,8 +155,9 @@ export default function StudentMyCoursesPage() {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
                       <div className="absolute top-3 left-3">
-                        <span className="px-2.5 py-1 rounded-lg bg-slate-900/80 backdrop-blur-md text-blue-400 text-[11px] font-mono font-bold border border-blue-500/30">
-                          {e.course_code}
+                        <span className="px-2.5 py-1 rounded-lg bg-slate-900/80 backdrop-blur-md text-emerald-400 text-[11px] font-semibold border border-emerald-500/30 flex items-center gap-1">
+                          <CheckCircle2 className="w-3 h-3" />
+                          Certified
                         </span>
                       </div>
                       <div className="absolute top-3 right-3">

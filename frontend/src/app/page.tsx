@@ -19,6 +19,8 @@ import {
   Moon,
   Sun,
   LayoutDashboard,
+  Clock,
+  X,
 } from 'lucide-react';
 
 export default function LandingPage() {
@@ -27,6 +29,7 @@ export default function LandingPage() {
 
   const [courses, setCourses] = useState<Course[]>([]);
   const [activeCategory, setActiveCategory] = useState('all');
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
 
   useEffect(() => {
     api.get<{ courses: Course[] }>('/api/courses/public-catalog')
@@ -310,8 +313,9 @@ export default function LandingPage() {
                   <div className="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-md text-[10px] font-bold text-white uppercase tracking-wider">
                     {c.level || 'Beginner'}
                   </div>
-                  <div className="absolute top-3 right-3 px-2.5 py-1 rounded-lg bg-blue-600/90 backdrop-blur-md text-[10px] font-bold text-white">
-                    {c.code}
+                  <div className="absolute top-3 right-3 px-2.5 py-1 rounded-lg bg-blue-600/90 backdrop-blur-md text-[10px] font-bold text-white flex items-center gap-1 shadow-xs">
+                    <Clock className="w-3 h-3" />
+                    <span>{c.duration || '8 Weeks'}</span>
                   </div>
                 </div>
 
@@ -326,20 +330,136 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              <div className="p-6 pt-0 flex items-center justify-between">
-                <span className="text-xs font-bold text-blue-500 truncate max-w-[140px]">{c.college_name || 'EDSOLS Academy'}</span>
-                <Link
-                  href={isAuthenticated ? `/student/browse` : `/login`}
-                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[var(--bg-tertiary)] hover:bg-blue-600 hover:text-white font-bold text-xs transition-all text-[var(--text-primary)]"
+              <div className="p-6 pt-0 flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 text-xs font-semibold text-[var(--text-secondary)]">
+                  <span className="flex items-center gap-1 text-blue-500">
+                    <BookOpen className="w-3.5 h-3.5 shrink-0" />
+                    <span>{c.module_count ? `${c.module_count} Modules` : 'Curriculum'}</span>
+                  </span>
+                  <span className="w-1 h-1 rounded-full bg-[var(--border-color)]" />
+                  <span className="text-emerald-500 flex items-center gap-1">
+                    <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                    <span>Certified</span>
+                  </span>
+                </div>
+                <button
+                  onClick={() => setSelectedCourse(c)}
+                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[var(--bg-tertiary)] hover:bg-blue-600 hover:text-white font-bold text-xs transition-all text-[var(--text-primary)] cursor-pointer shrink-0"
                 >
                   <span>View Details</span>
                   <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
+                </button>
               </div>
             </div>
           ))}
         </div>
       </section>
+
+      {/* Course Details Modal */}
+      {selectedCourse && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-fade-in">
+          <div className="relative w-full max-w-2xl bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            {/* Modal Header Thumbnail */}
+            <div className="relative h-48 sm:h-56 w-full bg-slate-900 overflow-hidden shrink-0">
+              {selectedCourse.thumbnail_url ? (
+                <img src={selectedCourse.thumbnail_url} alt={selectedCourse.title} className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-slate-700">
+                  <BookOpen className="w-16 h-16 opacity-30" />
+                </div>
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent" />
+              <button
+                onClick={() => setSelectedCourse(null)}
+                className="absolute top-4 right-4 p-2 rounded-full bg-black/60 hover:bg-black/80 text-white backdrop-blur-md transition-colors cursor-pointer"
+                title="Close"
+              >
+                <X className="w-4 h-4" />
+              </button>
+              <div className="absolute bottom-4 left-6 right-6">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="px-2.5 py-0.5 rounded-full bg-blue-500/20 border border-blue-500/40 text-blue-300 text-[11px] font-bold uppercase tracking-wider">
+                    {selectedCourse.category || 'Artificial Intelligence & Robotics'}
+                  </span>
+                  <span className="px-2.5 py-0.5 rounded-full bg-slate-800/80 text-slate-300 text-[11px] font-bold uppercase">
+                    {selectedCourse.level || 'Intermediate'}
+                  </span>
+                </div>
+                <h2 className="text-xl sm:text-2xl font-black text-white leading-tight">
+                  {selectedCourse.title}
+                </h2>
+              </div>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 sm:p-8 space-y-6 overflow-y-auto">
+              <div className="grid grid-cols-3 gap-3 text-center">
+                <div className="p-3.5 rounded-2xl bg-[var(--bg-tertiary)] border border-[var(--border-color)]">
+                  <Clock className="w-4 h-4 mx-auto mb-1 text-blue-500" />
+                  <p className="text-[10px] text-[var(--text-secondary)] font-medium">Duration</p>
+                  <p className="text-xs font-bold text-[var(--text-primary)] mt-0.5">{selectedCourse.duration || '8 Weeks'}</p>
+                </div>
+                <div className="p-3.5 rounded-2xl bg-[var(--bg-tertiary)] border border-[var(--border-color)]">
+                  <BookOpen className="w-4 h-4 mx-auto mb-1 text-indigo-500" />
+                  <p className="text-[10px] text-[var(--text-secondary)] font-medium">Curriculum</p>
+                  <p className="text-xs font-bold text-[var(--text-primary)] mt-0.5">{selectedCourse.module_count || 4} Modules</p>
+                </div>
+                <div className="p-3.5 rounded-2xl bg-[var(--bg-tertiary)] border border-[var(--border-color)]">
+                  <CheckCircle2 className="w-4 h-4 mx-auto mb-1 text-emerald-500" />
+                  <p className="text-[10px] text-[var(--text-secondary)] font-medium">Certificate</p>
+                  <p className="text-xs font-bold text-[var(--text-primary)] mt-0.5">Industry Certified</p>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">About this Course</h4>
+                <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                  {selectedCourse.description || 'Comprehensive curriculum designed for edge AI deployment, embedded systems, and robotics. Includes hands-on interactive coding environments, simulated robotics hardware, and industry-grade certification.'}
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">What You Will Learn</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <div className="flex items-start gap-2 text-xs text-[var(--text-secondary)]">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                    <span>Real-time sensor telemetry & Edge AI inference</span>
+                  </div>
+                  <div className="flex items-start gap-2 text-xs text-[var(--text-secondary)]">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                    <span>Live Python 3.12 interactive coding sandbox labs</span>
+                  </div>
+                  <div className="flex items-start gap-2 text-xs text-[var(--text-secondary)]">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                    <span>NVIDIA JetBot kinematics & autonomous pathfinding</span>
+                  </div>
+                  <div className="flex items-start gap-2 text-xs text-[var(--text-secondary)]">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                    <span>Cryptographically verifiable certificate of completion</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Footer CTA */}
+            <div className="p-6 border-t border-[var(--border-color)] bg-[var(--bg-secondary)] flex items-center justify-between gap-4 shrink-0">
+              <button
+                onClick={() => setSelectedCourse(null)}
+                className="px-5 py-2.5 rounded-xl border border-[var(--border-color)] hover:bg-[var(--bg-tertiary)] text-xs font-bold text-[var(--text-secondary)] transition-colors cursor-pointer"
+              >
+                Close
+              </button>
+              <Link
+                href={isAuthenticated ? '/student/browse' : '/login'}
+                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-md shadow-blue-600/25"
+              >
+                <span>{isAuthenticated ? 'Open Course Catalog' : 'Sign In to Start Learning'}</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 6. Footer */}
       <footer className="mt-auto border-t border-[var(--border-color)] bg-[var(--bg-secondary)] py-8 px-4">
