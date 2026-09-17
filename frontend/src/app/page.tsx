@@ -2,11 +2,10 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { api } from '@/lib/api';
-import { Course, College } from '@/types';
+import { Course } from '@/types';
 import { CodeEditor } from '@/components/sandbox/CodeEditor';
 import { JetBotSimulator } from '@/components/robotics/JetBotSimulator';
 import {
@@ -14,36 +13,26 @@ import {
   Terminal,
   Cpu,
   Building2,
-  Award,
   CheckCircle2,
   ArrowRight,
   Sparkles,
   Moon,
   Sun,
-  ShieldCheck,
-  Play,
-  Users,
-  Clock,
   LayoutDashboard,
   ExternalLink,
 } from 'lucide-react';
 
 export default function LandingPage() {
-  const { user, isAuthenticated, getDashboardPath } = useAuth();
+  const { isAuthenticated, getDashboardPath } = useAuth();
   const { theme, toggleTheme } = useTheme();
-  const router = useRouter();
 
   const [courses, setCourses] = useState<Course[]>([]);
-  const [colleges, setColleges] = useState<College[]>([]);
-  const [stats, setStats] = useState<any>(null);
   const [activeCategory, setActiveCategory] = useState('all');
 
   useEffect(() => {
-    api.get<{ courses: Course[]; stats: any; colleges: College[] }>('/api/courses/public-catalog')
+    api.get<{ courses: Course[] }>('/api/courses/public-catalog')
       .then((res) => {
         setCourses(res.courses || []);
-        setStats(res.stats || null);
-        setColleges(res.colleges || []);
       })
       .catch(() => {});
   }, []);

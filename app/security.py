@@ -1,32 +1,31 @@
 import hashlib
 import hmac
-import secrets
+import os
 import jwt
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional, Dict, Any
-from app.config import JWT_SECRET, JWT_ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
+
+# Security Config
+JWT_SECRET = os.getenv("JWT_SECRET", "super-secret-production-key-change-in-env-928374928374")
+JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "1440"))  # 24 Hours
 
 def hash_password(password: str) -> str:
-    """Hashes a password using PBKDF2-HMAC-SHA256 with random 16-byte salt."""
-    salt = secrets.token_hex(16)
-    iterations = 200000
+    """PBKDF2-HMAC-SHA256 password hashing with random salt."""
+    salt = os.urandom(16).hex()
     key = hashlib.pbkdf2_hmac(
         'sha256',
         password.encode('utf-8'),
         salt.encode('utf-8'),
-        iterations
+        100000
     )
-    return f"pbkdf2:sha256:{iterations}${salt}${key.hex()}"
+    return f"{salt}:{key.hex()}"
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Verifies a plain password against the stored PBKDF2 hash."""
+    """Verifies a plain password against PBKDF2 hash."""
     try:
-        if not hashed_password.startswith("pbkdf2:sha256:"):
-            return False
-        header, rest = hashed_password.split(":", 2)[1:]
-        algorithm, rest = header.split(":") if ":" in header else (header, rest)
-        iterations_str, salt, key_hex = rest.split("$")
-        iterations = int(iterations_str)
+        salt, key_hex = hashed_password.split(':')
+        iterations = 100000
         test_key = hashlib.pbkdf2_hmac(
             'sha256',
             plain_password.encode('utf-8'),
@@ -40,11 +39,12 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 def create_access_token(data: Dict[str, Any], expires_delta: Optional[timedelta] = None) -> str:
     """Generates a signed JWT access token."""
     to_encode = data.copy()
+    now = datetime.now(timezone.utc)
     if expires_delta:
-        expire = datetime.utcnow() + expires_delta
+        expire = now + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    to_encode.update({"exp": expire, "iat": datetime.utcnow()})
+        expire = now + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire, "iat": now})
     return jwt.encode(to_encode, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
 def decode_access_token(token: str) -> Optional[Dict[str, Any]]:

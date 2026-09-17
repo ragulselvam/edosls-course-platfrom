@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from typing import List, Dict, Any, Optional
-from datetime import datetime
+from datetime import datetime, timezone
 from app.models import EnrollmentCreate, EnrollmentStatusUpdate
 from app.database import query_one, query_all, execute_query
 from app.middleware import get_current_user, require_role, verify_tenant_access, log_audit
@@ -155,7 +155,7 @@ def update_enrollment_status(
         
     verify_tenant_access(current_user, enrollment["college_id"])
     
-    completed_at = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S") if req.status == "completed" else None
+    completed_at = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S") if req.status == "completed" else None
     
     execute_query(
         """

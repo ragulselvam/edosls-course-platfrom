@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime, date
+from datetime import datetime, date, timezone
 from fastapi import APIRouter, HTTPException, Depends, status
 from typing import Dict, Any, List
 from app.models import ProgressUpdate
@@ -82,7 +82,7 @@ def mark_content_complete(
         (enrollment_id, req.content_id)
     )
     
-    now_str = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+    now_str = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
     if existing_prog:
         new_time = existing_prog["time_spent_seconds"] + req.time_spent_seconds
         execute_query(

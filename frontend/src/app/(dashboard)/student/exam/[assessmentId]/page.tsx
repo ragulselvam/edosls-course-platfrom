@@ -112,29 +112,6 @@ export default function TimedExamPage({ params }: { params: Promise<{ assessment
     fetchExam();
   }, [assessmentId]);
 
-  // Countdown Ticker
-  useEffect(() => {
-    if (!timerActive || result || timeLeftSec <= 0) return;
-
-    const interval = setInterval(() => {
-      setTimeLeftSec((prev) => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          handleAutoSubmit();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [timerActive, result, timeLeftSec]);
-
-  const handleAutoSubmit = () => {
-    showToast("⏰ Time expired! Submitting examination...", "warning");
-    handleSubmitExam();
-  };
-
   const handleSelectOption = (questionId: number, optionText: string) => {
     setAnswers((prev) => ({
       ...prev,
@@ -168,17 +145,39 @@ export default function TimedExamPage({ params }: { params: Promise<{ assessment
           spread: 90,
           origin: { y: 0.6 }
         });
-        showToast("🎉 Examination passed successfully!", "success");
+        showToast("🎉 Congratulations! You passed the examination!", "success");
       } else {
-        showToast("Assessment evaluated. Score recorded.", "info");
+        showToast("Examination completed. Passing score not met.", "warning");
       }
     } catch (err: any) {
-      showToast(err.message || "Submission failed", "error");
-      setTimerActive(true);
+      showToast(err.message || "Failed to submit examination", "error");
     } finally {
       setSubmitting(false);
     }
   };
+
+  const handleAutoSubmit = () => {
+    showToast("⏰ Time expired! Submitting examination...", "warning");
+    handleSubmitExam();
+  };
+
+  // Countdown Ticker
+  useEffect(() => {
+    if (!timerActive || result || timeLeftSec <= 0) return;
+
+    const interval = setInterval(() => {
+      setTimeLeftSec((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          handleAutoSubmit();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [timerActive, result, timeLeftSec]);
 
   const formatTime = (secs: number) => {
     const mins = Math.floor(secs / 60);

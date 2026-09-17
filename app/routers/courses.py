@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException, Depends, status, Query
 from typing import List, Dict, Any, Optional
 from app.models import CourseCreateFull, CourseSettingsUpdate, CourseStep1Info, StudentPublicRegistration, TrainerAssignRequest, TrainerCreate
@@ -319,7 +319,7 @@ def assign_course_trainer(
                 "assigned_by_name": f"{current_user['first_name']} {current_user['last_name']}",
                 "action": action,
                 "notes": req.notes,
-                "assigned_at": datetime.utcnow().isoformat()
+                "assigned_at": datetime.now(timezone.utc).isoformat()
             }
         )
 
@@ -367,7 +367,7 @@ def assign_course_trainer(
                 "assigned_by_name": f"{current_user['first_name']} {current_user['last_name']}",
                 "action": "removed",
                 "notes": req.notes,
-                "assigned_at": datetime.utcnow().isoformat()
+                "assigned_at": datetime.now(timezone.utc).isoformat()
             }
         )
 
