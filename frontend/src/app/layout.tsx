@@ -29,7 +29,9 @@ export const metadata: Metadata = {
   title: "EDSOLS — Intelligence at the Edge | AI Hardware & Learning Platform",
   description: "Official multi-tenant learning, Edge AI hardware sandbox, NVIDIA JetBot robotics simulation, and verifiable certification ecosystem by EDSOLS Innovations (edsols.in).",
   icons: {
-    icon: "/logo.png",
+    icon: "/edsols-emblem.svg",
+    shortcut: "/favicon.ico",
+    apple: "/edsols-icon.png",
   },
 };
 

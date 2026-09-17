@@ -19,8 +19,8 @@ export default function VerifyIndexPage() {
     <div className="min-h-screen bg-[var(--bg-primary)] flex flex-col justify-between p-4 sm:p-8">
       <header className="max-w-5xl w-full mx-auto flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white p-1">
-            <img src="/logo.png" alt="EDSOLS" className="w-full h-full object-contain" />
+          <div className="w-8 h-8 flex items-center justify-center">
+            <img src="/edsols-emblem.svg" alt="EDSOLS" className="w-full h-full object-contain" />
           </div>
           <span className="font-extrabold text-base tracking-tight text-[var(--text-primary)]">EDSOLS</span>
         </Link>

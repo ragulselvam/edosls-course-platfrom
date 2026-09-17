@@ -65,8 +65,8 @@ export default function LandingPage() {
         <div className="flex items-center justify-between p-2.5 sm:px-5 rounded-2xl bg-[var(--bg-secondary)]/80 backdrop-blur-xl border border-[var(--border-color)] shadow-xl shadow-black/5">
           {/* Brand Logo */}
           <Link href="/" className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-md p-1 overflow-hidden">
-              <img src="/logo.png" alt="EDSOLS" className="w-full h-full object-contain" />
+            <div className="w-9 h-9 flex items-center justify-center">
+              <img src="/edsols-emblem.svg" alt="EDSOLS" className="w-full h-full object-contain" />
             </div>
             <div>
               <span className="font-extrabold text-base tracking-tight text-[var(--text-primary)]">EDSOLS</span>
@@ -393,8 +393,8 @@ export default function LandingPage() {
       <footer className="mt-auto border-t border-[var(--border-color)] bg-[var(--bg-secondary)] py-8 px-4">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--text-muted)]">
           <div className="flex items-center gap-2.5">
-            <div className="w-6 h-6 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-sm p-1">
-              <img src="/logo.png" alt="EDSOLS" className="w-full h-full object-contain" />
+            <div className="w-7 h-7 flex items-center justify-center">
+              <img src="/edsols-emblem.svg" alt="EDSOLS" className="w-full h-full object-contain" />
             </div>
             <span className="font-extrabold text-sm tracking-tight text-[var(--text-primary)]">EDSOLS</span>
             <span className="text-[11px] text-[var(--text-secondary)] pl-2 border-l border-[var(--border-color)]">

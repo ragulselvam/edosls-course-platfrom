@@ -127,9 +127,9 @@ export default function LoginPage() {
           
           {/* Top Left Branding Logo & Navigation */}
           <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2 group">
-              <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-[#1d63ff] to-[#38bdf8] flex items-center justify-center text-white p-1 shadow-sm group-hover:scale-105 transition-transform">
-                <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
+            <Link href="/" className="flex items-center gap-2.5 group">
+              <div className="w-8 h-8 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <img src="/edsols-emblem.svg" alt="EDSOLS" className="w-full h-full object-contain" />
               </div>
               <span className="font-bold text-sm tracking-tight text-slate-800 dark:text-white">
                 EDSOLS
