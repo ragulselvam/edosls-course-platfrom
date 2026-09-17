@@ -230,10 +230,10 @@ export default function LandingPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
           {/* Left Lab: Python Sandbox */}
-          <div className="p-6 rounded-3xl bg-[var(--bg-secondary)] border border-[var(--border-color)] shadow-xl space-y-4">
-            <div className="flex items-center justify-between">
+          <div className="p-6 rounded-3xl bg-[var(--bg-secondary)] border border-[var(--border-color)] shadow-xl flex flex-col justify-between h-full space-y-4">
+            <div className="flex items-center justify-between shrink-0">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center font-mono font-bold text-xs">
                   PY
@@ -245,13 +245,14 @@ export default function LandingPage() {
               </div>
             </div>
             <CodeEditor
+              className="flex-1 h-full flex flex-col justify-between"
               initialCode={`# EDSOLS Edge AI Neural Computation Demo\nimport math\n\ndef sigmoid(x):\n    return 1 / (1 + math.exp(-x))\n\nprint("⚡ EDSOLS Edge AI Engine Initialized")\nweights = [0.25, 0.50, 0.75]\ninputs = [1.2, 0.8, 2.5]\ndot_product = sum(w * i for w, i in zip(weights, inputs))\nactivation = sigmoid(dot_product)\n\nprint(f"Dot Product: {dot_product:.4f}")\nprint(f"Sigmoid Activation Output: {activation:.4f}")\nprint("✅ Forward pass inference complete on Edge Tensor!")`}
             />
           </div>
 
           {/* Right Lab: JetBot Simulator */}
-          <div className="p-6 rounded-3xl bg-[var(--bg-secondary)] border border-[var(--border-color)] shadow-xl space-y-4">
-            <div className="flex items-center justify-between">
+          <div className="p-6 rounded-3xl bg-[var(--bg-secondary)] border border-[var(--border-color)] shadow-xl flex flex-col justify-between h-full space-y-4">
+            <div className="flex items-center justify-between shrink-0">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-xl bg-[#76b900]/10 text-[#76b900] flex items-center justify-center font-mono font-bold text-xs">
                   ROS
@@ -262,7 +263,7 @@ export default function LandingPage() {
                 </div>
               </div>
             </div>
-            <JetBotSimulator />
+            <JetBotSimulator className="flex-1 h-full flex flex-col justify-between" />
           </div>
         </div>
       </section>

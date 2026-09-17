@@ -12,6 +12,7 @@ interface CodeEditorProps {
   testCases?: Array<{ name: string; input?: string; expected?: string }>;
   onRunComplete?: (result: SandboxRunResult) => void;
   height?: string;
+  className?: string;
 }
 
 const DEFAULT_PYTHON_DEMO = `# NVIDIA JetBot Autonomous Vision Pipeline Demo
@@ -46,7 +47,8 @@ export function CodeEditor({
   initialCode = DEFAULT_PYTHON_DEMO,
   testCases,
   onRunComplete,
-  height = 'h-72',
+  height = 'flex-1 min-h-[220px]',
+  className = '',
 }: CodeEditorProps) {
   const [code, setCode] = useState(initialCode);
   const [output, setOutput] = useState<SandboxRunResult | null>(null);
@@ -89,9 +91,9 @@ export function CodeEditor({
   };
 
   return (
-    <div className="rounded-2xl border border-[var(--border-color)] bg-[#0f172a] text-slate-100 overflow-hidden shadow-2xl flex flex-col">
+    <div className={`rounded-2xl border border-[var(--border-color)] bg-[#0f172a] text-slate-100 overflow-hidden shadow-2xl flex flex-col justify-between ${className}`}>
       {/* Editor Top Toolbar */}
-      <div className="flex items-center justify-between px-4 py-2.5 bg-[#090d16] border-b border-slate-800 text-xs">
+      <div className="flex items-center justify-between px-4 py-3 bg-[#090d16] border-b border-slate-800 text-xs shrink-0">
         <div className="flex items-center gap-2 font-mono">
           <div className="flex gap-1.5 mr-2">
             <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80" />
@@ -99,13 +101,13 @@ export function CodeEditor({
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
           </div>
           <span className="text-slate-400 font-semibold">main.py</span>
-          <span className="text-slate-600">· Python 3.12 Isolated Sandbox</span>
+          <span className="text-slate-600 hidden sm:inline">· Python 3.12 Isolated Sandbox</span>
         </div>
 
         <div className="flex items-center gap-2">
           <button
             onClick={handleReset}
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 font-medium transition-colors"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 font-medium transition-colors cursor-pointer"
             title="Reset code"
           >
             <RotateCcw className="w-3.5 h-3.5" />
@@ -114,7 +116,7 @@ export function CodeEditor({
           <button
             onClick={handleRun}
             disabled={isRunning}
-            className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold transition-all shadow-md shadow-blue-600/30 disabled:opacity-50"
+            className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold transition-all shadow-md shadow-blue-600/30 disabled:opacity-50 cursor-pointer"
           >
             <Play className={`w-3.5 h-3.5 fill-current ${isRunning ? 'animate-spin' : ''}`} />
             <span>{isRunning ? 'Running...' : 'Run Code'}</span>
@@ -133,8 +135,8 @@ export function CodeEditor({
       </div>
 
       {/* Terminal Output Terminal */}
-      <div className="border-t border-slate-800 bg-[#060911] p-4 font-mono text-xs">
-        <div className="flex items-center justify-between text-slate-400 mb-2 font-semibold">
+      <div className="border-t border-slate-800 bg-[#060911] p-3.5 font-mono text-xs shrink-0">
+        <div className="flex items-center justify-between text-slate-400 mb-1.5 font-semibold">
           <div className="flex items-center gap-1.5">
             <Terminal className="w-3.5 h-3.5 text-blue-400" />
             <span>Console Output</span>
@@ -146,18 +148,18 @@ export function CodeEditor({
               </span>
               {output.exit_code === 0 ? (
                 <span className="flex items-center gap-1 text-emerald-400">
-                  <CheckCircle2 className="w-3 h-3" /> Exit Code 0
+                  <CheckCircle2 className="w-3 h-3" /> Exit 0
                 </span>
               ) : (
                 <span className="flex items-center gap-1 text-rose-400">
-                  <XCircle className="w-3 h-3" /> Exit Code {output.exit_code}
+                  <XCircle className="w-3 h-3" /> Exit {output.exit_code}
                 </span>
               )}
             </div>
           )}
         </div>
 
-        <pre className="max-h-36 overflow-y-auto text-slate-300 whitespace-pre-wrap leading-relaxed text-xs">
+        <pre className="h-16 overflow-y-auto text-slate-300 whitespace-pre-wrap leading-relaxed text-xs">
           {output ? (
             output.stdout || output.stderr ? (
               <>

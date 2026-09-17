@@ -3,7 +3,11 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Play, Pause, RotateCcw, Activity, ShieldAlert, Cpu } from 'lucide-react';
 
-export function JetBotSimulator() {
+interface JetBotSimulatorProps {
+  className?: string;
+}
+
+export function JetBotSimulator({ className = '' }: JetBotSimulatorProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [isRunning, setIsRunning] = useState(true);
   const [speed, setSpeed] = useState(2);
@@ -171,9 +175,9 @@ export function JetBotSimulator() {
   };
 
   return (
-    <div className="rounded-2xl border border-[var(--border-color)] bg-[#090d16] text-slate-100 overflow-hidden shadow-2xl flex flex-col">
+    <div className={`rounded-2xl border border-[var(--border-color)] bg-[#090d16] text-slate-100 overflow-hidden shadow-2xl flex flex-col justify-between ${className}`}>
       {/* Top Header */}
-      <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-800 bg-[#0c121e]">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800 bg-[#0c121e] shrink-0">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg bg-[#76b900]/20 border border-[#76b900]/40 flex items-center justify-center text-[#76b900]">
             <Cpu className="w-4 h-4" />
@@ -182,14 +186,14 @@ export function JetBotSimulator() {
             <h4 className="text-xs font-bold tracking-wide uppercase text-slate-200">
               NVIDIA JetBot Real-Time Physics Arena
             </h4>
-            <p className="text-[10px] text-slate-400">ROS 2 Navigation & Computer Vision Obstacle Avoidance</p>
+            <p className="text-[10px] text-slate-400">ROS 2 Navigation & Obstacle Avoidance</p>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
           <button
             onClick={() => setIsRunning(!isRunning)}
-            className={`p-2 rounded-lg font-semibold text-xs transition-all flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-lg font-semibold text-xs transition-all flex items-center gap-1.5 cursor-pointer ${
               isRunning ? 'bg-amber-500/20 text-amber-400 hover:bg-amber-500/30' : 'bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30'
             }`}
           >
@@ -198,7 +202,7 @@ export function JetBotSimulator() {
           </button>
           <button
             onClick={handleReset}
-            className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+            className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors cursor-pointer"
             title="Reset Arena"
           >
             <RotateCcw className="w-3.5 h-3.5" />
@@ -207,12 +211,12 @@ export function JetBotSimulator() {
       </div>
 
       {/* Main Canvas Area */}
-      <div className="relative flex justify-center bg-[#070a12] p-2">
+      <div className="relative flex-1 flex items-center justify-center bg-[#070a12] p-2 min-h-[220px]">
         <canvas
           ref={canvasRef}
           width={420}
-          height={340}
-          className="rounded-xl border border-slate-800/80 shadow-inner max-w-full"
+          height={280}
+          className="rounded-xl border border-slate-800/80 shadow-inner max-w-full aspect-[420/280] w-full max-h-[280px] object-contain"
         />
 
         {/* Telemetry Overlay Pill */}
@@ -228,27 +232,27 @@ export function JetBotSimulator() {
       </div>
 
       {/* Bottom Telemetry Controls */}
-      <div className="grid grid-cols-3 gap-3 p-4 bg-[#090d16] border-t border-slate-800 text-xs text-slate-300">
-        <div className="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center gap-3">
+      <div className="grid grid-cols-3 gap-3 p-3.5 bg-[#090d16] border-t border-slate-800 text-xs text-slate-300 shrink-0">
+        <div className="p-2 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center gap-2.5">
           <Activity className="w-4 h-4 text-blue-400 shrink-0" />
-          <div>
-            <div className="text-[10px] uppercase text-slate-500 font-bold">Velocity</div>
-            <div className="font-bold text-slate-200">{telemetry.linearVelocity} m/s</div>
+          <div className="min-w-0">
+            <div className="text-[9px] uppercase text-slate-500 font-bold truncate">Velocity</div>
+            <div className="font-bold text-slate-200 text-xs">{telemetry.linearVelocity} m/s</div>
           </div>
         </div>
 
-        <div className="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center gap-3">
+        <div className="p-2 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center gap-2.5">
           <ShieldAlert className="w-4 h-4 text-rose-400 shrink-0" />
-          <div>
-            <div className="text-[10px] uppercase text-slate-500 font-bold">Evasions</div>
-            <div className="font-bold text-slate-200">{obstaclesAvoided} Objects</div>
+          <div className="min-w-0">
+            <div className="text-[9px] uppercase text-slate-500 font-bold truncate">Evasions</div>
+            <div className="font-bold text-slate-200 text-xs truncate">{obstaclesAvoided}</div>
           </div>
         </div>
 
-        <div className="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center gap-3">
-          <div className="w-full space-y-1">
-            <div className="flex justify-between text-[10px] uppercase text-slate-500 font-bold">
-              <span>Throttle</span>
+        <div className="p-2 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center gap-2">
+          <div className="w-full space-y-0.5">
+            <div className="flex justify-between text-[9px] uppercase text-slate-500 font-bold">
+              <span>Speed</span>
               <span>{speed}x</span>
             </div>
             <input
@@ -258,7 +262,7 @@ export function JetBotSimulator() {
               step={1}
               value={speed}
               onChange={(e) => setSpeed(parseInt(e.target.value))}
-              className="w-full accent-blue-500 h-1.5 bg-slate-800 rounded-lg cursor-pointer"
+              className="w-full accent-blue-500 h-1 bg-slate-800 rounded-lg cursor-pointer"
             />
           </div>
         </div>
