@@ -394,53 +394,20 @@ export default function LandingPage() {
       </section>
 
       {/* 6. Footer */}
-      <footer className="mt-auto border-t border-[var(--border-color)] bg-[var(--bg-secondary)] py-12 px-4">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-          <div className="space-y-3">
-            <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-sm p-1">
-                <img src="/logo.png" alt="NEXUS" className="w-full h-full object-contain" />
-              </div>
-              <span className="font-extrabold text-base tracking-tight text-[var(--text-primary)]">NEXUS</span>
+      <footer className="mt-auto border-t border-[var(--border-color)] bg-[var(--bg-secondary)] py-8 px-4">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--text-muted)]">
+          <div className="flex items-center gap-2.5">
+            <div className="w-6 h-6 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-sm p-1">
+              <img src="/logo.png" alt="NEXUS" className="w-full h-full object-contain" />
             </div>
-            <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-              Unified multi-tenant cloud learning, coding sandbox, robotics simulation, and cryptographic credential platform.
-            </p>
+            <span className="font-extrabold text-sm tracking-tight text-[var(--text-primary)]">NEXUS</span>
+            <span className="text-[11px] text-[var(--text-secondary)] pl-2 border-l border-[var(--border-color)]">
+              Multi-Tenant Autonomous Robotics & AI Learning Platform
+            </span>
           </div>
 
-          <div>
-            <h4 className="text-xs font-bold tracking-wider uppercase text-[var(--text-muted)] mb-3">Portals</h4>
-            <ul className="space-y-2 text-xs font-medium text-[var(--text-secondary)]">
-              <li><Link href="/login" className="hover:text-blue-500">Super Admin Console</Link></li>
-              <li><Link href="/login" className="hover:text-blue-500">College Admin Hub</Link></li>
-              <li><Link href="/login" className="hover:text-blue-500">Faculty Trainer Portal</Link></li>
-              <li><Link href="/login" className="hover:text-blue-500">Student Learning Center</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-xs font-bold tracking-wider uppercase text-[var(--text-muted)] mb-3">Verification</h4>
-            <ul className="space-y-2 text-xs font-medium text-[var(--text-secondary)]">
-              <li><Link href="/verify" className="hover:text-blue-500">Public QR Verifier</Link></li>
-              <li><span className="text-[var(--text-muted)]">SHA-256 Ledger Checks</span></li>
-              <li><span className="text-[var(--text-muted)]">Multi-Tenant Isolation</span></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-xs font-bold tracking-wider uppercase text-[var(--text-muted)] mb-3">System</h4>
-            <ul className="space-y-2 text-xs font-medium text-[var(--text-secondary)]">
-              <li><a href="/api/docs" target="_blank" className="hover:text-blue-500">FastAPI REST Docs</a></li>
-              <li><a href="/api/redoc" target="_blank" className="hover:text-blue-500">ReDoc Specification</a></li>
-              <li><a href="/health" target="_blank" className="hover:text-blue-500">Health Endpoint</a></li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="max-w-6xl mx-auto pt-8 border-t border-[var(--border-color)] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--text-muted)]">
-          <p>© {new Date().getFullYear()} NEXUS Platform. All rights reserved.</p>
           <div className="flex items-center gap-4">
-            <span>v3.0 Next.js 15 Full-Stack</span>
+            <p>© {new Date().getFullYear()} NEXUS Platform. All rights reserved.</p>
           </div>
         </div>
       </footer>
