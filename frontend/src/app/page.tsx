@@ -265,27 +265,27 @@ export default function LandingPage() {
 
       {/* 5. Curriculum Catalog Section */}
       <section id="curriculum" className="py-20 px-4 max-w-6xl w-full mx-auto border-t border-[var(--border-color)]">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
-          <div>
+        <div className="flex flex-col items-center text-center mb-12 space-y-6">
+          <div className="max-w-2xl mx-auto space-y-2">
             <span className="text-xs font-bold text-blue-500 uppercase tracking-widest">EDSOLS CURRICULUM</span>
-            <h2 className="text-3xl font-extrabold tracking-tight mt-1">
+            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
               Curated Edge AI & Robotics Certifications
             </h2>
-            <p className="text-sm text-[var(--text-secondary)] mt-1">
+            <p className="text-sm text-[var(--text-secondary)] max-w-xl mx-auto">
               Industrial-grade courses designed for academic university cohorts.
             </p>
           </div>
 
           {/* Category Filter Pills */}
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap justify-center gap-2">
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   activeCategory === cat
-                    ? 'bg-blue-600 text-white shadow-md shadow-blue-600/25'
-                    : 'bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] border border-[var(--border-color)]'
+                    ? 'bg-blue-600 text-white shadow-md shadow-blue-600/25 scale-105'
+                    : 'bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-primary)] border border-[var(--border-color)]'
                 }`}
               >
                 {cat === 'all' ? 'All Tracks' : cat}
