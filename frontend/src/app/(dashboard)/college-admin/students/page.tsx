@@ -5,6 +5,7 @@ import DashboardLayout from "@/components/layout/DashboardLayout";
 import { api } from "@/lib/api";
 import { useToast } from "@/context/ToastContext";
 import Modal from "@/components/ui/Modal";
+import ConfirmModal from "@/components/ui/ConfirmModal";
 import {
   Users,
   Search,
@@ -19,7 +20,8 @@ import {
   Download,
   Eye,
   Mail,
-  Phone
+  Phone,
+  Trash2
 } from "lucide-react";
 import Link from "next/link";
 
@@ -71,7 +73,24 @@ export default function CollegeAdminStudentsPage() {
     errors: string[];
   } | null>(null);
 
+  // Delete Modal
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [studentToDelete, setStudentToDelete] = useState<Student | null>(null);
+
   const { showToast } = useToast();
+
+  const handleDeleteStudent = async () => {
+    if (!studentToDelete) return;
+    try {
+      await api.del(`/api/students/${studentToDelete.student_id}`);
+      showToast(`Student ${studentToDelete.first_name} ${studentToDelete.last_name} removed successfully`, "success");
+      setDeleteModalOpen(false);
+      setStudentToDelete(null);
+      fetchStudents();
+    } catch (err: any) {
+      showToast(err.message || "Failed to remove student", "error");
+    }
+  };
 
   const fetchStudents = async () => {
     try {
@@ -283,13 +302,14 @@ CS202403,Siddharth,Rao,siddharth.rao@campus.edu,Electronics,2,2023-2027`;
                   <th className="py-3 px-4">Department & Year</th>
                   <th className="py-3 px-4">Enrolled Courses</th>
                   <th className="py-3 px-4">Certificates</th>
-                  <th className="py-3 px-4 text-right">Admitted</th>
+                  <th className="py-3 px-4">Admitted</th>
+                  <th className="py-3 px-4 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800/50 text-sm">
                 {loading ? (
                   <tr>
-                    <td colSpan={6} className="py-12 text-center text-slate-500">
+                    <td colSpan={7} className="py-12 text-center text-slate-500">
                       Loading campus student roster...
                     </td>
                   </tr>
@@ -335,8 +355,20 @@ CS202403,Siddharth,Rao,siddharth.rao@campus.edu,Electronics,2,2023-2027`;
                           <span className="text-slate-500 text-[11px]">0</span>
                         )}
                       </td>
-                      <td className="py-3.5 px-4 text-right text-xs text-slate-400 font-mono">
+                      <td className="py-3.5 px-4 text-xs text-slate-400 font-mono">
                         {new Date(s.created_at).toLocaleDateString()}
+                      </td>
+                      <td className="py-3.5 px-4 text-right">
+                        <button
+                          onClick={() => {
+                            setStudentToDelete(s);
+                            setDeleteModalOpen(true);
+                          }}
+                          className="p-1.5 rounded-lg bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 transition cursor-pointer"
+                          title="Delete Student"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
                       </td>
                     </tr>
                   ))
@@ -549,6 +581,24 @@ CS202403,Siddharth,Rao,siddharth.rao@campus.edu,Electronics,2,2023-2027`;
             </div>
           </form>
         </Modal>
+
+        {/* Delete Confirmation Modal */}
+        <ConfirmModal
+          isOpen={deleteModalOpen}
+          onClose={() => setDeleteModalOpen(false)}
+          onConfirm={handleDeleteStudent}
+          title="Are you sure you want to delete this Student?"
+          itemName={studentToDelete ? `${studentToDelete.first_name} ${studentToDelete.last_name}` : ""}
+          resourceType="student name"
+          impactedResources={[
+            `Enrolled Courses (${studentToDelete?.enrolled_courses_count || 0})`,
+            `Issued Certificates (${studentToDelete?.certificates_count || 0})`,
+            "Assessment submissions, test answers & evaluation scores",
+            "Student account credentials & campus roster records"
+          ]}
+          confirmText="Delete"
+          type="danger"
+        />
       </div>
     </DashboardLayout>
   );

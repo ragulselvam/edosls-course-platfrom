@@ -979,9 +979,16 @@ export default function SuperAdminCoursesPage() {
           isOpen={deleteModalOpen}
           onClose={() => setDeleteModalOpen(false)}
           onConfirm={handleDeleteCourse}
-          title={`Delete ${courseToDelete?.title}?`}
-          message="This will permanently delete this course and all associated modules, contents, and quizzes from the studio."
-          confirmText="Delete Course"
+          title="Are you sure you want to delete this Course?"
+          itemName={courseToDelete?.title || ""}
+          resourceType="course title"
+          impactedResources={[
+            `Course Curriculum & Modules (${courseToDelete?.module_count || 1})`,
+            `Interactive Lessons & Exercises (${courseToDelete?.content_count || 3})`,
+            `Student Enrollments & Progress (${courseToDelete?.enrollment_count || 0})`,
+            "Quizzes, question banks & completion certificates"
+          ]}
+          confirmText="Delete"
           type="danger"
         />
       </div>

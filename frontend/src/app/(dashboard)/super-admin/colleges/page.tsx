@@ -18,7 +18,8 @@ import {
   Mail,
   Globe,
   RefreshCw,
-  Power
+  Power,
+  Trash2
 } from "lucide-react";
 
 interface College {
@@ -56,6 +57,10 @@ export default function SuperAdminCollegesPage() {
   // Status toggle confirmation
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [selectedCollege, setSelectedCollege] = useState<College | null>(null);
+
+  // Delete confirmation
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [collegeToDelete, setCollegeToDelete] = useState<College | null>(null);
 
   const { showToast } = useToast();
 
@@ -140,6 +145,19 @@ export default function SuperAdminCollegesPage() {
       fetchColleges();
     } catch (err: any) {
       showToast(err.message || "Failed to update status", "error");
+    }
+  };
+
+  const handleDeleteCollege = async () => {
+    if (!collegeToDelete) return;
+    try {
+      await api.del(`/api/colleges/${collegeToDelete.id}`);
+      showToast(`Institution '${collegeToDelete.name}' deleted successfully`, "success");
+      setDeleteConfirmOpen(false);
+      setCollegeToDelete(null);
+      fetchColleges();
+    } catch (err: any) {
+      showToast(err.message || "Failed to delete institution", "error");
     }
   };
 
@@ -308,6 +326,16 @@ export default function SuperAdminCollegesPage() {
                       >
                         <Power className="w-3.5 h-3.5" />
                       </button>
+                      <button
+                        onClick={() => {
+                          setCollegeToDelete(c);
+                          setDeleteConfirmOpen(true);
+                        }}
+                        className="p-1.5 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-100 dark:bg-rose-500/10 dark:text-rose-400 dark:hover:bg-rose-500/20 transition cursor-pointer"
+                        title="Delete Institution"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -420,6 +448,24 @@ export default function SuperAdminCollegesPage() {
           }
           confirmText={selectedCollege?.is_active ? "Suspend Institution" : "Activate"}
           type={selectedCollege?.is_active ? "danger" : "info"}
+        />
+
+        {/* Delete Confirmation Modal */}
+        <ConfirmModal
+          isOpen={deleteConfirmOpen}
+          onClose={() => setDeleteConfirmOpen(false)}
+          onConfirm={handleDeleteCollege}
+          title="Are you sure you want to delete this Institution?"
+          itemName={collegeToDelete?.name || ""}
+          resourceType="institution name"
+          impactedResources={[
+            `Enrolled Students (${collegeToDelete?.student_count || 0})`,
+            `Campus Courses (${collegeToDelete?.course_count || 0})`,
+            "Campus Administrators & Delegated Credentials",
+            "Departmental records and activity logs"
+          ]}
+          confirmText="Delete"
+          type="danger"
         />
       </div>
     </DashboardLayout>

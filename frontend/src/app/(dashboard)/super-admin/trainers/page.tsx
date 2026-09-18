@@ -457,20 +457,16 @@ export default function SuperAdminTrainersPage() {
           isOpen={confirmDeleteOpen}
           onClose={() => setConfirmDeleteOpen(false)}
           onConfirm={handleDeleteTrainer}
-          title={`Remove ${selectedTrainer?.first_name} ${selectedTrainer?.last_name}?`}
-          message={
-            <div>
-              <p className="text-sm text-slate-600 dark:text-slate-300 mb-2">
-                Are you sure you want to remove this faculty trainer?
-              </p>
-              <ul className="text-xs text-slate-500 dark:text-slate-400 list-disc pl-5 space-y-1">
-                <li>Their account access will be revoked permanently.</li>
-                <li>They will be automatically unassigned from all {selectedTrainer?.assigned_courses_count || 0} active classes.</li>
-                <li>The courses themselves will remain intact and can be reassigned to another instructor.</li>
-              </ul>
-            </div>
-          }
-          confirmText="Yes, Remove Trainer"
+          title="Are you sure you want to delete this Trainer?"
+          itemName={selectedTrainer ? `${selectedTrainer.first_name} ${selectedTrainer.last_name}` : ''}
+          resourceType="trainer name"
+          impactedResources={[
+            `Assigned Classes (${selectedTrainer?.assigned_courses_count || 0})`,
+            "Trainer account credentials and login access",
+            "Teaching allocations & historical evaluations",
+            "Course assignments and curriculum authoring links"
+          ]}
+          confirmText="Delete"
           type="danger"
         />
 

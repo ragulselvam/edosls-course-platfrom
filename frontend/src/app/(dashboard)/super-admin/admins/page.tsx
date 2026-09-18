@@ -427,9 +427,16 @@ export default function SuperAdminAdminsPage() {
           isOpen={deleteConfirmOpen}
           onClose={() => setDeleteConfirmOpen(false)}
           onConfirm={handleDeleteAdmin}
-          title={`Revoke access for ${adminToDelete?.first_name} ${adminToDelete?.last_name}?`}
-          message={`This will immediately terminate administrative delegation for ${adminToDelete?.email} on ${adminToDelete?.college_name}.`}
-          confirmText="Revoke Access"
+          title="Are you sure you want to delete this Administrator?"
+          itemName={adminToDelete ? `${adminToDelete.first_name} ${adminToDelete.last_name}` : ""}
+          resourceType="administrator name"
+          impactedResources={[
+            `Campus Administration Rights (${adminToDelete?.college_name || "Institution"})`,
+            "Administrative login credentials & session tokens",
+            "Delegated campus permissions",
+            "Tenant management audit history"
+          ]}
+          confirmText="Delete"
           type="danger"
         />
       </div>

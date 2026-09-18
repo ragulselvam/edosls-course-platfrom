@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from 'react';
-import { AlertTriangle, Info, AlertCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Trash2, ChevronDown, ChevronUp } from 'lucide-react';
 import { Modal } from './Modal';
 
 interface ConfirmModalProps {
@@ -11,7 +11,9 @@ interface ConfirmModalProps {
   title: string;
   description?: React.ReactNode;
   message?: React.ReactNode;
+  impactedResources?: string[];
   itemName?: string;
+  resourceType?: string;
   confirmText?: string;
   isDanger?: boolean;
   type?: 'danger' | 'info' | 'warning';
@@ -24,19 +26,27 @@ export function ConfirmModal({
   title,
   description,
   message,
+  impactedResources,
   itemName,
-  confirmText = 'Confirm',
+  resourceType = 'item name',
+  confirmText = 'Delete',
   isDanger = true,
   type = 'danger',
 }: ConfirmModalProps) {
   const [typedValue, setTypedValue] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showAllResources, setShowAllResources] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setTypedValue('');
+      setLoading(false);
+    }
+  }, [isOpen]);
 
   const requireTypeMatch = !!itemName;
   const isMatch = requireTypeMatch ? typedValue.trim() === itemName.trim() : true;
   const isDangerEffective = type === 'danger' || isDanger;
-
-  const content = message || description;
 
   const handleConfirm = async () => {
     if (!isMatch) return;
@@ -54,57 +64,90 @@ export function ConfirmModal({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} maxWidth="md">
-      <div className="flex items-start gap-4">
-        <div
-          className={`p-3 rounded-2xl shrink-0 ${
+      <div className="space-y-4">
+        {/* Title */}
+        <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+          {title}
+        </h3>
+
+        {/* Description */}
+        <div className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+          {message || description || (
             isDangerEffective
-              ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
-              : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
-          }`}
-        >
-          {isDangerEffective ? <AlertTriangle className="w-6 h-6" /> : <Info className="w-6 h-6" />}
-        </div>
-        <div className="space-y-3 flex-1">
-          <h3 className="text-lg font-bold text-white">{title}</h3>
-          {content && <div className="text-xs text-slate-300 leading-relaxed">{content}</div>}
-
-          {requireTypeMatch && (
-            <div className="space-y-2 pt-2">
-              <p className="text-xs text-slate-400 font-medium">
-                Type <span className="text-white font-mono font-bold">{itemName}</span> to confirm:
-              </p>
-              <input
-                type="text"
-                value={typedValue}
-                onChange={(e) => setTypedValue(e.target.value)}
-                placeholder={itemName}
-                className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-rose-500"
-              />
-            </div>
+              ? 'This process is irreversible. All resources in the workspace will be deleted, including:'
+              : 'Please confirm this action.'
           )}
+        </div>
 
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
-            <button
-              type="button"
-              onClick={onClose}
-              disabled={loading}
-              className="px-4 py-2 rounded-xl text-xs text-slate-400 hover:text-white bg-slate-800 font-medium transition"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              onClick={handleConfirm}
-              disabled={!isMatch || loading}
-              className={`px-5 py-2 rounded-xl text-xs font-semibold text-white shadow-lg transition disabled:opacity-50 ${
-                isDangerEffective
-                  ? 'bg-rose-600 hover:bg-rose-500 shadow-rose-600/20'
-                  : 'bg-blue-600 hover:bg-blue-500 shadow-blue-500/20'
-              }`}
-            >
-              {loading ? 'Processing...' : confirmText}
-            </button>
+        {/* Impacted Resources List (Matching User Image) */}
+        {impactedResources && impactedResources.length > 0 && (
+          <div className="space-y-1 text-xs">
+            {(showAllResources ? impactedResources : impactedResources.slice(0, 3)).map((item, idx) => (
+              <div key={idx} className="font-bold text-slate-900 dark:text-slate-100">
+                {item}
+              </div>
+            ))}
+            {impactedResources.length > 3 && (
+              <button
+                type="button"
+                onClick={() => setShowAllResources(!showAllResources)}
+                className="text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 flex items-center gap-1 pt-1 cursor-pointer font-medium"
+              >
+                {showAllResources ? (
+                  <>
+                    <ChevronUp className="w-3.5 h-3.5" /> View less resources
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown className="w-3.5 h-3.5" /> View all resources
+                  </>
+                )}
+              </button>
+            )}
           </div>
+        )}
+
+        {/* Confirmation Input Box (Matching User Image) */}
+        {requireTypeMatch && (
+          <div className="mt-3 p-3.5 rounded-lg border border-red-300 dark:border-rose-900/60 bg-[#fff8f6] dark:bg-rose-950/20 space-y-2">
+            <p className="text-xs font-medium text-slate-700 dark:text-rose-200">
+              Confirm the deletion by typing the {resourceType} <span className="font-bold text-slate-900 dark:text-white">&lsquo;{itemName}&rsquo;</span>
+            </p>
+            <input
+              type="text"
+              value={typedValue}
+              onChange={(e) => setTypedValue(e.target.value)}
+              placeholder={`Type '${itemName}' to confirm`}
+              className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-rose-500 focus:border-rose-500"
+            />
+          </div>
+        )}
+
+        {/* Action Buttons */}
+        <div className="flex items-center justify-end gap-3 pt-3">
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={loading}
+            className="px-4 py-2 rounded-md text-xs font-medium text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white border border-slate-300 dark:border-slate-700 bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 transition cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={handleConfirm}
+            disabled={!isMatch || loading}
+            className={`px-4 py-2 rounded-md text-xs font-semibold text-white transition flex items-center gap-1.5 cursor-pointer disabled:cursor-not-allowed ${
+              !isMatch
+                ? 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-600'
+                : isDangerEffective
+                ? 'bg-[#e13219] hover:bg-[#c92a14] shadow-sm'
+                : 'bg-blue-600 hover:bg-blue-700 shadow-sm'
+            }`}
+          >
+            {isDangerEffective && <Trash2 className="w-3.5 h-3.5" />}
+            <span>{loading ? 'Deleting...' : confirmText}</span>
+          </button>
         </div>
       </div>
     </Modal>

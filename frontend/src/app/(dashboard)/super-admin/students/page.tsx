@@ -5,6 +5,7 @@ import DashboardLayout from "@/components/layout/DashboardLayout";
 import { api } from "@/lib/api";
 import { useToast } from "@/context/ToastContext";
 import Modal from "@/components/ui/Modal";
+import ConfirmModal from "@/components/ui/ConfirmModal";
 import {
   Users,
   Search,
@@ -19,7 +20,8 @@ import {
   CheckCircle2,
   ExternalLink,
   Mail,
-  Phone
+  Phone,
+  Trash2
 } from "lucide-react";
 import Link from "next/link";
 
@@ -106,7 +108,24 @@ export default function SuperAdminStudentsPage() {
   });
   const [saving, setSaving] = useState(false);
 
+  // Delete Student Modal
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [studentToDelete, setStudentToDelete] = useState<Student | null>(null);
+
   const { showToast } = useToast();
+
+  const handleDeleteStudent = async () => {
+    if (!studentToDelete) return;
+    try {
+      await api.del(`/api/students/${studentToDelete.student_id}`);
+      showToast(`Student ${studentToDelete.first_name} ${studentToDelete.last_name} removed successfully`, "success");
+      setDeleteModalOpen(false);
+      setStudentToDelete(null);
+      fetchData();
+    } catch (err: any) {
+      showToast(err.message || "Failed to delete student", "error");
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -343,14 +362,26 @@ export default function SuperAdminStudentsPage() {
                         )}
                       </td>
                       <td className="py-3.5 px-4 text-right">
-                        <button
-                          onClick={() => handleInspectStudent(s.student_id)}
-                          className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition inline-flex items-center gap-1 text-xs font-medium"
-                          title="Inspect Student Dossier"
-                        >
-                          <Eye className="w-3.5 h-3.5" />
-                          Inspect
-                        </button>
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => handleInspectStudent(s.student_id)}
+                            className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition inline-flex items-center gap-1 text-xs font-medium cursor-pointer"
+                            title="Inspect Student Dossier"
+                          >
+                            <Eye className="w-3.5 h-3.5" />
+                            Inspect
+                          </button>
+                          <button
+                            onClick={() => {
+                              setStudentToDelete(s);
+                              setDeleteModalOpen(true);
+                            }}
+                            className="p-1.5 rounded-lg bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 transition cursor-pointer"
+                            title="Delete Student"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))
@@ -639,6 +670,24 @@ export default function SuperAdminStudentsPage() {
             </div>
           </form>
         </Modal>
+
+        {/* Delete Confirmation Modal */}
+        <ConfirmModal
+          isOpen={deleteModalOpen}
+          onClose={() => setDeleteModalOpen(false)}
+          onConfirm={handleDeleteStudent}
+          title="Are you sure you want to delete this Student?"
+          itemName={studentToDelete ? `${studentToDelete.first_name} ${studentToDelete.last_name}` : ""}
+          resourceType="student name"
+          impactedResources={[
+            `Course Enrollments (${studentToDelete?.enrolled_courses_count || 0})`,
+            `Issued Certificates (${studentToDelete?.certificates_count || 0})`,
+            "Assessment submissions, test answers & evaluation scores",
+            "Student account credentials & login permissions"
+          ]}
+          confirmText="Delete"
+          type="danger"
+        />
       </div>
     </DashboardLayout>
   );

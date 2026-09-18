@@ -69,23 +69,25 @@ export function Modal({
 
       {/* Modal Dialog */}
       <div
-        className={`relative w-full ${maxWidthClass} bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl z-10 animate-in zoom-in-95 duration-150 my-8`}
+        className={`relative w-full ${maxWidthClass} bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl z-10 animate-in zoom-in-95 duration-150 my-8`}
       >
         {/* Header */}
-        <div className="flex items-start justify-between gap-4 mb-6">
-          <div>
-            {title && <h3 className="text-lg font-bold text-white tracking-tight">{title}</h3>}
-            {sub && (
-              <p className="text-xs text-slate-400 mt-1">{sub}</p>
-            )}
+        {(title || sub) && (
+          <div className="flex items-start justify-between gap-4 mb-6">
+            <div>
+              {title && <h3 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">{title}</h3>}
+              {sub && (
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{sub}</p>
+              )}
+            </div>
+            <button
+              onClick={onClose}
+              className="p-2 text-slate-400 hover:text-slate-700 dark:hover:text-white rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
-          <button
-            onClick={onClose}
-            className="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 transition"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+        )}
 
         {/* Content */}
         <div>{children}</div>
