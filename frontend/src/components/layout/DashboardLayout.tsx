@@ -22,12 +22,12 @@ export function DashboardLayout({ children, allowedRoles, requiredRoles }: Dashb
 
   useEffect(() => {
     if (!isLoading && !user) {
-      router.push('/login');
+      router.replace('/login');
     } else if (!isLoading && effectiveRoles && role && !effectiveRoles.includes(role)) {
       // Role mismatch - route to proper dashboard
-      if (role === 'super_admin') router.push('/super-admin');
-      else if (role === 'college_admin' || role === 'trainer') router.push('/college-admin');
-      else if (role === 'student') router.push('/student');
+      if (role === 'super_admin') router.replace('/super-admin');
+      else if (role === 'college_admin' || role === 'trainer') router.replace('/college-admin');
+      else if (role === 'student') router.replace('/student');
     }
   }, [user, role, isLoading, effectiveRoles, router]);
 

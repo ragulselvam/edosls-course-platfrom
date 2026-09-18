@@ -21,9 +21,29 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [user, setUser] = useState<User | null>(() => {
+    if (typeof window === 'undefined') return null;
+    try {
+      const cached = sessionStorage.getItem('platform_user') || localStorage.getItem('platform_user');
+      return cached ? JSON.parse(cached) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  const [token, setToken] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null;
+    return api.getToken();
+  });
+
+  const [isLoading, setIsLoading] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return true;
+    const t = api.getToken();
+    if (!t) return false;
+    const cached = sessionStorage.getItem('platform_user') || localStorage.getItem('platform_user');
+    return !cached;
+  });
+
   const router = useRouter();
   const { toast } = useToast();
 
@@ -36,7 +56,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return '/';
   }, [user]);
 
-  const refreshUser = useCallback(async (): Promise<User | null> => {
+  const refreshUser = useCallback(async (showLoading = false): Promise<User | null> => {
     const savedToken = api.getToken();
     if (!savedToken) {
       setUser(null);
@@ -45,15 +65,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return null;
     }
 
+    if (showLoading) {
+      setIsLoading(true);
+    }
+
     try {
       const freshUser = await api.get<User>('/api/auth/me');
       setUser(freshUser);
       setToken(savedToken);
       sessionStorage.setItem('platform_user', JSON.stringify(freshUser));
+      localStorage.setItem('platform_user', JSON.stringify(freshUser));
       return freshUser;
     } catch {
       api.setToken(null);
       sessionStorage.removeItem('platform_user');
+      localStorage.removeItem('platform_user');
       setUser(null);
       setToken(null);
       return null;
@@ -63,24 +89,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    // Read cached user first for instant hydration
-    try {
-      const cached = sessionStorage.getItem('platform_user') || localStorage.getItem('platform_user');
-      if (cached) {
-        setUser(JSON.parse(cached));
-        setToken(api.getToken());
-      }
-    } catch {
-      // ignore JSON parse error
-    }
-
-    refreshUser();
+    // Non-blocking background revalidation
+    refreshUser(false);
 
     const handleAuthExpired = () => {
       setUser(null);
       setToken(null);
       toast('Your session has expired. Please login again.', 'warning');
-      router.push('/login');
+      router.replace('/login');
     };
 
     window.addEventListener('auth:expired', handleAuthExpired);
@@ -99,18 +115,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setToken(res.access_token);
       setUser(res.user);
       sessionStorage.setItem('platform_user', JSON.stringify(res.user));
+      localStorage.setItem('platform_user', JSON.stringify(res.user));
 
       toast(`Welcome back, ${res.user.first_name || 'User'}!`, 'success');
 
-      // Direct to corresponding dashboard
+      // Direct to corresponding dashboard immediately
       const dashPath = getDashboardPath(res.user.role_name);
-      router.push(dashPath);
+      setIsLoading(false);
+      router.replace(dashPath);
       return res.user;
     } catch (err: any) {
+      setIsLoading(false);
       toast(err.message || 'Invalid credentials', 'error');
       throw err;
-    } finally {
-      setIsLoading(false);
     }
   };
 

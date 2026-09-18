@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { api } from '@/lib/api';
@@ -20,7 +21,8 @@ import {
 import { Modal } from '@/components/ui/Modal';
 
 export default function LoginPage() {
-  const { login } = useAuth();
+  const router = useRouter();
+  const { login, isAuthenticated, user, getDashboardPath } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const { toast } = useToast();
 
@@ -29,8 +31,21 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingRole, setLoadingRole] = useState<string | null>(null);
   const [activeSlide, setActiveSlide] = useState(0);
   const [showDemoProfiles, setShowDemoProfiles] = useState(false);
+
+  // Prefetch routes and auto-redirect if already logged in
+  useEffect(() => {
+    router.prefetch('/super-admin');
+    router.prefetch('/college-admin');
+    router.prefetch('/student');
+    router.prefetch('/trainer');
+
+    if (isAuthenticated && user) {
+      router.replace(getDashboardPath());
+    }
+  }, [isAuthenticated, user, router, getDashboardPath]);
 
   // Forgot Password modal
   const [isForgotOpen, setIsForgotOpen] = useState(false);
@@ -39,21 +54,27 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) return;
+    if (!email || !password || isLoading) return;
     setIsLoading(true);
     try {
       await login(email, password);
     } catch {
-      // Toast displayed inside login()
-    } finally {
       setIsLoading(false);
     }
   };
 
-  const handleQuickLogin = (roleEmail: string, rolePassword = 'Password@123') => {
+  const handleQuickLogin = async (roleEmail: string, rolePassword = 'Password@123') => {
+    if (isLoading) return;
     setEmail(roleEmail);
     setPassword(rolePassword);
-    login(roleEmail, rolePassword);
+    setLoadingRole(roleEmail);
+    setIsLoading(true);
+    try {
+      await login(roleEmail, rolePassword);
+    } catch {
+      setIsLoading(false);
+      setLoadingRole(null);
+    }
   };
 
   const handleSocialClick = (provider: string) => {
@@ -281,9 +302,16 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-2.5 rounded-xl bg-[#1d63ff] hover:bg-[#1554e0] text-white font-medium text-sm transition-all shadow-[0_4px_14px_rgba(29,99,255,0.35)] active:scale-[0.99] disabled:opacity-60 flex items-center justify-center gap-2 mt-2"
+                className="w-full py-2.5 rounded-xl bg-[#1d63ff] hover:bg-[#1554e0] text-white font-medium text-sm transition-all shadow-[0_4px_14px_rgba(29,99,255,0.35)] active:scale-[0.99] disabled:opacity-60 flex items-center justify-center gap-2 mt-2 cursor-pointer disabled:cursor-not-allowed"
               >
-                <span>{isLoading ? 'Signing In...' : 'Login'}</span>
+                {isLoading && !loadingRole ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span>Authenticating & Redirecting...</span>
+                  </>
+                ) : (
+                  <span>Login</span>
+                )}
               </button>
             </form>
 
@@ -300,7 +328,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => handleSocialClick('Google')}
-                className="py-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800/60 hover:bg-slate-50 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center shadow-sm group"
+                className="py-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800/60 hover:bg-slate-50 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center shadow-sm group cursor-pointer"
                 title="Login with Google"
               >
                 <svg className="w-4 h-4 group-hover:scale-105 transition-transform" viewBox="0 0 24 24">
@@ -315,7 +343,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => handleSocialClick('Apple')}
-                className="py-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800/60 hover:bg-slate-50 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center shadow-sm group"
+                className="py-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800/60 hover:bg-slate-50 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center shadow-sm group cursor-pointer"
                 title="Login with Apple"
               >
                 <svg className="w-4 h-4 fill-current text-black dark:text-white group-hover:scale-105 transition-transform" viewBox="0 0 170 170">
@@ -327,7 +355,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => handleSocialClick('Microsoft')}
-                className="py-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800/60 hover:bg-slate-50 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center shadow-sm group"
+                className="py-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800/60 hover:bg-slate-50 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center shadow-sm group cursor-pointer"
                 title="Login with Microsoft"
               >
                 <svg className="w-4 h-4 group-hover:scale-105 transition-transform" viewBox="0 0 23 23">
@@ -344,7 +372,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => setShowDemoProfiles(!showDemoProfiles)}
-                className="w-full flex items-center justify-between text-[11px] font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors py-0.5"
+                className="w-full flex items-center justify-between text-[11px] font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors py-0.5 cursor-pointer"
               >
                 <span className="flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-[#1d63ff]" /> Demo Roles Quick Fill
@@ -356,51 +384,81 @@ export default function LoginPage() {
                 <div className="grid grid-cols-2 gap-2 mt-2 animate-in fade-in duration-150">
                   <button
                     type="button"
+                    disabled={isLoading}
                     onClick={() => handleQuickLogin('ragul@edsols.in', 'edu_edsols2026')}
-                    className="p-1.5 px-2 rounded-lg border border-blue-100 dark:border-blue-900/40 bg-blue-50/40 text-left hover:bg-blue-100/50 transition-all cursor-pointer"
+                    className="p-1.5 px-2 rounded-lg border border-blue-100 dark:border-blue-900/40 bg-blue-50/40 text-left hover:bg-blue-100/50 transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     <div className="text-[10px] font-bold text-blue-700 dark:text-blue-300 flex items-center gap-1">
-                      <ShieldCheck className="w-3 h-3 text-blue-600" /> Super Admin (Ragul)
+                      {loadingRole === 'ragul@edsols.in' ? (
+                        <div className="w-3 h-3 border-2 border-blue-600 border-t-transparent rounded-full animate-spin shrink-0" />
+                      ) : (
+                        <ShieldCheck className="w-3 h-3 text-blue-600 shrink-0" />
+                      )}
+                      <span>{loadingRole === 'ragul@edsols.in' ? 'Signing in...' : 'Super Admin (Ragul)'}</span>
                     </div>
                   </button>
 
                   <button
                     type="button"
+                    disabled={isLoading}
                     onClick={() => handleQuickLogin('karthik_v@edsols.in', 'edu_edsols2026')}
-                    className="p-1.5 px-2 rounded-lg border border-blue-100 dark:border-blue-900/40 bg-blue-50/40 text-left hover:bg-blue-100/50 transition-all cursor-pointer"
+                    className="p-1.5 px-2 rounded-lg border border-blue-100 dark:border-blue-900/40 bg-blue-50/40 text-left hover:bg-blue-100/50 transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     <div className="text-[10px] font-bold text-blue-700 dark:text-blue-300 flex items-center gap-1">
-                      <ShieldCheck className="w-3 h-3 text-blue-600" /> Super Admin (Karthik)
+                      {loadingRole === 'karthik_v@edsols.in' ? (
+                        <div className="w-3 h-3 border-2 border-blue-600 border-t-transparent rounded-full animate-spin shrink-0" />
+                      ) : (
+                        <ShieldCheck className="w-3 h-3 text-blue-600 shrink-0" />
+                      )}
+                      <span>{loadingRole === 'karthik_v@edsols.in' ? 'Signing in...' : 'Super Admin (Karthik)'}</span>
                     </div>
                   </button>
 
                   <button
                     type="button"
+                    disabled={isLoading}
                     onClick={() => handleQuickLogin('admin@ait.edu')}
-                    className="p-1.5 px-2 rounded-lg border border-emerald-100 dark:border-emerald-900/40 bg-emerald-50/40 text-left hover:bg-emerald-100/50 transition-all cursor-pointer"
+                    className="p-1.5 px-2 rounded-lg border border-emerald-100 dark:border-emerald-900/40 bg-emerald-50/40 text-left hover:bg-emerald-100/50 transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     <div className="text-[10px] font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-1">
-                      <Building2 className="w-3 h-3 text-emerald-600" /> College Admin
+                      {loadingRole === 'admin@ait.edu' ? (
+                        <div className="w-3 h-3 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin shrink-0" />
+                      ) : (
+                        <Building2 className="w-3 h-3 text-emerald-600 shrink-0" />
+                      )}
+                      <span>{loadingRole === 'admin@ait.edu' ? 'Signing in...' : 'College Admin'}</span>
                     </div>
                   </button>
 
                   <button
                     type="button"
+                    disabled={isLoading}
                     onClick={() => handleQuickLogin('dr.arun@platform.edu')}
-                    className="p-1.5 px-2 rounded-lg border border-amber-100 dark:border-amber-900/40 bg-amber-50/40 text-left hover:bg-amber-100/50 transition-all cursor-pointer"
+                    className="p-1.5 px-2 rounded-lg border border-amber-100 dark:border-amber-900/40 bg-amber-50/40 text-left hover:bg-amber-100/50 transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     <div className="text-[10px] font-bold text-amber-700 dark:text-amber-300 flex items-center gap-1">
-                      <Bot className="w-3 h-3 text-amber-600" /> Trainer
+                      {loadingRole === 'dr.arun@platform.edu' ? (
+                        <div className="w-3 h-3 border-2 border-amber-600 border-t-transparent rounded-full animate-spin shrink-0" />
+                      ) : (
+                        <Bot className="w-3 h-3 text-amber-600 shrink-0" />
+                      )}
+                      <span>{loadingRole === 'dr.arun@platform.edu' ? 'Signing in...' : 'Trainer'}</span>
                     </div>
                   </button>
 
                   <button
                     type="button"
+                    disabled={isLoading}
                     onClick={() => handleQuickLogin('student1@ait.edu')}
-                    className="p-1.5 px-2 rounded-lg border border-purple-100 dark:border-purple-900/40 bg-purple-50/40 text-left hover:bg-purple-100/50 transition-all cursor-pointer col-span-2"
+                    className="p-1.5 px-2 rounded-lg border border-purple-100 dark:border-purple-900/40 bg-purple-50/40 text-left hover:bg-purple-100/50 transition-all cursor-pointer col-span-2 disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     <div className="text-[10px] font-bold text-purple-700 dark:text-purple-300 flex items-center gap-1">
-                      <GraduationCap className="w-3 h-3 text-purple-600" /> Student
+                      {loadingRole === 'student1@ait.edu' ? (
+                        <div className="w-3 h-3 border-2 border-purple-600 border-t-transparent rounded-full animate-spin shrink-0" />
+                      ) : (
+                        <GraduationCap className="w-3 h-3 text-purple-600 shrink-0" />
+                      )}
+                      <span>{loadingRole === 'student1@ait.edu' ? 'Signing in...' : 'Student'}</span>
                     </div>
                   </button>
                 </div>
