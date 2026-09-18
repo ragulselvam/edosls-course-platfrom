@@ -98,6 +98,76 @@ def create_trainer(
         (user_id,)
     )
 
+@router.delete("/trainers/{trainer_id}")
+def delete_trainer(
+    trainer_id: int,
+    current_user: Dict[str, Any] = Depends(require_role(["super_admin"]))
+):
+    """Deletes or unassigns a trainer from the platform (Super Admin only)."""
+    trainer = query_one(
+        """
+        SELECT u.id, u.first_name, u.last_name, u.email, u.college_id, r.name as role_name
+        FROM users u
+        JOIN roles r ON u.role_id = r.id
+        WHERE u.id = ?
+        """,
+        (trainer_id,)
+    )
+    if not trainer:
+        raise HTTPException(status_code=404, detail="Trainer not found")
+        
+    if trainer["role_name"] not in ("trainer", "college_admin"):
+        raise HTTPException(status_code=400, detail="User is not a trainer or college admin")
+        
+    # Unassign from courses
+    execute_query("UPDATE courses SET trainer_id = NULL WHERE trainer_id = ?", (trainer_id,))
+    execute_query("DELETE FROM trainer_assignments WHERE trainer_id = ? OR previous_trainer_id = ?", (trainer_id, trainer_id))
+    execute_query("DELETE FROM users WHERE id = ?", (trainer_id,))
+    
+    log_audit(
+        college_id=trainer["college_id"],
+        user_id=current_user["id"],
+        action="TRAINER_DELETE",
+        resource_type="trainer",
+        resource_id=str(trainer_id),
+        details={"email": trainer["email"], "name": f"{trainer['first_name']} {trainer['last_name']}"}
+    )
+    
+    return {"status": "success", "message": f"Trainer {trainer['first_name']} {trainer['last_name']} removed successfully"}
+
+@router.put("/trainers/{trainer_id}/status")
+def toggle_trainer_status(
+    trainer_id: int,
+    req: Dict[str, Any],
+    current_user: Dict[str, Any] = Depends(require_role(["super_admin"]))
+):
+    """Activates or suspends a trainer."""
+    trainer = query_one(
+        """
+        SELECT u.id, u.first_name, u.last_name, u.email, u.is_active, u.college_id, r.name as role_name
+        FROM users u
+        JOIN roles r ON u.role_id = r.id
+        WHERE u.id = ?
+        """,
+        (trainer_id,)
+    )
+    if not trainer:
+        raise HTTPException(status_code=404, detail="Trainer not found")
+        
+    new_status = 1 if req.get("is_active") else 0
+    execute_query("UPDATE users SET is_active = ? WHERE id = ?", (new_status, trainer_id))
+    
+    log_audit(
+        college_id=trainer["college_id"],
+        user_id=current_user["id"],
+        action="TRAINER_STATUS_UPDATE",
+        resource_type="trainer",
+        resource_id=str(trainer_id),
+        details={"is_active": new_status, "email": trainer["email"]}
+    )
+    
+    return {"status": "success", "is_active": new_status}
+
 @router.get("/public-catalog")
 def get_public_courses_catalog():
     """Public endpoint to fetch published courses, categories, and platform statistics for landing page."""
