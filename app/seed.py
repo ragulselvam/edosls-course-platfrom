@@ -111,14 +111,23 @@ def seed_database(force: bool = False):
         )
         col_ids[col["code"]] = cid
 
-    # 3. Insert Super Admin
-    super_user_id = execute_query(
-        """
-        INSERT INTO users (college_id, role_id, email, password_hash, first_name, last_name, phone, is_active)
-        VALUES (NULL, ?, 'superadmin@platform.edu', ?, 'System', 'SuperAdmin', '+1-800-555-0199', 1)
-        """,
-        (role_super, default_pwd_hash)
-    )
+    # 3. Insert Super Admins
+    superadmin_pwd_hash = hash_password("edu_edsols2026")
+    super_user_id = None
+    for sa in [
+        {"email": "ragul@edsols.in", "first_name": "Ragul", "last_name": "Selvam", "phone": "+91-98765-43210"},
+        {"email": "karthik_v@edsols.in", "first_name": "Karthik", "last_name": "V", "phone": "+91-98765-43211"},
+        {"email": "superadmin@platform.edu", "first_name": "System", "last_name": "SuperAdmin", "phone": "+1-800-555-0199"},
+    ]:
+        uid = execute_query(
+            """
+            INSERT INTO users (college_id, role_id, email, password_hash, first_name, last_name, phone, is_active)
+            VALUES (NULL, ?, ?, ?, ?, ?, ?, 1)
+            """,
+            (role_super, sa["email"], superadmin_pwd_hash, sa["first_name"], sa["last_name"], sa["phone"])
+        )
+        if super_user_id is None:
+            super_user_id = uid
 
     # 4. Insert College Admins
     admins_data = [

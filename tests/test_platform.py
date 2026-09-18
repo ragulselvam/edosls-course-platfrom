@@ -27,7 +27,9 @@ def setup_test_db():
         except Exception:
             pass
 
-def get_token(email: str, password: str = "Password@123"):
+def get_token(email: str, password: str = None):
+    if password is None:
+        password = "edu_edsols2026" if ("edsols.in" in email or email == "superadmin@platform.edu") else "Password@123"
     resp = client.post("/api/auth/login", json={"email": email, "password": password})
     assert resp.status_code == 200, f"Login failed for {email}: {resp.text}"
     return resp.json()["access_token"]

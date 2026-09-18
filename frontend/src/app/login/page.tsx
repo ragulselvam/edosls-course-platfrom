@@ -50,10 +50,10 @@ export default function LoginPage() {
     }
   };
 
-  const handleQuickLogin = (roleEmail: string) => {
+  const handleQuickLogin = (roleEmail: string, rolePassword = 'Password@123') => {
     setEmail(roleEmail);
-    setPassword('Password@123');
-    login(roleEmail, 'Password@123');
+    setPassword(rolePassword);
+    login(roleEmail, rolePassword);
   };
 
   const handleSocialClick = (provider: string) => {
@@ -347,7 +347,7 @@ export default function LoginPage() {
                 className="w-full flex items-center justify-between text-[11px] font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors py-0.5"
               >
                 <span className="flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-[#1d63ff]" /> Demo Roles (Password: Password@123)
+                  <Sparkles className="w-3.5 h-3.5 text-[#1d63ff]" /> Demo Roles Quick Fill
                 </span>
                 <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showDemoProfiles ? 'rotate-180' : ''}`} />
               </button>
@@ -356,18 +356,28 @@ export default function LoginPage() {
                 <div className="grid grid-cols-2 gap-2 mt-2 animate-in fade-in duration-150">
                   <button
                     type="button"
-                    onClick={() => handleQuickLogin('superadmin@platform.edu')}
-                    className="p-1.5 px-2 rounded-lg border border-blue-100 dark:border-blue-900/40 bg-blue-50/40 text-left hover:bg-blue-100/50 transition-all"
+                    onClick={() => handleQuickLogin('ragul@edsols.in', 'edu_edsols2026')}
+                    className="p-1.5 px-2 rounded-lg border border-blue-100 dark:border-blue-900/40 bg-blue-50/40 text-left hover:bg-blue-100/50 transition-all cursor-pointer"
                   >
                     <div className="text-[10px] font-bold text-blue-700 dark:text-blue-300 flex items-center gap-1">
-                      <ShieldCheck className="w-3 h-3 text-blue-600" /> Super Admin
+                      <ShieldCheck className="w-3 h-3 text-blue-600" /> Super Admin (Ragul)
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleQuickLogin('karthik_v@edsols.in', 'edu_edsols2026')}
+                    className="p-1.5 px-2 rounded-lg border border-blue-100 dark:border-blue-900/40 bg-blue-50/40 text-left hover:bg-blue-100/50 transition-all cursor-pointer"
+                  >
+                    <div className="text-[10px] font-bold text-blue-700 dark:text-blue-300 flex items-center gap-1">
+                      <ShieldCheck className="w-3 h-3 text-blue-600" /> Super Admin (Karthik)
                     </div>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => handleQuickLogin('admin@ait.edu')}
-                    className="p-1.5 px-2 rounded-lg border border-emerald-100 dark:border-emerald-900/40 bg-emerald-50/40 text-left hover:bg-emerald-100/50 transition-all"
+                    className="p-1.5 px-2 rounded-lg border border-emerald-100 dark:border-emerald-900/40 bg-emerald-50/40 text-left hover:bg-emerald-100/50 transition-all cursor-pointer"
                   >
                     <div className="text-[10px] font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-1">
                       <Building2 className="w-3 h-3 text-emerald-600" /> College Admin
@@ -377,7 +387,7 @@ export default function LoginPage() {
                   <button
                     type="button"
                     onClick={() => handleQuickLogin('dr.arun@platform.edu')}
-                    className="p-1.5 px-2 rounded-lg border border-amber-100 dark:border-amber-900/40 bg-amber-50/40 text-left hover:bg-amber-100/50 transition-all"
+                    className="p-1.5 px-2 rounded-lg border border-amber-100 dark:border-amber-900/40 bg-amber-50/40 text-left hover:bg-amber-100/50 transition-all cursor-pointer"
                   >
                     <div className="text-[10px] font-bold text-amber-700 dark:text-amber-300 flex items-center gap-1">
                       <Bot className="w-3 h-3 text-amber-600" /> Trainer
@@ -387,7 +397,7 @@ export default function LoginPage() {
                   <button
                     type="button"
                     onClick={() => handleQuickLogin('student1@ait.edu')}
-                    className="p-1.5 px-2 rounded-lg border border-purple-100 dark:border-purple-900/40 bg-purple-50/40 text-left hover:bg-purple-100/50 transition-all"
+                    className="p-1.5 px-2 rounded-lg border border-purple-100 dark:border-purple-900/40 bg-purple-50/40 text-left hover:bg-purple-100/50 transition-all cursor-pointer col-span-2"
                   >
                     <div className="text-[10px] font-bold text-purple-700 dark:text-purple-300 flex items-center gap-1">
                       <GraduationCap className="w-3 h-3 text-purple-600" /> Student
