@@ -89,18 +89,18 @@ export default function SuperAdminDashboard() {
     <DashboardLayout requiredRoles={["super_admin"]}>
       <div className="space-y-8">
         {/* Header Banner */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-900/60 via-indigo-900/40 to-slate-900/80 border border-blue-500/20 p-8 shadow-2xl backdrop-blur-xl">
-          <div className="absolute top-0 right-0 -mt-8 -mr-8 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-slate-900 border border-blue-500/20 p-8 shadow-xl text-white">
+          <div className="absolute top-0 right-0 -mt-8 -mr-8 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none" />
           <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-semibold text-blue-400 mb-3">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 border border-white/20 text-xs font-semibold text-white mb-3 backdrop-blur-md">
                 <ShieldCheck className="w-3.5 h-3.5" />
                 Multi-Tenant Governance Console
               </div>
-              <h1 className="text-3xl font-bold tracking-tight text-white flex items-center gap-3">
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white flex items-center gap-3">
                 Global Platform Executive Overview
               </h1>
-              <p className="text-sm text-slate-300 mt-2 max-w-2xl">
+              <p className="text-sm text-blue-100 mt-2 max-w-2xl">
                 Real-time governance telemetry across connected institutions, student cohorts, AI/robotics studios, and tamper-proof certificate verifications.
               </p>
             </div>
@@ -108,16 +108,16 @@ export default function SuperAdminDashboard() {
               <button
                 onClick={fetchData}
                 disabled={loading}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-white text-sm font-medium border border-slate-700 transition shadow-lg"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-sm font-medium border border-white/20 transition shadow-sm backdrop-blur-md cursor-pointer disabled:opacity-50"
               >
-                <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin text-blue-400" : ""}`} />
+                <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
                 Refresh Telemetry
               </button>
               <Link
                 href="/super-admin/courses"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-sm font-semibold shadow-lg shadow-blue-500/25 transition transform active:scale-95"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-blue-700 text-sm font-semibold shadow-md transition transform active:scale-95 cursor-pointer"
               >
-                <Sparkles className="w-4 h-4" />
+                <Sparkles className="w-4 h-4 text-blue-600" />
                 Course Studio
               </Link>
             </div>
@@ -127,88 +127,88 @@ export default function SuperAdminDashboard() {
         {/* 4 Primary KPI Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {/* Card 1: Colleges */}
-          <div className="group relative rounded-2xl bg-slate-900/60 border border-slate-800/80 p-6 backdrop-blur-xl hover:border-blue-500/40 transition-all duration-300 shadow-lg hover:shadow-blue-500/10">
+          <div className="group relative rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200/90 dark:border-slate-800/80 p-6 shadow-xs hover:shadow-md dark:shadow-lg hover:border-blue-500/40 transition-all duration-300">
             <div className="flex items-center justify-between mb-4">
-              <div className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400">
+              <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-500/10 border border-blue-200/80 dark:border-blue-500/20 text-blue-600 dark:text-blue-400">
                 <Building2 className="w-6 h-6" />
               </div>
-              <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">
                 {data?.metrics?.active_colleges || 0} Active
               </span>
             </div>
-            <h3 className="text-sm font-medium text-slate-400">Institutions Connected</h3>
-            <p className="text-3xl font-extrabold text-white mt-1">
+            <h3 className="text-sm font-medium text-slate-500 dark:text-slate-400">Institutions Connected</h3>
+            <p className="text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
               {loading ? "..." : data?.metrics?.total_colleges || 0}
             </p>
-            <div className="mt-4 pt-3 border-t border-slate-800/60 flex items-center justify-between text-xs text-slate-400">
+            <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/60 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
               <span>Managed Campuses</span>
-              <Link href="/super-admin/colleges" className="text-blue-400 hover:text-blue-300 inline-flex items-center gap-1 font-medium">
+              <Link href="/super-admin/colleges" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 inline-flex items-center gap-1 font-semibold">
                 Manage <ChevronRight className="w-3.5 h-3.5" />
               </Link>
             </div>
           </div>
 
           {/* Card 2: Students */}
-          <div className="group relative rounded-2xl bg-slate-900/60 border border-slate-800/80 p-6 backdrop-blur-xl hover:border-emerald-500/40 transition-all duration-300 shadow-lg hover:shadow-emerald-500/10">
+          <div className="group relative rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200/90 dark:border-slate-800/80 p-6 shadow-xs hover:shadow-md dark:shadow-lg hover:border-emerald-500/40 transition-all duration-300">
             <div className="flex items-center justify-between mb-4">
-              <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+              <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200/80 dark:border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
                 <Users className="w-6 h-6" />
               </div>
-              <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">
                 100% Isolated
               </span>
             </div>
-            <h3 className="text-sm font-medium text-slate-400">Enrolled Students</h3>
-            <p className="text-3xl font-extrabold text-white mt-1">
+            <h3 className="text-sm font-medium text-slate-500 dark:text-slate-400">Enrolled Students</h3>
+            <p className="text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
               {loading ? "..." : (data?.metrics?.total_students || 0).toLocaleString()}
             </p>
-            <div className="mt-4 pt-3 border-t border-slate-800/60 flex items-center justify-between text-xs text-slate-400">
+            <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/60 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
               <span>Active Cohorts</span>
-              <Link href="/super-admin/students" className="text-emerald-400 hover:text-emerald-300 inline-flex items-center gap-1 font-medium">
+              <Link href="/super-admin/students" className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 inline-flex items-center gap-1 font-semibold">
                 Directory <ChevronRight className="w-3.5 h-3.5" />
               </Link>
             </div>
           </div>
 
           {/* Card 3: Courses */}
-          <div className="group relative rounded-2xl bg-slate-900/60 border border-slate-800/80 p-6 backdrop-blur-xl hover:border-purple-500/40 transition-all duration-300 shadow-lg hover:shadow-purple-500/10">
+          <div className="group relative rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200/90 dark:border-slate-800/80 p-6 shadow-xs hover:shadow-md dark:shadow-lg hover:border-purple-500/40 transition-all duration-300">
             <div className="flex items-center justify-between mb-4">
-              <div className="p-3 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400">
+              <div className="p-3 rounded-xl bg-purple-50 dark:bg-purple-500/10 border border-purple-200/80 dark:border-purple-500/20 text-purple-600 dark:text-purple-400">
                 <BookOpen className="w-6 h-6" />
               </div>
-              <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">
+              <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-purple-50 dark:bg-purple-500/10 text-purple-700 dark:text-purple-400 border border-purple-200 dark:border-purple-500/20">
                 {data?.metrics?.published_courses || 0} Published
               </span>
             </div>
-            <h3 className="text-sm font-medium text-slate-400">Curriculum Catalog</h3>
-            <p className="text-3xl font-extrabold text-white mt-1">
+            <h3 className="text-sm font-medium text-slate-500 dark:text-slate-400">Curriculum Catalog</h3>
+            <p className="text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
               {loading ? "..." : data?.metrics?.total_courses || 0}
             </p>
-            <div className="mt-4 pt-3 border-t border-slate-800/60 flex items-center justify-between text-xs text-slate-400">
+            <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/60 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
               <span>Robotics & AI tracks</span>
-              <Link href="/super-admin/courses" className="text-purple-400 hover:text-purple-300 inline-flex items-center gap-1 font-medium">
+              <Link href="/super-admin/courses" className="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 inline-flex items-center gap-1 font-semibold">
                 Studio <ChevronRight className="w-3.5 h-3.5" />
               </Link>
             </div>
           </div>
 
           {/* Card 4: Certificates */}
-          <div className="group relative rounded-2xl bg-slate-900/60 border border-slate-800/80 p-6 backdrop-blur-xl hover:border-amber-500/40 transition-all duration-300 shadow-lg hover:shadow-amber-500/10">
+          <div className="group relative rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200/90 dark:border-slate-800/80 p-6 shadow-xs hover:shadow-md dark:shadow-lg hover:border-amber-500/40 transition-all duration-300">
             <div className="flex items-center justify-between mb-4">
-              <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400">
+              <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200/80 dark:border-amber-500/20 text-amber-600 dark:text-amber-400">
                 <Award className="w-6 h-6" />
               </div>
-              <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
+              <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20">
                 {data?.metrics?.global_completion_rate || 0}% Completion
               </span>
             </div>
-            <h3 className="text-sm font-medium text-slate-400">Verifiable Certificates</h3>
-            <p className="text-3xl font-extrabold text-white mt-1">
+            <h3 className="text-sm font-medium text-slate-500 dark:text-slate-400">Verifiable Certificates</h3>
+            <p className="text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
               {loading ? "..." : (data?.metrics?.total_certificates || 0).toLocaleString()}
             </p>
-            <div className="mt-4 pt-3 border-t border-slate-800/60 flex items-center justify-between text-xs text-slate-400">
+            <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/60 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
               <span>Cryptographic QR</span>
-              <Link href="/verify" className="text-amber-400 hover:text-amber-300 inline-flex items-center gap-1 font-medium">
+              <Link href="/verify" className="text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 inline-flex items-center gap-1 font-semibold">
                 Verify Hub <ChevronRight className="w-3.5 h-3.5" />
               </Link>
             </div>
@@ -216,14 +216,14 @@ export default function SuperAdminDashboard() {
         </div>
 
         {/* Institutional Breakdown Table */}
-        <div className="rounded-2xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-xl p-6 shadow-xl space-y-5">
+        <div className="rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200/90 dark:border-slate-800/80 p-6 shadow-xs dark:shadow-xl space-y-5">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                <Building2 className="w-5 h-5 text-blue-400" />
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <Building2 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                 Institutions & Campus Allocations
               </h2>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 Isolated tenant databases, allocated faculty trainers, and student capacity.
               </p>
             </div>
@@ -235,12 +235,12 @@ export default function SuperAdminDashboard() {
                   placeholder="Filter colleges..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-9 pr-4 py-2 bg-slate-800/80 border border-slate-700/80 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition w-56"
+                  className="pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 rounded-xl text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-800 transition w-56"
                 />
               </div>
               <Link
                 href="/super-admin/colleges"
-                className="px-3.5 py-2 rounded-xl bg-blue-600/20 text-blue-400 hover:bg-blue-600/30 text-xs font-semibold border border-blue-500/30 transition flex items-center gap-1.5"
+                className="px-3.5 py-2 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-600/20 dark:text-blue-400 dark:hover:bg-blue-600/30 text-xs font-semibold border border-blue-200 dark:border-blue-500/30 transition flex items-center gap-1.5 cursor-pointer"
               >
                 + Add College
               </Link>
@@ -250,7 +250,7 @@ export default function SuperAdminDashboard() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-slate-800 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                <tr className="border-b border-slate-200 dark:border-slate-800 text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                   <th className="py-3 px-4">Institution Name</th>
                   <th className="py-3 px-4">Code</th>
                   <th className="py-3 px-4">Enrolled Students</th>
@@ -260,44 +260,44 @@ export default function SuperAdminDashboard() {
                   <th className="py-3 px-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/50 text-sm">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50 text-sm">
                 {loading ? (
                   <tr>
-                    <td colSpan={7} className="py-8 text-center text-slate-500">
+                    <td colSpan={7} className="py-8 text-center text-slate-400 dark:text-slate-500">
                       Loading institution records...
                     </td>
                   </tr>
                 ) : filteredColleges && filteredColleges.length > 0 ? (
                   filteredColleges.map((c) => (
-                    <tr key={c.id} className="hover:bg-slate-800/30 transition">
-                      <td className="py-3.5 px-4 font-semibold text-white flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 font-bold text-xs">
+                    <tr key={c.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/30 transition">
+                      <td className="py-3.5 px-4 font-semibold text-slate-900 dark:text-white flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-lg bg-blue-50 border border-blue-200 dark:bg-blue-500/10 dark:border-blue-500/20 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-xs">
                           {c.code.slice(0, 2)}
                         </div>
                         {c.name}
                       </td>
                       <td className="py-3.5 px-4">
-                        <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-mono text-xs border border-slate-700">
+                        <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono text-xs border border-slate-200 dark:border-slate-700">
                           {c.code}
                         </span>
                       </td>
-                      <td className="py-3.5 px-4 text-slate-300 font-medium">
+                      <td className="py-3.5 px-4 text-slate-700 dark:text-slate-300 font-medium">
                         {c.student_count?.toLocaleString() || 0}
                       </td>
-                      <td className="py-3.5 px-4 text-slate-300">
+                      <td className="py-3.5 px-4 text-slate-600 dark:text-slate-300">
                         {c.course_count || 0} Courses
                       </td>
-                      <td className="py-3.5 px-4 text-slate-300 font-medium">
+                      <td className="py-3.5 px-4 text-slate-700 dark:text-slate-300 font-medium">
                         {c.certificate_count || 0}
                       </td>
                       <td className="py-3.5 px-4">
                         {c.is_active ? (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                             Active
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20">
                             Suspended
                           </span>
                         )}
@@ -305,7 +305,7 @@ export default function SuperAdminDashboard() {
                       <td className="py-3.5 px-4 text-right">
                         <Link
                           href={`/super-admin/colleges`}
-                          className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition inline-flex items-center"
+                          className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-slate-900 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-300 dark:hover:text-white transition inline-flex items-center"
                         >
                           <ArrowUpRight className="w-4 h-4" />
                         </Link>
@@ -314,7 +314,7 @@ export default function SuperAdminDashboard() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={7} className="py-8 text-center text-slate-500">
+                    <td colSpan={7} className="py-8 text-center text-slate-400 dark:text-slate-500">
                       No institutions match your search query.
                     </td>
                   </tr>
@@ -325,20 +325,20 @@ export default function SuperAdminDashboard() {
         </div>
 
         {/* Audit Log Stream */}
-        <div className="rounded-2xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-xl p-6 shadow-xl space-y-5">
+        <div className="rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200/90 dark:border-slate-800/80 p-6 shadow-xs dark:shadow-xl space-y-5">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                <Activity className="w-5 h-5 text-indigo-400" />
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <Activity className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                 Immutable Platform Audit Log
               </h2>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 Every administrative mutation, course publishing, and grading action is cryptographically signed.
               </p>
             </div>
             <Link
               href="/super-admin/reports"
-              className="text-xs text-indigo-400 hover:text-indigo-300 font-semibold inline-flex items-center gap-1"
+              className="text-xs text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 font-semibold inline-flex items-center gap-1"
             >
               View Full Logs <ChevronRight className="w-3.5 h-3.5" />
             </Link>
@@ -346,24 +346,24 @@ export default function SuperAdminDashboard() {
 
           <div className="space-y-3">
             {loading ? (
-              <p className="text-xs text-slate-500 py-4 text-center">Loading audit events...</p>
+              <p className="text-xs text-slate-400 dark:text-slate-500 py-4 text-center">Loading audit events...</p>
             ) : data?.recent_audits && data.recent_audits.length > 0 ? (
               data.recent_audits.slice(0, 5).map((log) => (
                 <div
                   key={log.id}
-                  className="p-3.5 rounded-xl bg-slate-800/40 border border-slate-800 hover:border-slate-700 transition flex items-center justify-between gap-4 text-xs"
+                  className="p-3.5 rounded-xl bg-slate-50/80 border border-slate-200/80 hover:border-slate-300 dark:bg-slate-800/40 dark:border-slate-800 dark:hover:border-slate-700 transition flex items-center justify-between gap-4 text-xs"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-mono font-bold text-[10px]">
+                    <div className="p-2 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-500/10 dark:text-indigo-400 dark:border-indigo-500/20 font-mono font-bold text-[10px]">
                       {log.action}
                     </div>
                     <div>
-                      <p className="font-semibold text-white">
+                      <p className="font-semibold text-slate-900 dark:text-white">
                         {log.first_name || "System"} {log.last_name || "Admin"}
-                        <span className="text-slate-400 font-normal"> ({log.user_email || "system"})</span>
+                        <span className="text-slate-500 dark:text-slate-400 font-normal"> ({log.user_email || "system"})</span>
                       </p>
-                      <p className="text-slate-400 text-[11px] mt-0.5">
-                        Target: <span className="text-slate-300 font-medium">{log.resource_type} #{log.resource_id}</span> • Campus: <span className="text-blue-400">{log.college_name || "Platform Global"}</span>
+                      <p className="text-slate-500 dark:text-slate-400 text-[11px] mt-0.5">
+                        Target: <span className="text-slate-700 dark:text-slate-300 font-medium">{log.resource_type} #{log.resource_id}</span> • Campus: <span className="text-blue-600 dark:text-blue-400 font-medium">{log.college_name || "Platform Global"}</span>
                       </p>
                     </div>
                   </div>
@@ -373,7 +373,7 @@ export default function SuperAdminDashboard() {
                 </div>
               ))
             ) : (
-              <p className="text-xs text-slate-500 py-4 text-center">No recent audit records found.</p>
+              <p className="text-xs text-slate-400 dark:text-slate-500 py-4 text-center">No recent audit records found.</p>
             )}
           </div>
         </div>
